@@ -1,0 +1,21 @@
+# .gitignore for Raytracer project
+
+# IDE settings
+.idea/
+.vscode/
+
+# Build objects
+.build/
+*.o
+*.a
+
+# Debug files
+logs/
+vgcore*
+*.gc??
+*.log
+
+## Output files
+raytracer
+*.out
+*.so
