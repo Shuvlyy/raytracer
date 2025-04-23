@@ -13,7 +13,7 @@ BUILD_DIR	:= .build/
 MK_DIR		:= mk/
 LOGS_DIR	:= logs/
 
-include ../$(MK_DIR)/colors.mk
+include ../../$(MK_DIR)/colors.mk
 
 SRC	:= src/Logger.cpp
 OBJ	:= $(SRC:%.cpp=$(BUILD_DIR)/%.o)

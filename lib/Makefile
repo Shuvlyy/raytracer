@@ -10,15 +10,15 @@ OUTPUT_DIR	:= .output
 all: logger
 
 logger:
-	@ make -s -C Logger/ &&
-	(mkdir -p $(OUTPUT_DIR)
-	@ mv Logger/*.a .output)
+	@ mkdir -p $(OUTPUT_DIR)
+	@ make -s -C Logger/ && \
+	mv Logger/*.a .output
 
 clean:
 	@ make -s -C Logger/ clean
 
 fclean:
-	@ $(RM) -f $(OUTPUT_DIR)
+	@ $(RM) -rf $(OUTPUT_DIR)
 	@ make -s -C Logger fclean
 
 re: fclean all
