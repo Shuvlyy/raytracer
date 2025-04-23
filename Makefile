@@ -12,6 +12,7 @@ vpath %.cpp $(VPATH)
 BUILD_DIR	:= .build/
 MK_DIR		:= mk/
 LOGS_DIR	:= logs/
+LIB_DIR		:= lib/
 
 include $(MK_DIR)/sources.mk
 include $(MK_DIR)/flags.mk
@@ -21,7 +22,7 @@ OBJ	:= $(SRC:%.cpp=$(BUILD_DIR)/%.o)
 
 CC	:= g++
 
-all: $(NAME)
+all: libs $(NAME)
 
 $(NAME): $(OBJ)
 	@ $(CC) -o $@ $^ $(LDFLAGS) && \
@@ -34,14 +35,21 @@ $(BUILD_DIR)/%.o: %.cpp
 	echo -e $(BOLD) $(GRN) "(OK)" $(RESET) $< || \
 	echo -e $(BOLD) $(RED) "(KO)" $(RESET) $<
 
+libs:
+	@ make -s -C $(LIB_DIR) && \
+ 	echo -e $(BOLD) $(BG_GRN) "Raytracer - LIB BUILD OK" $(RESET) || \
+ 	echo -e $(BOLD) $(BG_RED) "Raytracer - LIB BUILD KO" $(RESET)
+
 clean:
 	@ $(RM) $(OBJ) && \
+	make -s -C $(LIB_DIR) clean && \
 	echo -e $(BOLD) $(BG_GRN) "Raytracer - CLEAN OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Raytracer - CLEAN KO" $(RESET)
 
 fclean: clean
 	@ $(RM) $(NAME)
 	@ $(RM) -r $(BUILD_DIR)
+	@ make -s -C $(LIB_DIR) fclean
 
 re: fclean
 	@ $(MAKE) all
@@ -51,4 +59,4 @@ cleanlogs:
 	echo -e $(BOLD) $(BG_GRN) "Raytracer - LOG CLEAN OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Raytracer - LOG CLEAN KO" $(RESET)
 
-.PHONY: all clean fclean re cleanlogs
+.PHONY: all libs clean fclean re cleanlogs

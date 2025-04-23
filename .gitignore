@@ -6,6 +6,7 @@
 
 # Build objects
 .build/
+.output/
 *.o
 *.a
 
