@@ -8,3 +8,7 @@
 VPATH	:= src/
 
 SRC	+= src/Main.cpp
+
+SRC += src/Exception/AException.cpp
+
+SRC += src/Parser/Parser.cpp
