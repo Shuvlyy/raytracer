@@ -40,7 +40,7 @@ namespace raytracer
     ()
         const
     {
-	    if (this->_tokens.size() != 1) {
+	    if (this->_tokens.at(0).at(0) != '-') {
 	        return false;
 	    }
 
@@ -52,7 +52,11 @@ namespace raytracer
         }
 
         if (this->hasFlag("--about") || this->hasFlag("-a")) { /* TODO: Finish. */
-            std::cout << "OOP-400: Raytracer" << std::endl;
+            std::cout << "OOP-400: Raytracer" << std::endl
+                      << "Made by:" << std::endl
+                      << "\tLysandre BOURSETTE (@shuvlyy)" << std::endl
+                      << "\tPierre MARGUERIE (@PierreMarguerie)" << std::endl
+                      << "\tPierre MONTARET (@impierrooo)" << std::endl;
             return true;
         }
 
@@ -66,12 +70,7 @@ namespace raytracer
     )
         const
     {
-        for (const auto &token : this->_tokens) {
-            if (token == flag) {
-                return true;
-            }
-        }
-        return false;
+        return std::ranges::find(this->_tokens, flag) != this->_tokens.end();
     }
 
     std::string
@@ -81,9 +80,8 @@ namespace raytracer
     )
         const
     {
-        for (size_t k = 0; k < this->_tokens.size(); ++k) {
-            if (this->_tokens.at(k) == flag &&
-                this->_tokens.size() > k + 1) {
+        for (size_t k = 0; k + 1 < this->_tokens.size(); ++k) {
+            if (this->_tokens.at(k) == flag) {
                 return this->_tokens.at(k + 1);
             }
         }
