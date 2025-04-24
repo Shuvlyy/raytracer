@@ -49,7 +49,7 @@ clean:
 fclean: clean
 	@ $(RM) $(NAME)
 	@ $(RM) -r $(BUILD_DIR)
-	@ make -s -C $(LIB_DIR) fclean
+	@ $(MAKE) -s -C $(LIB_DIR) fclean
 
 re: fclean
 	@ $(MAKE) all

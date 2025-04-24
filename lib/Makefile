@@ -7,20 +7,23 @@
 
 OUTPUT_DIR	:= .output
 
+LOGGER_DIR	:= Logger/
+
 all: logger
 
 logger:
 	@ mkdir -p $(OUTPUT_DIR)
-	@ make -s -C Logger/ && \
+	@ $(MAKE) -s -C $(LOGGER_DIR) && \
 	mv Logger/*.a .output
 
 clean:
-	@ make -s -C Logger/ clean
+	@ $(MAKE) -s -C $(LOGGER_DIR) clean
 
 fclean:
 	@ $(RM) -rf $(OUTPUT_DIR)
-	@ make -s -C Logger fclean
+	@ $(MAKE) -s -C $(LOGGER_DIR) fclean
 
-re: fclean all
+re: fclean
+	@ $(MAKE) -s all
 
 .PHONY: all logger clean fclean re
