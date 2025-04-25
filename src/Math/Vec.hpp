@@ -68,13 +68,12 @@
         return *this;                                                         \
     }
 
+#include <array>
 #include <algorithm>
 #include <cmath>
 
 namespace raytracer::math
 {
-
-    template <size_t N, typename T> class Point;
 
     /**
      * @brief   Represents an N-dimensional mathematical vector.
@@ -108,27 +107,13 @@ namespace raytracer::math
         }
 
         /**
-         * @brief   Constructs a vector representing the direction from p1 to
-         *          p2.
+         * @brief   Default constructor that initializes all components to
+         *          zero.
          *
-         * @param   p1  Starting point
-         * @param   p2  Ending point
+         * Constructs a vector where each component is set to the default value
+         * of `T`, typically zero for arithmetic types like int or double.
          */
-        Vec(
-            const Point<N, T>& p1,
-            const Point<N, T>& p2
-        )
-        {
-            std::transform(
-                p2._data.begin(),
-                p2._data.end(),
-                p1._data.begin(),
-                this->_data.begin(),
-                [](T b, T a) {
-                    return b - a;
-                }
-            );
-        }
+        Vec() { this->_data.fill(T{}); }
 
         /**
          * @brief   Computes the Euclidean length (magnitude) of the vector.

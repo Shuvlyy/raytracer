@@ -62,6 +62,32 @@ namespace raytracer::math
         using Vec<N, T>::operator[];
 
         /**
+         * @brief   Constructs a vector representing the direction from p1 to
+         *          p2.
+         *
+         * @param   p1  Starting point
+         * @param   p2  Ending point
+         */
+        static Vec<N, T> toVec(
+            const Point& p1,
+            const Point& p2
+        )
+        {
+            Vec<N, T> res;
+
+            std::transform(
+                p2._data.begin(),
+                p2._data.end(),
+                p1._data.begin(),
+                res.data().begin(),
+                [](T b, T a) {
+                    return b - a;
+                }
+            );
+            return res;
+        }
+
+        /**
          * @brief   Deleted operator+: Adding two points is not allowed.
          */
         Point operator+(const Point&) const = delete;
