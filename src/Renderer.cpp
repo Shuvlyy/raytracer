@@ -2,6 +2,7 @@
 #include "Logger.hpp"
 
 #include <format>
+#include <iostream>
 
 namespace raytracer
 {
@@ -40,10 +41,7 @@ namespace raytracer
 
                 const uint32_t currentPixel = y * this->_width + x;
                 const uint8_t progress = (static_cast<double>(currentPixel) / totalPixels) * 100;
-                LOG_DEBUG(std::format(
-                    "[{}%] Computed pixel ({}, {}).",
-                    progress, x, y)
-                );
+                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
         return image;
