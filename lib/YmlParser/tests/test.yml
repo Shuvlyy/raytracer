@@ -1,0 +1,97 @@
+# Sample YAML file for testing parser
+
+# Scalars
+name: Lysandre Boursette
+age: 17
+is_student: true
+height: 185.1
+birthday:
+  day: 3
+  month:
+    index: 7
+    name: July
+  year: 2006
+favorite_color: purple
+phone_number: +33 7 67 30 51 05
+btest: true
+
+# Arrays
+hobbies:
+  - Reading
+  - Running
+  - Cooking
+
+# Nested Objects
+address:
+  street: 123 Main St
+  city: Springfield
+  country: USA
+
+# Nested Arrays
+passions:
+  - aviation:
+    - Airbus
+    - Boeing
+    - McDonnell-Douglas
+    - planes:
+      - Boeing 757-200
+      - Boeing 757-200
+      - Boeing 767-223ER
+      - Airbus A330-203
+  - photography:
+    - Nikon
+    - Sony
+    - Panasonic Lumix
+
+# Mixed content
+person:
+  name: Alice
+  age: 25
+  is_student: true
+  contact:
+    email: alice@example.com
+    phone:
+      home: 123-456-7890
+      work: 987-654-3210
+#  pets:
+#    - name: Fluffy
+#      species: Cat
+#      age: 3
+#    - name: Rover
+#      species: Dog
+#      age: 5
+  favorite_numbers:
+    - 7
+    - 13
+    - 42
+
+# Nested arrays
+#lists:
+#  - [apple, banana, cherry]
+#  - [dog, cat, bird]
+#  - [red, green, blue]
+
+# Complex nested structure
+family:
+  father:
+    name: Tom
+    age: 50
+  mother:
+    name: Lisa
+    age: 48
+#  children:
+#    - name: Emily
+#      age: 20
+#    - name: Jack
+#      age: 18
+#  pets:
+#    dogs:
+#      - name: Max
+#        breed: Labrador
+#      - name: Bella
+#        breed: Poodle
+#    cats:
+#      - name: Luna
+#        breed: Siamese
+#      - name: Simba
+#        breed: Persian

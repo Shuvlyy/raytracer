@@ -1,0 +1,19 @@
+# .gitignore for YML parser
+
+## Build objects
+*.o
+*.d
+*.a
+.build
+
+## IDE settings
+.idea
+.vscode
+
+## Debug files
+*.log
+vgcore.*
+*.gc*
+
+## Output files
+test
