@@ -16,7 +16,7 @@
             this->_data.begin(),                                              \
             this->_data.end(),                                                \
             rhs.data().begin(),                                               \
-            res._data.begin(),                                                \
+            res.data().begin(),                                               \
             [](T a, T b) {                                                    \
                 return a op b;                                                \
             }                                                                 \
@@ -143,8 +143,8 @@ namespace raytracer::math
             std::transform(
                 this->_data.begin(),
                 this->_data.end(),
-                other._data.begin(),
-                res._data.begin(),
+                other.data().begin(),
+                res.data().begin(),
                 [](T a, T b) {
                     return a - b;
                 }
