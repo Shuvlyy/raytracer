@@ -5,11 +5,11 @@
 ## Flags for Makefile
 ##
 
-CXXFLAGS	+= -Wall -Wextra -Werror
+CXXFLAGS	+= -Wall -Wextra # -Werror
 CXXFLAGS	+= -std=c++20
-CXXFLAGS	+= -iquote src/ # include/
+CXXFLAGS	+= -iquote src/
 CXXFLAGS	+= -iquote lib/Logger/include/
-CXXFLAGS	+= -iquote lib/YmlParser/src/
+CXXFLAGS	+= -iquote lib/YmlParser/include/
 CXXFLAGS	+= -g # Only for debug.
 
 LDFLAGS		+= -L lib/.output/
