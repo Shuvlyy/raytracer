@@ -63,6 +63,7 @@ namespace raytracer
             cameraConfig["rotation"]["z"].as<int>()
         );
         settings.fov = cameraConfig["fov"].as<double>();
+        settings.aperture = cameraConfig["aperture"].as<double>();
 
         return Camera(settings);
     }

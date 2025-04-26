@@ -18,7 +18,6 @@ namespace raytracer
             uint32_t width{}, height{};
             math::Vec<3> position, rotation;
             double fov{};
-            double focalLength{};
             double aperture{};
         };
 
