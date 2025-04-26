@@ -10,6 +10,7 @@
 *.o
 *.a
 *.so
+*.ppm
 
 # Debug files
 logs/
