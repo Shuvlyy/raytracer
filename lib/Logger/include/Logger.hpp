@@ -78,6 +78,15 @@ public:
      */
     static bool isInit();
 
+    /**
+     * Generates a timestamp string in formatted style.
+     *
+     * @param   forFilename If true, format suitable for filenames is
+     *                      returned
+     * @returns The formatted timestamp
+     */
+    static std::string getFormattedCurrentTimestamp(bool forFilename = false);
+
 protected:
     std::ofstream _logFile;
     std::ofstream _latestLogFile;
@@ -117,15 +126,6 @@ protected:
      * @returns Colored level string.
      */
     static std::string getColoredLevel(logger::Level level);
-
-    /**
-     * Generates a timestamp string in formatted style.
-     *
-     * @param   forFilename If true, format suitable for filenames is
-     *                      returned
-     * @returns The formatted timestamp
-     */
-    static std::string getFormattedCurrentTimestamp(bool forFilename = false);
 
     /**
      * @param   loc         From which function the log has been called from
