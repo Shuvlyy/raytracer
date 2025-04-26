@@ -41,7 +41,7 @@ clean:
 fclean: clean
 	@ $(RM) $(NAME).a
 	@ $(RM) -r $(BUILD_DIR)
-	@ $(RM) test
+	@ $(RM) tester
 
 re: fclean
 	@ $(MAKE) all

@@ -16,4 +16,4 @@ vgcore.*
 *.gc*
 
 ## Output files
-test
+tester
