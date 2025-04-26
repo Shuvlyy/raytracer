@@ -1,5 +1,7 @@
 #include "Scene.hpp"
 
+#include "Logger.hpp"
+
 namespace raytracer
 {
 
@@ -9,6 +11,7 @@ namespace raytracer
     )
     {
         // ...
+        LOG_DEBUG("Scene successfully loaded.");
     }
 
 }

@@ -1,12 +1,15 @@
 #include "Camera.hpp"
+#include "Logger.hpp"
+
+#include <sstream>
+#include <iomanip>
 
 namespace raytracer
 {
 
     Camera::Camera(
         const camera::Settings& settings
-    )
-    {
+    ) {
         const double aspectRatio =
             double(settings.width) / double(settings.height);
 
@@ -24,6 +27,18 @@ namespace raytracer
             horizontal,
             vertical
         );
+
+        LOG_DEBUG("Camera successfully loaded.");
+
+        std::stringstream logMessage;
+        logMessage << std::fixed << std::setprecision(1)
+                   << "Camera settings: "
+                   << settings.width << "x" << settings.height
+                   << " @ (" << settings.position[0] << "," << settings.position[1] << "," << settings.position[2] << "),"
+                   << "(" << settings.rotation[0] << "," << settings.rotation[1] << "," << settings.rotation[2] << ") "
+                   << settings.fov << "°";
+
+        LOG_DEBUG(logMessage.str());
     }
 
     Camera
