@@ -14,6 +14,8 @@ int main(int argc, char *argv[])
     yml.dump();
 
     std::cout << "Name: " << yml["name"].as<std::string>() << std::endl;
+    std::cout << "Value that doesn't exist:" << std::endl;
+    std::cout << yml["unknown"].as<std::string>() << std::endl;
 
     return 0;
 }

@@ -1,5 +1,5 @@
-#include "Node.hpp"
-#include "Yml.hpp"
+#include "yml/Node.hpp"
+#include "yml/Yml.hpp"
 
 #include <iostream>
 #include <sstream>

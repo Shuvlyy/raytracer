@@ -3,7 +3,7 @@
 #define MAX_STRING_LENGTH   1024
 #define YML_NESTING_SPACES  2
 
-#include "Node/Node.hpp"
+#include "Node.hpp"
 
 #include <optional>
 #include <string>

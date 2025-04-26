@@ -47,6 +47,6 @@ re: fclean
 	@ $(MAKE) all
 
 tests_run: re
-	@ $(CXX) -o tester tests/Tester.cpp -g -iquote src/ -L . -l yml
+	@ $(CXX) -o tester tests/Tester.cpp -g -iquote include/yml/ -L . -l yml
 
 .PHONY: all clean fclean re tests_run

@@ -1,7 +1,7 @@
-#include "Yml.hpp"
-#include "Parser/Parser.hpp"
+#include "yml/Yml.hpp"
+#include "yml/Parser.hpp"
 
-#include "Exception/Exceptions/CouldNotOpenFile.hpp"
+#include "yml/Exception/Exceptions/CouldNotOpenFile.hpp"
 
 #include <utility>
 #include <fstream>

@@ -6,5 +6,5 @@
 ##
 
 CXXFLAGS	:= -Wall -Wextra -Werror
-CXXFLAGS	+= -iquote src/
+CXXFLAGS	+= -iquote include/
 CXXFLAGS	+= -g # Only for debug.
