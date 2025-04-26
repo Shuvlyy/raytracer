@@ -45,7 +45,7 @@ Yml yml(...); // Initialize your YML here
 int birthYear = yml["birth"]["year"].as<int>(); // 2006
 double gpa = yml["gpa"].as<double>(); // 3.18
 std::string name = yml["name"].as(); // "Lysandre"
-/*                         ^ Note that for strings, you don't have to specify the type */
+/*                               ^ Note that for strings, you don't have to specify the type */
 bool hasCramptes = yml["hasCramptes"].as<bool>(); // false
 ```
 
@@ -55,9 +55,9 @@ std::string birthMonth = yml.getNode("birth.month.name").as<std::string>();
 ```
 
 > [!WARNING]
-> If an error is encountered during reading, an exception that inherits from
-> `yml::exception::IException` will be thrown. It is up to you to properly
-> handle it!!
+> If an error is encountered during reading (wrong type, non-existent node), an
+> exception that inherits from `yml::exception::IException` will be thrown.
+> It is up to you to properly handle it!!
 
 ## Future
 
