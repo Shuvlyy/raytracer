@@ -1,9 +1,14 @@
-#include "Exception/AException.hpp"
 #include "Common/Exit.hpp"
 #include "Parser/Parser.hpp"
 #include "Logger.hpp"
+#include "yml/Yml.hpp"
+#include "Renderer.hpp"
+
+#include <iostream>
+#include <filesystem>
 
 using namespace raytracer;
+namespace fs = std::filesystem;
 
 int
 main
@@ -24,9 +29,23 @@ main
 
         Logger::init(logger::Level::DEBUG);
 
-        // ...
+        yml::Yml config(sceneFilepath);
+        LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
+
+        Renderer renderer(config);
+
+        /* Temporary!! ===------------------- */
+        image::Ppm image = renderer.render();
+
+        std::string outputDirectory = config["outputDirectory"].as();
+
+        if (!fs::exists(outputDirectory)) {
+            fs::create_directory(outputDirectory);
+        }
+        image.save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp() + ".ppm");
+        /* ---------------------------------- */
     }
-    catch (const exception::IException &exception) {
+    catch (const std::exception& exception) {
         std::string message("Error while running Raytracer: ");
         message += exception.what();
 
