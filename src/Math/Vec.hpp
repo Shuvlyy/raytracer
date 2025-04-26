@@ -131,6 +131,52 @@ namespace raytracer::math
         }
 
         /**
+         * @brief   Normalizes the vector and returns a new vector.
+         *
+         * @returns Vec A new normalized vector
+         *
+         * @note    If the vector has zero length, it returns a zero vector.
+         */
+        Vec normalized() const
+        {
+            T len = this->length();
+
+            if (len == T(0)) {
+                return Vec();
+            }
+
+            Vec res = *this;
+
+            for (size_t i = 0; i < N; i++) {
+                res[i] /= len;
+            }
+            return res;
+        }
+
+
+        /**
+         * @brief   Normalizes the vector in-place.
+         *
+         * @return  Vec&    Reference to the normalized vector
+         *
+         * @note    If the vector has zero length, it will remain unchanged.
+         */
+        Vec& normalize()
+        {
+            T len = this->length();
+
+            if (len == T(0)) {
+                return *this;
+            }
+
+            for (size_t i = 0; i < N; i++) {
+                this->_data[i] /= len;
+            }
+
+            return *this;
+        }
+
+        /**
          * @brief   Accesses the element at index i.
          *
          * @param   i   Index of the element
