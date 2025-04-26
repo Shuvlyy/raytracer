@@ -5,7 +5,7 @@
 ## Makefile for Logger library
 ##
 
-NAME	:= liblogger.a
+NAME	:= liblogger
 
 vpath %.cpp $(VPATH)
 
@@ -26,13 +26,13 @@ CXXFLAGS	+= -iquote include/
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@ ar rcs $@ $^ && \
+	@ ar rcs $(NAME).a $(OBJ) && \
 	echo -e $(BOLD) $(BG_GRN) "Logger - BUILD OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Logger - BUILD KO" $(RESET)
 
 $(BUILD_DIR)/%.o: %.cpp
 	@ mkdir -p $(dir $@)
-	@ $(CC) -o $@ -c $< $(CXXFLAGS) && \
+	@ $(CXX) -o $@ -c $< $(CXXFLAGS) && \
 	echo -e $(BOLD) $(GRN) "(OK)" $(RESET) $< || \
 	echo -e $(BOLD) $(RED) "(KO)" $(RESET) $<
 
@@ -42,7 +42,7 @@ clean:
 	echo -e $(BOLD) $(BG_RED) "Logger - CLEAN KO" $(RESET)
 
 fclean: clean
-	@ $(RM) $(NAME)
+	@ $(RM) $(NAME).a
 	@ $(RM) -r $(BUILD_DIR)
 
 re: fclean
