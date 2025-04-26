@@ -13,6 +13,7 @@ BUILD_DIR	:= .build/
 MK_DIR		:= mk/
 LOGS_DIR	:= logs/
 LIB_DIR		:= lib/
+RENDERS_DIR	:= renders/
 
 include $(MK_DIR)/sources.mk
 include $(MK_DIR)/flags.mk
@@ -54,9 +55,14 @@ fclean: clean
 re: fclean
 	@ $(MAKE) all
 
-cleanlogs:
+cleanLogs:
 	@ rm -rf $(LOGS_DIR) && \
 	echo -e $(BOLD) $(BG_GRN) "Raytracer - LOG CLEAN OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Raytracer - LOG CLEAN KO" $(RESET)
 
-.PHONY: all libs clean fclean re cleanlogs
+cleanRenders:
+	@ rm -rf $(RENDERS_DIR) && \
+	echo -e $(BOLD) $(BG_GRN) "Raytracer - RENDERS CLEAN OK" $(RESET) || \
+	echo -e $(BOLD) $(BG_RED) "Raytracer - RENDERS CLEAN KO" $(RESET)
+
+.PHONY: all libs clean fclean re cleanLogs
