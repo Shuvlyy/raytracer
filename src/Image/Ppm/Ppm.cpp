@@ -7,8 +7,8 @@ namespace raytracer::image
 {
 
     Ppm::Ppm(
-        uint32_t width,
-        uint32_t height
+        const uint32_t width,
+        const uint32_t height
     ) : Image(width, height) {}
 
     void Ppm::save(
@@ -23,7 +23,7 @@ namespace raytracer::image
 
         oss << "P3\n"
             << std::to_string(width) << " " << std::to_string(height) << "\n"
-            << std::to_string(MAX_VAL) << "\n";
+            << std::to_string(std::numeric_limits<uint8_t>::max() - 1) << "\n";
 
         for (uint32_t y = 0; y < height; ++y) {
             for (uint32_t x = 0; x < width; ++x) {

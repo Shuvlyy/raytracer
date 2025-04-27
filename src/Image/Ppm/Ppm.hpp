@@ -1,7 +1,5 @@
 #pragma once
 
-#define MAX_VAL 255
-
 #include "Image/Image.hpp"
 
 namespace raytracer::image
