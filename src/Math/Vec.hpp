@@ -91,6 +91,8 @@
 #include <algorithm>
 #include <cmath>
 
+#include "Random.hpp"
+
 namespace raytracer::math
 {
 
@@ -138,6 +140,16 @@ namespace raytracer::math
         Vec(const Vec& other)
             : _data(other._data)
         {}
+
+        static Vec<N> random(double min = 0, double max = 1)
+        {
+            Vec<N> res;
+
+            for (size_t i = 0; i < N; i++) {
+                res.data()[i] = static_cast<T>(randomDouble(min, max));
+            }
+            return res;
+        }
 
         /**
          * @brief   Computes the Euclidean length (magnitude) of the vector.
