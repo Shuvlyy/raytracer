@@ -12,7 +12,7 @@ namespace raytracer::shape
         Sphere(
             const math::Point<3>& center,
             const double radius,
-            Material* material
+            const std::shared_ptr<Material>& material
         ) : _center(center), _radius(radius), _material(material) {}
 
         [[nodiscard]] bool hits(const math::Ray& ray, HitResult& res) const override;
@@ -20,7 +20,7 @@ namespace raytracer::shape
     private:
         math::Point<3> _center;
         double _radius;
-        Material* _material;
+        std::shared_ptr<Material> _material;
     };
 
 }

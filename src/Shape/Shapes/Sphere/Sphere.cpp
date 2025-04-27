@@ -35,6 +35,7 @@ namespace raytracer::shape
         }
 
         res.p = ray[res.t];
+        res.n = (res.p - this->_center) / this->_radius;
         res.material = this->_material;
         return true;
     }

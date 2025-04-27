@@ -1,20 +1,20 @@
 #pragma once
 
+#include <memory>
+
+#include "Material/Material.hpp"
 #include "Math/Vec.hpp"
 #include "Math/Ray.hpp"
-
-#include <optional>
 
 namespace raytracer
 {
 
-    class Material;
-
     struct HitResult
     {
         double t = 0.0;
-        math::Vec<3> p;
-        Material* material = nullptr;
+        math::Point<3> p;
+        math::Vec<3> n;
+        std::shared_ptr<shape::Material> material;
     };
 
     class Shape
@@ -22,7 +22,10 @@ namespace raytracer
     public:
         virtual ~Shape() = default;
 
-        [[nodiscard]] virtual bool hits(const math::Ray& ray, HitResult& res) const = 0;
+        [[nodiscard]] virtual bool hits(
+            const math::Ray& ray,
+            HitResult& res
+        ) const = 0;
     };
 
 }
