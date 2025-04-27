@@ -75,14 +75,14 @@ namespace raytracer
         settings.width = cameraConfig["resolution"]["width"].as<int>();
         settings.height = cameraConfig["resolution"]["height"].as<int>();
         settings.position = math::Point<3>(
-            cameraConfig["position"]["x"].as<int>(),
-            cameraConfig["position"]["y"].as<int>(),
-            cameraConfig["position"]["z"].as<int>()
+            cameraConfig["position"]["x"].as<double>(),
+            cameraConfig["position"]["y"].as<double>(),
+            cameraConfig["position"]["z"].as<double>()
         );
         settings.rotation = math::Vec<3>(
-            cameraConfig["rotation"]["yaw"].as<int>(),
-            cameraConfig["rotation"]["pitch"].as<int>(),
-            cameraConfig["rotation"]["roll"].as<int>()
+            cameraConfig["rotation"]["yaw"].as<double>(),
+            cameraConfig["rotation"]["pitch"].as<double>(),
+            cameraConfig["rotation"]["roll"].as<double>()
         );
         settings.fov = cameraConfig["fov"].as<double>();
         settings.aperture = cameraConfig["aperture"].as<double>();
