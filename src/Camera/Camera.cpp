@@ -31,9 +31,9 @@ namespace raytracer
 
         math::Mat<3> rotationMat = math::Mat<3>::fromEuler(yaw, pitch, roll);
 
-        math::Vec<3> forward(0, 0, -1); // Forward along -Z
-        math::Vec<3> up(0, 1, 0);       // Up along +Y
-        math::Vec<3> right(1, 0, 0);    // Right along +X
+        math::Vec<3> forward(0, 0, -1);
+        math::Vec<3> up(0, -1, 0);
+        math::Vec<3> right(1, 0, 0);
 
         forward = rotationMat * forward;
         up = rotationMat * up;
