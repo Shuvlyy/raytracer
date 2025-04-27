@@ -2,6 +2,8 @@
 
 #include "Camera.hpp"
 #include "Logger.hpp"
+#include "Math/Random.hpp"
+#include "Math/Mat.hpp"
 
 #include <sstream>
 #include <iomanip>
@@ -27,63 +29,15 @@ namespace raytracer
         const double pitch = DEG_TO_RAD(settings.rotation[1]);
         const double roll = DEG_TO_RAD(settings.rotation[2]);
 
-        math::Vec<3> forward(0, 0, -1); // -Z is down
-        math::Vec<3> up(0, 1, 0);       // +Y is up
-        math::Vec<3> right(1, 0, 0);    // +X is right
+        math::Mat<3> rotationMat = math::Mat<3>::fromEuler(yaw, pitch, roll);
 
-        // Apply yaw (Y axis rotation)
-        {
-            const double cosYaw= std::cos(yaw);
-            const double sinYaw = std::sin(yaw);
+        math::Vec<3> forward(0, 0, -1); // Forward along -Z
+        math::Vec<3> up(0, 1, 0);       // Up along +Y
+        math::Vec<3> right(1, 0, 0);    // Right along +X
 
-            forward = math::Vec<3>(
-                cosYaw * forward[0] + sinYaw * forward[2],
-                forward[1],
-                -sinYaw * forward[0] + cosYaw * forward[2]
-            );
-
-            right = math::Vec<3>(
-                cosYaw * right[0] + sinYaw * right[2],
-                right[1],
-                -sinYaw * right[0] + cosYaw * right[2]
-            );
-        }
-
-        // Apply pitch (X axis rotation)
-        {
-            const double cosPitch = std::cos(pitch);
-            const double sinPitch = std::sin(pitch);
-
-            forward = math::Vec<3>(
-                forward[0],
-                cosPitch * forward[1] - sinPitch * forward[2],
-                sinPitch * forward[1] + cosPitch * forward[2]
-            );
-
-            up = math::Vec<3>(
-                up[0],
-                cosPitch * up[1] - sinPitch * up[2],
-                sinPitch * up[1] + cosPitch * up[2]
-            );
-        }
-
-        // Apply roll (Z axis rotation)
-        {
-            const double cosRoll = std::cos(roll);
-            const double sinRoll = std::sin(roll);
-
-            right = math::Vec<3>(
-                cosRoll * right[0] - sinRoll * right[1],
-                sinRoll * right[0] + cosRoll * right[1],
-                right[2]
-            );
-
-            up = math::Vec<3>(
-                cosRoll * up[0] - sinRoll * up[1],
-                sinRoll * up[0] + cosRoll * up[1],
-                up[2]
-            );
-        }
+        forward = rotationMat * forward;
+        up = rotationMat * up;
+        right = rotationMat * right;
 
         const math::Point<3> lowerLeft = origin - halfWidth * right - halfHeight * up + forward;
 
@@ -145,7 +99,15 @@ namespace raytracer
     )
         const
     {
-        const math::Point<3> screenPoint = this->screen.at(u, v);
+        auto offset = math::Vec<3>(math::randomDouble() - .5, math::randomDouble() - .5, 0);
+        auto pixelSample = this->screen.origin;
+                           // + ()
+                           // + ();
+        const math::Point<3> screenPoint =
+            this->screen.at(
+                u ,
+                v
+            );
 
         return math::Ray(
             this->origin,
