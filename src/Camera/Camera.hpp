@@ -16,9 +16,11 @@ namespace raytracer
         struct Settings
         {
             uint32_t width{}, height{};
-            math::Vec<3> position, rotation;
+            math::Point<3> position;
+            math::Vec<3> rotation;
             double fov{};
             double aperture{};
+            double focalLength{};
         };
 
     }
@@ -27,6 +29,7 @@ namespace raytracer
     {
         math::Point<3> origin;
         math::Rect<3> screen;
+        double lensRadius;
 
         explicit Camera(const camera::Settings& settings);
 
