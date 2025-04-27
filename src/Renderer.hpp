@@ -8,6 +8,17 @@
 namespace raytracer
 {
 
+    namespace renderer
+    {
+
+        struct Settings
+        {
+            size_t antiAliasingSamples;
+            size_t maxBounces;
+        };
+
+    }
+
     class Renderer final
     {
     public:
@@ -19,9 +30,11 @@ namespace raytracer
         uint32_t _width, _height;
         Camera _camera;
         Scene _scene;
-        uint16_t _antialiasingSamples;
+        renderer::Settings _settings;
+        // uint16_t _antialiasingSamples;
 
-        [[nodiscard]] math::Color computeColor(const math::Ray& ray) const;
+        [[nodiscard]] math::Color computeColor(const math::Ray& ray, size_t bounces) const;
+        static math::Vec<3> getRandomUnitVector();
     };
 
 }

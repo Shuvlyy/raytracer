@@ -13,17 +13,20 @@ namespace raytracer
         const yml::Yml &yml
     )
         : _camera(Camera::fromConfig(yml)),
-          _scene(yml)
+          _scene(yml),
+          _settings{}
     {
         yml::Node resolutionNode = yml["camera"]["resolution"];
 
         this->_width = resolutionNode["width"].as<int>();
         this->_height = resolutionNode["height"].as<int>();
-        this->_antialiasingSamples = resolutionNode["antialiasingSamples"].as<int>();
+        this->_settings.antiAliasingSamples = resolutionNode["antialiasingSamples"].as<int>();
+        this->_settings.maxBounces = resolutionNode["maxBounces"].as<int>();
 
         LOG_DEBUG(std::format(
-            "Renderer successfully loaded. ({}x{}, {})",
-            this->_width, this->_height, this->_antialiasingSamples
+            "Renderer successfully loaded. ({}x{}, {}, Maximum bounces: {})",
+            this->_width, this->_height,
+            this->_settings.antiAliasingSamples, this->_settings.maxBounces
         ));
     }
 
@@ -39,17 +42,18 @@ namespace raytracer
             for (uint32_t x = 0; x < this->_width; x++) {
                 math::Color pixelColor;
 
-                for (int sample = 0; sample < this->_antialiasingSamples; sample++) {
+                for (size_t spl = 0; spl < this->_settings.antiAliasingSamples; spl++) {
                     double u = (x + math::randomDouble()) / this->_width;
                     double v = (y + math::randomDouble()) / this->_height;
 
                     const math::Ray ray = this->_camera.ray(u, v);
-                    pixelColor += computeColor(ray);
+                    pixelColor += computeColor(ray, this->_settings.maxBounces);
                 }
 
-                image.setAt(
-                    x, y,
-                    1.0 / this->_antialiasingSamples * pixelColor
+                image.setAt(x, y,
+                    1.0
+                    / static_cast<double>(this->_settings.antiAliasingSamples)
+                    * pixelColor
                 );
 
                 const uint32_t currentPixel = y * this->_width + x;
@@ -63,14 +67,24 @@ namespace raytracer
     math::Color
     Renderer::computeColor
     (
-        const math::Ray &ray
+        const math::Ray &ray,
+        size_t bounces
     )
         const
     {
+        if (bounces == 0) {
+            return {}; // Pure black
+        }
+
         HitResult res{};
 
         if (this->_scene.hits(ray, res)) {
-            return .5 * (res.n + math::Color(1.0, 1.0, 1.0));
+            math::Vec<3> bounce = res.n + getRandomUnitVector();
+
+            if (dot(bounce, res.n) <= 0.0) {
+                bounce *= -1;
+            }
+            return .5 * computeColor(math::Ray(res.p, bounce), bounces--);
         }
 
         math::Vec<3> dir = ray.direction.normalized();
@@ -79,4 +93,16 @@ namespace raytracer
         return (1.0 - a) * math::Color(1, 1, 1) + a * math::Color(.5, .7, 1);
     }
 
+    math::Vec<3>
+    Renderer::getRandomUnitVector()
+    {
+        while (true) {
+            auto p = math::Vec<3>::random(-1, 1);
+            auto len = p.length() * p.length();
+
+            if (len <= 1) {
+                return p / std::sqrt(len);
+            }
+        }
+    }
 }
