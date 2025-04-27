@@ -1,6 +1,7 @@
 #include "Renderer.hpp"
 #include "Logger.hpp"
 #include "Math/Random.hpp"
+#include "Shape/Material/Material.hpp"
 
 #include <format>
 #include <iostream>
@@ -34,6 +35,8 @@ namespace raytracer
     Renderer::render()
         const
     {
+        LOG_INFO("Starting rendering...");
+
         image::Ppm image(this->_width, this->_height); // TODO: Change type of image according to user's choice (in a long time lol)
 
         const uint32_t totalPixels = this->_width * this->_height;
@@ -46,7 +49,7 @@ namespace raytracer
                     double u = (x + math::randomDouble()) / this->_width;
                     double v = (y + math::randomDouble()) / this->_height;
 
-                    const math::Ray ray = this->_camera.ray(u, v);
+                    math::Ray ray = this->_camera.ray(u, v);
                     pixelColor += computeColor(ray, this->_settings.maxBounces);
                 }
 
@@ -61,6 +64,8 @@ namespace raytracer
                 std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
+
+        LOG_INFO("Render finished.");
         return image;
     }
 
@@ -79,12 +84,13 @@ namespace raytracer
         HitResult res{};
 
         if (this->_scene.hits(ray, res)) {
-            math::Vec<3> bounce = res.n + getRandomUnitVector();
+            math::Ray scattered;
+            math::Color attenuation;
 
-            if (dot(bounce, res.n) <= 0.0) {
-                bounce *= -1;
+            if (res.material->scatter(ray, res, attenuation, scattered)) {
+                return attenuation * computeColor(scattered, bounces--);
             }
-            return .5 * computeColor(math::Ray(res.p, bounce), bounces--);
+            return {}; // Pure black
         }
 
         math::Vec<3> dir = ray.direction.normalized();
