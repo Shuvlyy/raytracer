@@ -37,14 +37,40 @@ namespace raytracer
 
                 const math::Ray ray = this->_camera.ray(u, v);
 
+
                 // ...
 
+                image.setAt(x, y, computeColor(ray));
+
                 const uint32_t currentPixel = y * this->_width + x;
-                const uint8_t progress = (static_cast<double>(currentPixel) / totalPixels) * 100;
-                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
+                const uint8_t progress = (currentPixel / totalPixels) * 100;
+                std::clog << "\r[" << std::to_string(progress) << "%] (" << x << "," << y << ")" << std::flush;
             }
         }
         return image;
+    }
+
+    math::Color
+    Renderer::computeColor
+    (
+        const math::Ray &ray
+    )
+        const
+    {
+        HitResult res{};
+
+        if (this->_scene.hits(ray, res)) {
+            return math::Color(
+                .5 * ((res.n[0] * 255) + 255),
+                .5 * ((res.n[1] * 255) + 255),
+                .5 * ((res.n[2] * 255) + 255)
+            );
+        }
+
+        math::Vec<3> dir = ray.direction.normalized();
+        const double a = .5 * (dir[1] + 1);;
+
+        return (1.0-a) * math::Color(255, 255, 255) + a * math::Color(255 * .5, 255 * .7, 255);
     }
 
 }

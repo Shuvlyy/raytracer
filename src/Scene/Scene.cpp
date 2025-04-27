@@ -26,23 +26,30 @@ namespace raytracer
             nullptr
         );
 
+        auto ball2 = std::make_unique<shape::Sphere>(
+            math::Point<3>(0, -100.5, -1),
+            100,
+            nullptr
+        );
+
         this->_shapes.push_back(std::move(ball1));
+        this->_shapes.push_back(std::move(ball2));
     }
 
     bool
     Scene::hits
     (
-        const math::Ray &ray
+        const math::Ray &ray,
+        HitResult& res
     )
         const
     {
-        HitResult res{};
-
         for (const auto& shape : this->_shapes) {
             if (shape->hits(ray, res)) {
                 return true;
             }
         }
+        res.t = -1;
         return false;
     }
 

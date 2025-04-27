@@ -19,6 +19,8 @@ namespace raytracer
         uint32_t _width, _height;
         Camera _camera;
         Scene _scene;
+
+        [[nodiscard]] math::Color computeColor(const math::Ray& ray) const;
     };
 
 }

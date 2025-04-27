@@ -15,7 +15,7 @@ namespace raytracer
         explicit Scene(const yml::Yml &config);
         explicit Scene();
 
-        [[nodiscard]] bool hits(const math::Ray& ray) const;
+        [[nodiscard]] bool hits(const math::Ray& ray, HitResult& res) const;
 
     private:
         std::vector<std::unique_ptr<Shape>> _shapes;
