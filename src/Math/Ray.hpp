@@ -36,6 +36,8 @@ namespace raytracer::math
             const double t_max = RAY_T_MAX
         ) : origin(origin), direction(direction), t_max(t_max) {}
 
+        Ray() = default;
+
         /**
          * @brief   Evaluates the ray at a given parameter t.
          *
