@@ -283,6 +283,15 @@ namespace raytracer::math
         return result;
     }
 
+    template<size_t N, typename T>
+    Vec<N, T> reflect(
+        const Vec<N, T>& lhs,
+        const Vec<N, T>& rhs
+    )
+    {
+        return lhs - 2 * dot(lhs,rhs) * rhs;
+    }
+
     SCALAR_V_OP(+);
     SCALAR_V_OP(-);
     SCALAR_V_OP(*);
