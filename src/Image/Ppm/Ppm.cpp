@@ -29,9 +29,9 @@ namespace raytracer::image
             for (uint32_t x = 0; x < width; ++x) {
                 const math::Color color = this->at(x, y);
 
-                oss << std::to_string(color.r) << " "
-                    << std::to_string(color.g) << " "
-                    << std::to_string(color.b) << "\n";
+                oss << std::to_string(color.r()) << " "
+                    << std::to_string(color.g()) << " "
+                    << std::to_string(color.b()) << "\n";
             }
         }
 

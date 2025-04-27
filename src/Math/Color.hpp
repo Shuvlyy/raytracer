@@ -1,13 +1,17 @@
 #pragma once
 
+#include "Vec.hpp"
+
 #include <cstdint>
 
 namespace raytracer::math
 {
 
     struct Color final
+        : Vec<3, uint8_t>
     {
-        uint8_t r, g, b, a;
+
+        using Vec::Vec;
 
         /**
          * @brief Constructs a Color object with specified RGBA values.
@@ -15,21 +19,12 @@ namespace raytracer::math
          * @param   r   Red component (0–255)
          * @param   g   Green component (0–255)
          * @param   b   Blue component (0–255)
-         * @param   a   Alpha (opacity) component (0–255), defaults to 255
          */
         Color(
             const uint8_t r,
             const uint8_t g,
-            const uint8_t b,
-            const uint8_t a = 255
-        ) : r(r), g(g), b(b), a(a) {}
-
-        /**
-         * @brief   Constructs a default Color object (black, fully opaque).
-         *
-         * Sets r, g, b = 0, and a = 255.
-         */
-        Color() : r(0), g(0), b(0), a(255) {}
+            const uint8_t b
+        ) : Vec(r, g, b) {}
 
         /**
          * @brief   Adds two colors together component-wise.
@@ -45,12 +40,16 @@ namespace raytracer::math
         Color operator+(const Color& color) const
         {
             return {
-                static_cast<uint8_t>(r + color.r),
-                static_cast<uint8_t>(g + color.g),
-                static_cast<uint8_t>(b + color.b),
-                a
+                static_cast<uint8_t>(this->r() + color.r()),
+                static_cast<uint8_t>(this->g() + color.g()),
+                static_cast<uint8_t>(this->b() + color.b())
             };
         }
+
+        [[nodiscard]] uint8_t r() const { return this->data()[0]; }
+        [[nodiscard]] uint8_t g() const { return this->data()[1]; }
+        [[nodiscard]] uint8_t b() const { return this->data()[2]; }
+        [[nodiscard]] uint8_t a() const { return this->data()[3]; }
 
     };
 
@@ -70,10 +69,9 @@ namespace raytracer::math
     inline Color operator*(const double lhs, const Color& rhs)
     {
         return {
-            static_cast<uint8_t>(rhs.r * lhs),
-            static_cast<uint8_t>(rhs.g * lhs),
-            static_cast<uint8_t>(rhs.b * lhs),
-            rhs.a
+            static_cast<uint8_t>(rhs.r() * lhs),
+            static_cast<uint8_t>(rhs.g() * lhs),
+            static_cast<uint8_t>(rhs.b() * lhs)
         };
     }
 

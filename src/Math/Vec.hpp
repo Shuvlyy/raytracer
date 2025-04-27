@@ -47,26 +47,30 @@
  * @param   op  The operator to define (e.g., +, -, *, /)
  */
 #define V_SCALAR_OP(op)                                                       \
-    Vec operator op(T scalar) const {                                         \
+    template<typename S>                                                      \
+    requires std::is_arithmetic_v<S>                                          \
+    Vec operator op(S scalar) const {                                         \
         Vec res = *this;                                                      \
         std::for_each(                                                        \
             res._data.begin(),                                                \
             res._data.end(),                                                  \
             [=](T& x) {                                                       \
-                x = x op scalar;                                              \
+                x = x op static_cast<T>(scalar);                              \
             });                                                               \
         return res;                                                           \
     }                                                                         \
                                                                               \
-    Vec& operator op##=(T scalar) {                                           \
+    template<typename S>                                                      \
+    requires std::is_arithmetic_v<S>                                          \
+    Vec& operator op##=(S scalar) {                                           \
         std::for_each(                                                        \
             this->_data.begin(),                                              \
             this->_data.end(),                                                \
             [=](T& x) {                                                       \
-                x = x op scalar;                                              \
+                x = x op static_cast<T>(scalar);                              \
             });                                                               \
         return *this;                                                         \
-    }
+    }                                                                         \
 
 /**
  * @brief   Defines scalar-vector binary operators.
@@ -100,6 +104,7 @@ namespace raytracer::math
      * @tparam  T   Type of each component (default: double)
      */
     template<size_t N, typename T = double>
+    requires std::is_arithmetic_v<T>
     class Vec
     {
     public:
@@ -232,12 +237,12 @@ namespace raytracer::math
         /**
          * @return  const std::array<T, N>& Const reference to the data array
          */
-        const std::array<T, N>& data() const { return _data; }
+        const std::array<T, N>& data() const { return this->_data; }
 
         /**
          * @return  std::array<T, N>&   Reference to the data array
          */
-        std::array<T, N>& data() { return _data; }
+        std::array<T, N>& data() { return this->_data; }
 
     protected:
         std::array<T, N> _data;
@@ -269,5 +274,6 @@ namespace raytracer::math
     SCALAR_V_OP(+);
     SCALAR_V_OP(-);
     SCALAR_V_OP(*);
+    SCALAR_V_OP(/);
 
 }

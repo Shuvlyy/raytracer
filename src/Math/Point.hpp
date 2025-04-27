@@ -54,6 +54,7 @@ namespace raytracer::math
      * @tparam  T   Type of coordinates (default: double)
      */
     template<size_t N, typename T = double>
+    requires std::is_arithmetic_v<T>
     class Point
         : public Vec<N, T>
     {
