@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Math/Color.hpp"
-#include "Math/Vec.hpp"
 
 #include <cstdint>
 #include <string>

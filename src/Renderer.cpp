@@ -1,5 +1,6 @@
 #include "Renderer.hpp"
 #include "Logger.hpp"
+#include "Math/Random.hpp"
 
 #include <format>
 #include <iostream>
@@ -18,8 +19,12 @@ namespace raytracer
 
         this->_width = resolutionNode["width"].as<int>();
         this->_height = resolutionNode["height"].as<int>();
+        this->_antialiasingSamples = resolutionNode["antialiasingSamples"].as<int>();
 
-        LOG_DEBUG("Renderer successfully loaded. (" + std::to_string(this->_width) + "x" + std::to_string(this->_height) + ")");
+        LOG_DEBUG(std::format(
+            "Renderer successfully loaded. ({}x{}, {})",
+            this->_width, this->_height, this->_antialiasingSamples
+        ));
     }
 
     image::Ppm
@@ -32,19 +37,24 @@ namespace raytracer
 
         for (uint32_t y = 0; y < this->_height; y++) {
             for (uint32_t x = 0; x < this->_width; x++) {
-                const double u = static_cast<double>(x) / this->_width;
-                const double v = static_cast<double>(y) / this->_height;
+                math::Color pixelColor;
 
-                const math::Ray ray = this->_camera.ray(u, v);
+                for (int sample = 0; sample < this->_antialiasingSamples; sample++) {
+                    double u = (x + math::randomDouble()) / this->_width;
+                    double v = (y + math::randomDouble()) / this->_height;
 
+                    const math::Ray ray = this->_camera.ray(u, v);
+                    pixelColor += computeColor(ray);
+                }
 
-                // ...
-
-                image.setAt(x, y, computeColor(ray));
+                image.setAt(
+                    x, y,
+                    1.0 / this->_antialiasingSamples * pixelColor
+                );
 
                 const uint32_t currentPixel = y * this->_width + x;
                 const uint8_t progress = (currentPixel / totalPixels) * 100;
-                std::clog << "\r[" << std::to_string(progress) << "%] (" << x << "," << y << ")" << std::flush;
+                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
         return image;
@@ -60,17 +70,13 @@ namespace raytracer
         HitResult res{};
 
         if (this->_scene.hits(ray, res)) {
-            return math::Color(
-                .5 * ((res.n[0] * 255) + 255),
-                .5 * ((res.n[1] * 255) + 255),
-                .5 * ((res.n[2] * 255) + 255)
-            );
+            return .5 * (res.n + math::Color(1.0, 1.0, 1.0));
         }
 
         math::Vec<3> dir = ray.direction.normalized();
-        const double a = .5 * (dir[1] + 1);;
+        const double a = .5 * (dir[1] + 1);
 
-        return (1.0-a) * math::Color(255, 255, 255) + a * math::Color(255 * .5, 255 * .7, 255);
+        return (1.0 - a) * math::Color(1, 1, 1) + a * math::Color(.5, .7, 1);
     }
 
 }

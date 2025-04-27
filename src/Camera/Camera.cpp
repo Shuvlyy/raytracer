@@ -99,19 +99,12 @@ namespace raytracer
     )
         const
     {
-        auto offset = math::Vec<3>(math::randomDouble() - .5, math::randomDouble() - .5, 0);
-        auto pixelSample = this->screen.origin;
-                           // + ()
-                           // + ();
-        const math::Point<3> screenPoint =
-            this->screen.at(
-                u ,
-                v
-            );
-
         return math::Ray(
             this->origin,
-            math::Point<3>::toVec(this->origin, screenPoint).normalized()
+            math::Point<3>::toVec(
+                this->origin,
+                this->screen.at(u, v)
+            ).normalized()
         );
     }
 

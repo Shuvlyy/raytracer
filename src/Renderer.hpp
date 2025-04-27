@@ -13,12 +13,13 @@ namespace raytracer
     public:
         explicit Renderer(const yml::Yml& yml);
 
-        image::Ppm render() const; // TODO: Any type of image
+        [[nodiscard]] image::Ppm render() const; // TODO: Any type of image
 
     private:
         uint32_t _width, _height;
         Camera _camera;
         Scene _scene;
+        uint16_t _antialiasingSamples;
 
         [[nodiscard]] math::Color computeColor(const math::Ray& ray) const;
     };
