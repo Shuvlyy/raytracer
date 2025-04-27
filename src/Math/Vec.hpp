@@ -68,6 +68,21 @@
         return *this;                                                         \
     }
 
+/**
+ * @brief   Defines scalar-vector binary operators.
+ *
+ * Generates global operator overloads where the scalar is on the
+ * left-hand side (lhs) and the vector is on the right-hand side (rhs).
+ *
+ * @param   op  The operator symbol (e.g., +, -, *, /).
+ */
+#define SCALAR_V_OP(op)                                                       \
+    template<size_t N, typename T>                                            \
+    Vec<N, T> operator op(T scalar, const Vec<N, T>& vec)                     \
+    {                                                                         \
+        return vec op scalar;                                                 \
+    }
+
 #include <array>
 #include <algorithm>
 #include <cmath>
@@ -114,6 +129,10 @@ namespace raytracer::math
          * of `T`, typically zero for arithmetic types like int or double.
          */
         Vec() { this->_data.fill(T{}); }
+
+        Vec(const Vec& other)
+            : _data(other._data)
+        {}
 
         /**
          * @brief   Computes the Euclidean length (magnitude) of the vector.
@@ -202,6 +221,14 @@ namespace raytracer::math
         V_SCALAR_OP(*);
         V_SCALAR_OP(/);
 
+        Vec& operator=(const Vec& other)
+        {
+            if (this != &other) {
+                this->_data = other._data;
+            }
+            return *this;
+        }
+
         /**
          * @return  const std::array<T, N>& Const reference to the data array
          */
@@ -238,5 +265,9 @@ namespace raytracer::math
         }
         return result;
     }
+
+    SCALAR_V_OP(+);
+    SCALAR_V_OP(-);
+    SCALAR_V_OP(*);
 
 }
