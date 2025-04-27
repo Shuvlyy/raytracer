@@ -9,6 +9,17 @@ VPATH	:= src/
 
 SRC	+= src/Main.cpp
 
-SRC += src/Exception/AException.cpp
+SRC += src/Renderer.cpp
 
 SRC += src/Parser/Parser.cpp
+
+SRC += src/Library/Loader.cpp
+
+SRC += src/Image/Image.cpp \
+	src/Image/Ppm/Ppm.cpp
+
+SRC += src/Camera/Camera.cpp
+
+SRC += src/Scene/Scene.cpp
+
+SRC += src/Shape/Shapes/Sphere/Sphere.cpp
