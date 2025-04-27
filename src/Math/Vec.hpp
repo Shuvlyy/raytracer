@@ -283,6 +283,24 @@ namespace raytracer::math
         return result;
     }
 
+    /**
+     * @brief   Reflects a vector across another vector.
+     *
+     * Computes the reflection of the vector `lhs` across the vector `rhs`.
+     *
+     * This operation assumes that `rhs` is a normalized vector.
+     * If `rhs` is not normalized, the result will still be a valid reflection,
+     * but it may not behave as expected in terms of geometric interpretation.
+     *
+     * @tparam  N           Dimension of the vectors (e.g., 2 for 2D, 3 for 3D)
+     * @tparam  T           Type of the elements (e.g., `double`, `float`)
+     * @param   lhs         The vector to be reflected
+     * @param   rhs         The vector to reflect across
+     * @return  Vec<N, T>   The reflected vector
+     *
+     * @note    If either vector has zero length, the behavior may not be
+     *          well-defined.
+     */
     template<size_t N, typename T>
     Vec<N, T> reflect(
         const Vec<N, T>& lhs,

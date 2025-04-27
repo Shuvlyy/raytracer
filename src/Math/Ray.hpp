@@ -36,6 +36,10 @@ namespace raytracer::math
             const double t_max = RAY_T_MAX
         ) : origin(origin), direction(direction), t_max(t_max) {}
 
+        /**
+         * @brief   Constructs a default Ray, with its origin set to (0, 0, 0)
+         *          and direction to default Vector (0, 0, 0).
+         */
         Ray() = default;
 
         /**
