@@ -10,7 +10,10 @@ namespace raytracer::shape::material
         : public Material
     {
     public:
-        explicit Metal(const math::Color& color) : _color(color) {}
+        explicit Metal(
+            const math::Color& color,
+            const double fuzz
+        ) : _color(color), _fuzz(fuzz) {}
 
         [[nodiscard]] bool scatter(
             const math::Ray& ray,
@@ -21,6 +24,7 @@ namespace raytracer::shape::material
         {
             math::Vec<3> reflected = reflect(ray.direction, res.n);
 
+            reflected = reflected.normalized() + this->_fuzz * math::Vec<3>::random();
             scattered = math::Ray(res.p, reflected);
             attenuation = this->_color;
             return true;
@@ -28,6 +32,7 @@ namespace raytracer::shape::material
 
     private:
         math::Color _color;
+        double _fuzz; /// Fuzz is how blurry the metal texture will appear.
     };
 
 }
