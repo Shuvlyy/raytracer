@@ -1,6 +1,6 @@
 #include "Scene.hpp"
 
-#include "Shape/Shapes/Sphere/Sphere.hpp"
+#include "Shape/Shapes/Sphere.hpp"
 #include "Shape/Material/Materials/Metal.hpp"
 #include "Shape/Material/Materials/Lambertian.hpp"
 
@@ -22,10 +22,10 @@ namespace raytracer
     Scene::Scene
     ()
     {
-        auto material_ground = std::make_shared<shape::material::Lambertian>(math::Color(0.8, 0.8, 0.0));
+        auto material_ground = std::make_shared<shape::material::Metal>(math::Color(0.8, 0.8, 0.0), 0);
         auto material_center = std::make_shared<shape::material::Lambertian>(math::Color(0.1, 0.2, 0.5));
-        auto material_left   = std::make_shared<shape::material::Metal>(math::Color(1, 1, 1));
-        auto material_right  = std::make_shared<shape::material::Metal>(math::Color(0.8, 0.6, 0.2));
+        auto material_left   = std::make_shared<shape::material::Metal>(math::Color(1, 1, 1), 0);
+        auto material_right  = std::make_shared<shape::material::Metal>(math::Color(0.8, 0.6, 0.2), .5);
 
         auto earth = std::make_unique<shape::Sphere>(
             math::Point<3>(0, -100.5, -1),

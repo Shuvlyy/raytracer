@@ -141,7 +141,7 @@ namespace raytracer::math
             : _data(other._data)
         {}
 
-        static Vec<N> random(double min = 0, double max = 1)
+        static Vec<N> random(const double min = 0, const double max = 1)
         {
             Vec<N> res;
 
