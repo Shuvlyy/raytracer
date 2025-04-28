@@ -46,8 +46,8 @@ namespace raytracer
                 math::Color pixelColor;
 
                 for (size_t spl = 0; spl < this->_settings.antiAliasingSamples; spl++) {
-                    double u = (x + math::randomDouble()) / this->_width;
-                    double v = (y + math::randomDouble()) / this->_height;
+                    const double u = (x + math::randomDouble()) / this->_width;
+                    const double v = (y + math::randomDouble()) / this->_height;
 
                     math::Ray ray = this->_camera.ray(u, v);
                     pixelColor += computeColor(ray, this->_settings.maxBounces);
@@ -60,8 +60,11 @@ namespace raytracer
                 );
 
                 const uint32_t currentPixel = y * this->_width + x;
-                const uint8_t progress = (currentPixel / totalPixels) * 100;
-                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
+                const auto progress = static_cast<uint8_t>(
+                    static_cast<double>(currentPixel) /
+                    static_cast<double>(totalPixels) * 100
+                );
+                std::clog << "\r[" << std::to_string(progress) << "]%" << std::flush;
             }
         }
 
@@ -88,7 +91,7 @@ namespace raytracer
             math::Color attenuation;
 
             if (res.material->scatter(ray, res, attenuation, scattered)) {
-                return attenuation * computeColor(scattered, bounces--);
+                return attenuation * computeColor(scattered, bounces - 1);
             }
             return {}; // Pure black
         }
