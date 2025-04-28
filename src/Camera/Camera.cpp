@@ -104,7 +104,7 @@ namespace raytracer
             math::Point<3>::toVec(
                 this->origin,
                 this->screen.at(u, v)
-            ).normalized()
+            )
         );
     }
 
