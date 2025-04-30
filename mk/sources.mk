@@ -13,7 +13,7 @@ SRC += src/Renderer.cpp
 
 SRC += src/Parser/Parser.cpp
 
-SRC += src/Library/Loader.cpp
+#SRC += src/Library/Loader.cpp
 
 SRC += src/Image/Image.cpp \
 	src/Image/Ppm/Ppm.cpp
