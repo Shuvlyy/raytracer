@@ -1,5 +1,7 @@
 #pragma once
 
+#define MAX_COLOR_SHADES    1024
+
 #include "Image/Image.hpp"
 
 namespace raytracer::image

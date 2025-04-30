@@ -2,7 +2,6 @@
 
 #include <sstream>
 #include <fstream>
-#include <iostream>
 
 namespace raytracer::image
 {
@@ -26,15 +25,15 @@ namespace raytracer::image
 
         oss << "P3\n"
             << std::to_string(width) << " " << std::to_string(height) << "\n"
-            << std::to_string(std::numeric_limits<uint8_t>::max() - 1) << "\n";
+            << std::to_string(MAX_COLOR_SHADES - 1) << "\n";
 
         for (uint32_t y = 0; y < height; ++y) {
             for (uint32_t x = 0; x < width; ++x) {
                 math::Color color = this->at(x, y);
 
-                oss << std::to_string(static_cast<uint8_t>(color[0] * 255)) << " "
-                    << std::to_string(static_cast<uint8_t>(color[1] * 255)) << " "
-                    << std::to_string(static_cast<uint8_t>(color[2] * 255)) << "\n";
+                oss << std::to_string(static_cast<uint16_t>(color[0] * MAX_COLOR_SHADES)) << " "
+                    << std::to_string(static_cast<uint16_t>(color[1] * MAX_COLOR_SHADES)) << " "
+                    << std::to_string(static_cast<uint16_t>(color[2] * MAX_COLOR_SHADES)) << "\n";
             }
         }
 
