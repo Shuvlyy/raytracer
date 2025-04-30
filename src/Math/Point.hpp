@@ -1,10 +1,7 @@
 #pragma once
 
 /**
- * @brief   Macro to define valid point-to-vector operations.
- *
- * Generates both binary and compound assignment versions of the operator.
- * Applies a vector operation element-wise to a point.
+ * @brief   Macro to define point-to-vector operations.
  *
  * @param   op  The operator to define (e.g., +, -)
  */
@@ -59,6 +56,7 @@ namespace raytracer::math
         : public Vec<N, T>
     {
     public:
+
         using Vec<N, T>::Vec;
         using Vec<N, T>::operator=;
         using Vec<N, T>::operator[];
@@ -137,7 +135,7 @@ namespace raytracer::math
          * @brief   Computes a vector from the current point to another point.
          *
          * @param   other   The point to subtract from this point.
-         * @return  Vec<N, T> A vector from `other` to `*this`.
+         * @returns A vector from `other` to `*this`.
          */
         Vec<N, T> operator-(const Point& other) const
         {

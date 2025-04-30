@@ -3,9 +3,6 @@
 /**
  * @brief   Macro to define element-wise vector-to-vector operators.
  *
- * Generates both binary and compound assignment versions of the operator.
- * Requires member `_data` to be a std::array of arithmetic types.
- *
  * @param   op  The operator to define (e.g., +, -, *, /)
  */
 #define V_VEC_OP(op)                                                          \
@@ -41,9 +38,6 @@
 /**
  * @brief   Macro to define element-wise scalar operations for vectors.
  *
- * Generates both binary and compound assignment versions of the operator with
- * a scalar.
- *
  * @param   op  The operator to define (e.g., +, -, *, /)
  */
 #define V_SCALAR_OP(op)                                                       \
@@ -75,9 +69,6 @@
 /**
  * @brief   Defines scalar-vector binary operators.
  *
- * Generates global operator overloads where the scalar is on the
- * left-hand side (lhs) and the vector is on the right-hand side (rhs).
- *
  * @param   op  The operator symbol (e.g., +, -, *, /).
  */
 #define SCALAR_V_OP(op)                                                       \
@@ -99,8 +90,10 @@ namespace raytracer::math
     /**
      * @brief   Represents an N-dimensional mathematical vector.
      *
-     * Supports construction from values or two points, element access,
-     * length computation, and vector arithmetic.
+     * Provides a variety of operations for working with vectors in arbitrary
+     * dimensions, including arithmetic, normalization, clamping, and random
+     * generation. It supports both vector-to-vector and vector-to-scalar
+     * operations through macros.
      *
      * @tparam  N   Number of dimensions
      * @tparam  T   Type of each component (default: double)
@@ -110,13 +103,14 @@ namespace raytracer::math
     class Vec
     {
     public:
+
         /**
          * @brief   Constructs a vector from a list of values.
          *
          * @tparam  Args    Parameter pack for values
          * @param   args    The values for each dimension
          *
-         * @note    The number of arguments must exactly match the dimension N.
+         * @note    The number of arguments must exactly match the dimension N
          */
         template<typename... Args>
         explicit Vec(Args... args)
@@ -131,17 +125,23 @@ namespace raytracer::math
         /**
          * @brief   Default constructor that initializes all components to
          *          zero.
-         *
-         * Constructs a vector where each component is set to the default value
-         * of `T`, typically zero for arithmetic types like int or double.
          */
         Vec() { this->_data.fill(T{}); }
 
-        Vec(const Vec& other)
-            : _data(other._data)
-        {}
+        Vec(const Vec& other) : _data(other._data) {}
 
-        static Vec<N> random(const double min = 0, const double max = 1)
+        /**
+         * @brief   Generates a random vector with components in the given
+         *          range [min, max).
+         *
+         * @param   min Minimum value for each component
+         * @param   max Maximum value for each component
+         * @returns A randomly generated vector of dimension N
+         */
+        static Vec<N> random(
+            const double min = 0,
+            const double max = 1
+        )
         {
             Vec<N> res;
 
@@ -152,16 +152,36 @@ namespace raytracer::math
         }
 
         /**
+         * @brief   Generates a random 3D unit vector.
+         *
+         * Samples points in a unit sphere until one falls inside, then
+         * normalizes it. This ensures uniform distribution over the sphere.
+         *
+         * @return  A normalized 3D vector with a length of 1
+         */
+        static Vec<3> randomUnitVec()
+        {
+            while (true) {
+                const auto p = Vec<3>::random(-1, 1);
+                const auto len = std::pow(p.length(), 2);
+
+                if (len <= 1) {
+                    return p / std::sqrt(len);
+                }
+            }
+        }
+
+        /**
          * @brief   Computes the Euclidean length (magnitude) of the vector.
          *
-         * @return  T Length of the vector
+         * @returns Length of the vector
          */
-        T length() const
+        [[nodiscard]] T length() const
         {
-            T sum = T();
+            T sum = T{};
 
             for (size_t k = 0; k < N; k++) {
-                sum += _data[k] * _data[k];
+                sum += std::pow(this->_data[k], 2);
             }
             return std::sqrt(sum);
         }
@@ -173,22 +193,11 @@ namespace raytracer::math
          *
          * @note    If the vector has zero length, it returns a zero vector.
          */
-        Vec normalized() const
+        [[nodiscard]] Vec normalized() const
         {
-            T len = this->length();
-
-            if (len == T(0)) {
-                return Vec();
-            }
-
             Vec res = *this;
-
-            for (size_t i = 0; i < N; i++) {
-                res[i] /= len;
-            }
-            return res;
+            return res.normalize();
         }
-
 
         /**
          * @brief   Normalizes the vector in-place.
@@ -197,7 +206,7 @@ namespace raytracer::math
          *
          * @note    If the vector has zero length, it will remain unchanged.
          */
-        Vec& normalize()
+        [[nodiscard]] Vec& normalize()
         {
             T len = this->length();
 
@@ -205,10 +214,40 @@ namespace raytracer::math
                 return *this;
             }
 
-            for (size_t i = 0; i < N; i++) {
-                this->_data[i] /= len;
+            for (size_t k = 0; k < N; k++) {
+                this->_data[k] /= len;
             }
 
+            return *this;
+        }
+
+        /**
+         * @brief   Returns a copy of the vector with each component clamped
+         *          between min and max.
+         *
+         * @param   min Minimum bound for clamping
+         * @param   max Maximum bound for clamping
+         * @returns A new vector with clamped values
+         */
+        [[nodiscard]] Vec clamped(T min, T max) const
+        {
+            Vec res = *this;
+            return res.clamp(min, max);
+        }
+
+        /**
+         * @brief   Clamps each component of the vector between min and max
+         *          in-place.
+         *
+         * @param   min Minimum bound for clamping
+         * @param   max Maximum bound for clamping
+         * @returns Reference to the current (now clamped) vector
+         */
+        [[nodiscard]] Vec& clamp(T min, T max)
+        {
+            for (size_t k = 0; k < N; k++) {
+                this->_data[k] = std::clamp(this->_data[k], min, max);
+            }
             return *this;
         }
 
@@ -216,17 +255,17 @@ namespace raytracer::math
          * @brief   Accesses the element at index i.
          *
          * @param   i   Index of the element
-         * @return  T&  Reference to the element
+         * @return  Reference to the element
          */
-        T& operator[](size_t i) { return this->_data[i]; }
+        [[nodiscard]] T& operator[](size_t i) { return this->_data[i]; }
 
         /**
          * @brief   Accesses the element at index i (const).
          *
-         * @param   i           Index of the element
-         * @return  const T&    Constant reference to the element
+         * @param   i   Index of the element
+         * @return  Constant reference to the element
          */
-        const T& operator[](size_t i) const { return this->_data[i]; }
+        [[nodiscard]] const T& operator[](size_t i) const { return this->_data[i]; }
 
         V_VEC_OP(+);
         V_VEC_OP(-);
@@ -238,7 +277,15 @@ namespace raytracer::math
         V_SCALAR_OP(*);
         V_SCALAR_OP(/);
 
-        Vec& operator=(const Vec& other)
+        /**
+         * @brief   Assignment operator.
+         *
+         * Copies the contents of another vector to this one.
+         *
+         * @param   other   The vector to copy from
+         * @returns Reference to this vector
+         */
+        [[nodiscard]] Vec& operator=(const Vec& other)
         {
             if (this != &other) {
                 this->_data = other._data;
@@ -247,27 +294,67 @@ namespace raytracer::math
         }
 
         /**
-         * @return  const std::array<T, N>& Const reference to the data array
+         * @brief   Equality operator.
+         *
+         * Compares each component of two vectors for equality.
+         *
+         * @param   other   The vector to compare with
+         * @return  True if all components are equal, false otherwise
          */
-        const std::array<T, N>& data() const { return this->_data; }
+        [[nodiscard]] bool operator==(const Vec& other) const
+        {
+            for (size_t i = 0; i < N; i++) {
+                if (_data[i] != other._data[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         /**
-         * @return  std::array<T, N>&   Reference to the data array
+         * @brief   Unary negation operator.
+         *
+         * Returns a new vector with each component negated.
+         *
+         * @returns A new vector that is the negation of this one
          */
-        std::array<T, N>& data() { return this->_data; }
+        [[nodiscard]] Vec operator-() const
+        {
+            Vec res;
+
+            for (size_t i = 0; i < N; ++i) {
+                res[i] = -this->_data[i];
+            }
+            return res;
+        }
+
+        /**
+         * @return  Const reference to the data array
+         */
+        [[nodiscard]] const std::array<T, N>& data() const { return this->_data; }
+
+        /**
+         * @return  Reference to the data array
+         */
+        [[nodiscard]] std::array<T, N>& data() { return this->_data; }
 
     protected:
         std::array<T, N> _data;
     };
+
+    SCALAR_V_OP(+);
+    SCALAR_V_OP(-);
+    SCALAR_V_OP(*);
+    SCALAR_V_OP(/);
 
     /**
      * @brief   Computes the dot product between two vectors.
      *
      * @tparam  N   Dimension of the vectors
      * @tparam  T   Type of the elements
-     * @param   lhs Left-hand side vector
-     * @param   rhs Right-hand side vector
-     * @return  T   The dot product result
+     * @param   lhs First vector
+     * @param   rhs Second vector
+     * @return  The dot product result
      */
     template<size_t N, typename T>
     T dot(
@@ -284,19 +371,18 @@ namespace raytracer::math
     }
 
     /**
-     * @brief   Reflects a vector across another vector.
-     *
-     * Computes the reflection of the vector `lhs` across the vector `rhs`.
+     * @brief   Computes the reflection of the vector `lhs` across the vector
+     *          `rhs`.
      *
      * This operation assumes that `rhs` is a normalized vector.
      * If `rhs` is not normalized, the result will still be a valid reflection,
      * but it may not behave as expected in terms of geometric interpretation.
      *
-     * @tparam  N           Dimension of the vectors (e.g., 2 for 2D, 3 for 3D)
-     * @tparam  T           Type of the elements (e.g., `double`, `float`)
-     * @param   lhs         The vector to be reflected
-     * @param   rhs         The vector to reflect across
-     * @return  Vec<N, T>   The reflected vector
+     * @tparam  N   Dimension of the vectors
+     * @tparam  T   Type of the elements
+     * @param   lhs The vector to be reflected
+     * @param   rhs The vector to reflect across
+     * @returns The reflected vector
      *
      * @note    If either vector has zero length, the behavior may not be
      *          well-defined.
@@ -309,10 +395,5 @@ namespace raytracer::math
     {
         return lhs - 2 * dot(lhs,rhs) * rhs;
     }
-
-    SCALAR_V_OP(+);
-    SCALAR_V_OP(-);
-    SCALAR_V_OP(*);
-    SCALAR_V_OP(/);
 
 }

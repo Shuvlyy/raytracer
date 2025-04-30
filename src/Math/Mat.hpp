@@ -16,6 +16,7 @@ namespace raytracer::math
     class Mat final
     {
     public:
+
         /**
          * @brief   Constructs a matrix from an initializer list.
          *
@@ -60,9 +61,9 @@ namespace raytracer::math
          * @brief   Creates a 3x3 rotation matrix from Euler angles
          *          (yaw, pitch, roll).
          *
-         * @param   yaw     Rotation around the Y-axis, in radians
-         * @param   pitch   Rotation around the X-axis, in radians
-         * @param   roll    Rotation around the Z-axis, in radians
+         * @param   yaw     Y-axis rotation (in radians)
+         * @param   pitch   X-axis rotation (in radians)
+         * @param   roll    Z-axis rotation (in radians)
          *
          * @returns A 3x3 rotation matrix representing the combined rotations.
          *
@@ -94,8 +95,7 @@ namespace raytracer::math
          *
          * @tparam  U   The numeric type of the vector elements (defaults to T)
          * @param   v   The vector to multiply
-         * @returns A new vector resulting from the matrix-vector
-         *          multiplication
+         * @returns A new vector resulting from the multiplication
          */
         template<typename U = T>
         Vec<N, U> operator*(const Vec<N, U>& v) const
@@ -114,8 +114,7 @@ namespace raytracer::math
          * @brief   Multiplies the matrix by another matrix.
          *
          * @param   other   The matrix to multiply with
-         * @returns A new matrix resulting from the matrix-matrix
-         *          multiplication
+         * @returns A new matrix resulting from the multiplication
          */
         Mat operator*(const Mat& other) const
         {
@@ -135,15 +134,15 @@ namespace raytracer::math
         /**
          * @brief   Accesses a row of the matrix.
          *
-         * @param   row The row index
+         * @param   row Row index
          * @returns A reference to the specified row
          */
         std::array<T, N>& operator[](std::size_t row) { return _data[row]; }
 
         /**
-         * @brief Accesses a row of the matrix (const version).
+         * @brief   Accesses a row of the matrix.
          *
-         * @param   row The row index.
+         * @param   row Row index
          * @returns A const reference to the specified row.
          */
         const std::array<T, N>& operator[](std::size_t row) const { return _data[row]; }

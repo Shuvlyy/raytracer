@@ -17,6 +17,7 @@ namespace raytracer::math
      */
     struct Ray final
     {
+
         Point<3> origin;
         Vec<3> direction;
         double t_max;
@@ -43,7 +44,7 @@ namespace raytracer::math
         Ray() = default;
 
         /**
-         * @brief   Evaluates the ray at a given parameter t.
+         * @brief   Evaluates the point on a ray at a given distance t.
          *
          * Computes the point along the ray at distance `t` from the origin:
          * `origin + direction * t`
@@ -55,6 +56,7 @@ namespace raytracer::math
         {
             return this->origin + this->direction * t;
         }
+
     };
 
 }
