@@ -15,7 +15,6 @@ namespace raytracer::math
     template<size_t N, typename T = double>
     struct Rect final
     {
-
         Point<N, T> origin;
         Vec<N, T> bottomSide, leftSide;
 
@@ -52,7 +51,6 @@ namespace raytracer::math
         {
             return this->origin + this->bottomSide * u + this->leftSide * v;
         }
-
     };
 
 }

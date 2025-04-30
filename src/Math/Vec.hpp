@@ -103,7 +103,6 @@ namespace raytracer::math
     class Vec
     {
     public:
-
         /**
          * @brief   Constructs a vector from a list of values.
          *

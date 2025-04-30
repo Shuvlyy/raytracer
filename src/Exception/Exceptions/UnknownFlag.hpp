@@ -11,9 +11,11 @@ namespace raytracer::exception
         : public AException
     {
     public:
-        explicit UnknownFlag(const std::string &flag)
-            : AException("Unknown flag: " + flag + ".\nUse --help flag for help.")
-        {}
+        explicit UnknownFlag(
+            const std::string& flag
+        ) : AException(
+                "Unknown flag: " + flag + ".\nUse --help flag for help."
+            ) {}
     };
 
 }

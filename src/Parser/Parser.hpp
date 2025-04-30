@@ -7,7 +7,7 @@ namespace raytracer
 {
 
     /**
-     * @brief   A command-line argument parser for the raytracer application.
+     * @brief   A command-line argument parser.
      *
      * Responsible for parsing and querying command-line flags and parameters,
      * including identifying the scene file path and any runtime options.
@@ -15,19 +15,21 @@ namespace raytracer
     class Parser final
     {
     public:
+
         /**
-         * @brief   Constructs a Parser and immediately parses command-line arguments.
+         * @brief   Constructs a Parser and immediately parses command-line
+         *          arguments.
          *
-         * @param   argc    Argument count
-         * @param   argv    Argument values
+         * @param   argc    Argument amount
+         * @param   argv    Arguments
          */
         explicit Parser(int argc, char *argv[]);
 
         /**
-         * @brief   Determines if the application should terminate early after
-         *          flag processing.
+         * @brief   Determines if the application should terminate after flag
+         *          processing.
          *
-         * @return  true if early exit is required, false otherwise.
+         * @return  true if early exit is required, false otherwise
          */
         [[nodiscard]] bool processFlags() const;
 
@@ -36,17 +38,17 @@ namespace raytracer
          *          arguments.
          *
          * @param   flag    The flag to search for
-         * @return  true if the flag was found, false otherwise.
+         * @return  true if the flag was found, false otherwise
          */
         [[nodiscard]] bool hasFlag(const std::string &flag) const;
 
         /**
          * @brief   Retrieves the value associated with a flag
-         *          (e.g., --config=config.yml).
+         *          (e.g., --config=config.yml) => "config.yml".
          *
          * @param   flag    The flag name
          * @return  The value associated with the flag, or an empty string if
-         *          not found.
+         *          not found
          */
         [[nodiscard]] std::string getFlagValue(const std::string &flag) const;
 
@@ -54,7 +56,7 @@ namespace raytracer
          * @brief   Returns the path to the scene file extracted from the
          *          arguments.
          *
-         * @return  The scene file path as a string.
+         * @return  The scene file path as a string
          */
         [[nodiscard]] std::string getSceneFilepath() const { return this->_sceneFilepath; }
 
@@ -66,8 +68,8 @@ namespace raytracer
          * @brief   Parses the command-line arguments and stores flags, values,
          *          and the scene path.
          *
-         * @param   argc    Argument count
-         * @param   argv    Argument values
+         * @param   argc    Argument amount
+         * @param   argv    Arguments
          */
         void parse(int argc, char *argv[]);
     };

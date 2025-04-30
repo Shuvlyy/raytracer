@@ -14,11 +14,14 @@ namespace raytracer
     class Image
     {
     public:
-        explicit Image(uint32_t width, uint32_t height);
+        explicit Image(
+            uint32_t width,
+            uint32_t height
+        );
         virtual ~Image() = default;
 
         [[nodiscard]] math::Color at(uint32_t x, uint32_t y) const;
-        void setAt(uint32_t x, uint32_t y, math::Color color);
+        void setAt(uint32_t x, uint32_t y, const math::Color& color);
 
         virtual void save(const std::string& filepath) const = 0;
 

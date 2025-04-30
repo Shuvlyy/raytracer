@@ -12,8 +12,9 @@ namespace raytracer::exception
         : public IException
     {
     public:
-        explicit AException(std::string message) :
-            _message(std::move(message)) {}
+        explicit AException(
+            std::string message
+        ) : _message(std::move(message)) {}
 
         [[nodiscard]] const char *what() const noexcept override
             { return this->_message.c_str(); }

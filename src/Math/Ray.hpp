@@ -17,7 +17,6 @@ namespace raytracer::math
      */
     struct Ray final
     {
-
         Point<3> origin;
         Vec<3> direction;
         double t_max;
@@ -56,7 +55,6 @@ namespace raytracer::math
         {
             return this->origin + this->direction * t;
         }
-
     };
 
 }

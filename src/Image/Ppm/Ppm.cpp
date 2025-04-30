@@ -2,16 +2,19 @@
 
 #include <sstream>
 #include <fstream>
+#include <iostream>
 
 namespace raytracer::image
 {
 
-    Ppm::Ppm(
+    Ppm::Ppm
+    (
         const uint32_t width,
         const uint32_t height
     ) : Image(width, height) {}
 
-    void Ppm::save(
+    void Ppm::save
+    (
         const std::string &filepath
     )
         const
@@ -27,7 +30,7 @@ namespace raytracer::image
 
         for (uint32_t y = 0; y < height; ++y) {
             for (uint32_t x = 0; x < width; ++x) {
-                const math::Color color = this->at(x, y);
+                math::Color color = this->at(x, y);
 
                 oss << std::to_string(static_cast<uint8_t>(color[0] * 255)) << " "
                     << std::to_string(static_cast<uint8_t>(color[1] * 255)) << " "

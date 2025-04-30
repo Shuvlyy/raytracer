@@ -3,15 +3,16 @@
 namespace raytracer
 {
 
-    Image::Image(
+    Image::Image
+    (
         const uint32_t width,
         const uint32_t height
     ) : _width(width), _height(height),
-        _data(width * height)
-    {}
+        _data(width * height) {}
 
     math::Color
-    Image::at(
+    Image::at
+    (
         const uint32_t x,
         const uint32_t y
     )
@@ -20,10 +21,11 @@ namespace raytracer
         return this->_data[y * this->_width + x];
     }
 
-    void Image::setAt(
+    void Image::setAt
+    (
         const uint32_t x,
         const uint32_t y,
-        const math::Color color
+        const math::Color& color
     )
     {
         this->_data[y * this->_width + x] = color;

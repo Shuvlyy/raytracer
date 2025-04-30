@@ -16,7 +16,6 @@ namespace raytracer::math
     class Mat final
     {
     public:
-
         /**
          * @brief   Constructs a matrix from an initializer list.
          *

@@ -56,7 +56,6 @@ namespace raytracer::math
         : public Vec<N, T>
     {
     public:
-
         using Vec<N, T>::Vec;
         using Vec<N, T>::operator=;
         using Vec<N, T>::operator[];

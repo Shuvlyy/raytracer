@@ -29,7 +29,7 @@ namespace raytracer
         const double pitch = DEG_TO_RAD(settings.rotation[1]);
         const double roll = DEG_TO_RAD(settings.rotation[2]);
 
-        math::Mat<3> rotationMat = math::Mat<3>::fromEuler(yaw, pitch, roll);
+        const auto rotationMat = math::Mat<3>::fromEuler(yaw, pitch, roll);
 
         math::Vec<3> forward(0, 0, -1);
         math::Vec<3> up(0, -1, 0);

@@ -11,7 +11,7 @@ namespace raytracer::image
     public:
         explicit Ppm(uint32_t width, uint32_t height);
 
-        void save(const std::string &filepath) const override;
+        void save(const std::string& filepath) const override;
     };
 
 }
