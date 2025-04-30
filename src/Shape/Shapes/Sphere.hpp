@@ -9,6 +9,7 @@ namespace raytracer::shape
         : public Shape
     {
     public:
+
         Sphere(
             const math::Point<3>& center,
             const double radius,
@@ -29,16 +30,16 @@ namespace raytracer::shape
                 return false;
             }
 
-            const double x1 = (-b - std::sqrt(delta)) / a;
-            const double x2 = (-b + std::sqrt(delta)) / a;
+            double x = (-b - std::sqrt(delta)) / a;
 
-            if (x1 < RAY_T_MIN || x1 > ray.t_max) {
-                if (x2 < RAY_T_MIN || x2 > ray.t_max) {
+            if (x < RAY_T_MIN || x > ray.t_max) {
+                x = (-b + std::sqrt(delta)) / a;
+                if (x < RAY_T_MIN || x > ray.t_max) {
                     return false;
                 }
-                res.t = x2;
+                res.t = x;
             } else {
-                res.t = x1;
+                res.t = x;
             }
 
             res.p = ray[res.t];
