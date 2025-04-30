@@ -26,11 +26,11 @@ namespace raytracer::light
          * @param   intensity   The light’s radiant intensity (scaling factor
          *                      for brightness)
          */
-        Point
+        explicit Point
         (
             const math::Color& color,
             const math::Vec<3>& position,
-            const double intensity
+            const double intensity = 1.0
         ) : _color(color), _position(position), _intensity(intensity) {}
 
         [[nodiscard]] math::Color sample

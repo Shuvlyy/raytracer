@@ -21,15 +21,16 @@ namespace raytracer::light
          * @param   direction   The direction from which the light is coming
          *                      (will be negated in shading)
          */
-        Directional
+        explicit Directional
         (
             const math::Color& color,
-            const math::Vec<3>& direction
-        ) : _color(color), _direction(direction) {}
+            const math::Vec<3>& direction,
+            double intensity = 1.0
+        ) : _color(color), _direction(direction), _intensity(intensity) {}
 
         [[nodiscard]] math::Color sample
         (
-            [[maybe_unused]] const math::Vec<3>&,
+            const math::Vec<3>&,
             math::Vec<3>& directionToNormal,
             double& distance
         )
@@ -37,12 +38,13 @@ namespace raytracer::light
         {
             directionToNormal = -this->_direction;
             distance = std::numeric_limits<double>::infinity();
-            return this->_color;
+            return this->_color * this->_intensity;
         }
 
     private:
         math::Color _color;
         math::Vec<3> _direction;
+        double _intensity;
     };
 
 }
