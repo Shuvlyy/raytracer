@@ -29,7 +29,7 @@ namespace raytracer::light
 
         [[nodiscard]] math::Color sample
         (
-            const math::Vec<3>& point,
+            [[maybe_unused]] const math::Vec<3>&,
             math::Vec<3>& directionToNormal,
             double& distance
         )

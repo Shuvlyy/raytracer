@@ -242,7 +242,7 @@ namespace raytracer::math
          * @param   max Maximum bound for clamping
          * @returns Reference to the current (now clamped) vector
          */
-        [[nodiscard]] Vec& clamp(T min, T max)
+        Vec& clamp(T min, T max)
         {
             for (size_t k = 0; k < N; k++) {
                 this->_data[k] = std::clamp(this->_data[k], min, max);
@@ -284,7 +284,7 @@ namespace raytracer::math
          * @param   other   The vector to copy from
          * @returns Reference to this vector
          */
-        [[nodiscard]] Vec& operator=(const Vec& other)
+        Vec& operator=(const Vec& other)
         {
             if (this != &other) {
                 this->_data = other._data;

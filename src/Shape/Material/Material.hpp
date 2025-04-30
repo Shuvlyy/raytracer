@@ -22,6 +22,11 @@ namespace raytracer::shape
             math::Color& attenuation,
             math::Ray& scattered
         ) const = 0;
+
+        [[nodiscard]] virtual math::Color emitted(
+            [[maybe_unused]] const math::Ray& ray,
+            [[maybe_unused]] HitResult& res
+        ) const { return {}; }
     };
 
 }
