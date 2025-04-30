@@ -18,7 +18,12 @@ namespace raytracer
     )
         const
     {
-        return this->_data[y * this->_width + x];
+        const uint64_t rawCoordinates = y * this->_width + x;
+
+        if (this->_data.size() > rawCoordinates) {
+            throw; // TODO: Throw exception
+        }
+        return this->_data[rawCoordinates];
     }
 
     void Image::setAt
@@ -28,7 +33,12 @@ namespace raytracer
         const math::Color& color
     )
     {
-        this->_data[y * this->_width + x] = color;
+        const uint64_t rawCoordinates = y * this->_width + x;
+
+        if (this->_data.size() > rawCoordinates) {
+            throw; // TODO: Throw exception
+        }
+        this->_data[rawCoordinates] = color;
     }
 
     math::Vec<2, uint32_t>
