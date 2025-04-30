@@ -21,5 +21,3 @@ SRC += src/Image/Image.cpp \
 SRC += src/Camera/Camera.cpp
 
 SRC += src/Scene/Scene.cpp
-
-SRC += src/Shape/Shapes/Sphere/Sphere.cpp
