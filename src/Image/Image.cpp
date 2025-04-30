@@ -20,7 +20,7 @@ namespace raytracer
     {
         const uint64_t rawCoordinates = y * this->_width + x;
 
-        if (this->_data.size() > rawCoordinates) {
+        if (rawCoordinates > this->_data.size()) {
             throw; // TODO: Throw exception
         }
         return this->_data[rawCoordinates];
@@ -35,7 +35,7 @@ namespace raytracer
     {
         const uint64_t rawCoordinates = y * this->_width + x;
 
-        if (this->_data.size() > rawCoordinates) {
+        if (rawCoordinates > this->_data.size()) {
             throw; // TODO: Throw exception
         }
         this->_data[rawCoordinates] = color;
