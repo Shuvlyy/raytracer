@@ -31,10 +31,15 @@ namespace raytracer
         Camera _camera;
         Scene _scene;
         renderer::Settings _settings;
-        // uint16_t _antialiasingSamples;
 
-        [[nodiscard]] math::Color computeColor(const math::Ray& ray, size_t bounces) const;
-        static math::Vec<3> getRandomUnitVector();
+        [[nodiscard]] math::Color computeColor(
+            const math::Ray& ray,
+            size_t bounces
+        ) const;
+
+        [[nodiscard]] math::Color computeDirectLighting(
+            const HitResult& res
+        ) const;
     };
 
 }

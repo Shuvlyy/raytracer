@@ -317,7 +317,7 @@ namespace raytracer::math
          *
          * @returns A new vector that is the negation of this one
          */
-        [[nodiscard]] Vec operator-() const
+        Vec operator-() const
         {
             Vec res;
 

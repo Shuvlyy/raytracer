@@ -53,18 +53,17 @@ namespace raytracer
                     pixelColor += computeColor(ray, this->_settings.maxBounces);
                 }
 
-                image.setAt(x, y,
-                    1.0
-                    / static_cast<double>(this->_settings.antiAliasingSamples)
-                    * pixelColor
-                );
+                pixelColor *= 1.0 / this->_settings.antiAliasingSamples;
+                pixelColor.clamp(0.0, 1.0);
+
+                image.setAt(x, y, pixelColor);
 
                 const uint32_t currentPixel = y * this->_width + x;
                 const auto progress = static_cast<uint8_t>(
                     static_cast<double>(currentPixel) /
                     static_cast<double>(totalPixels) * 100
                 );
-                std::clog << "\r[" << std::to_string(progress) << "]%" << std::flush;
+                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
 
@@ -91,27 +90,54 @@ namespace raytracer
             math::Color attenuation;
 
             if (res.material->scatter(ray, res, attenuation, scattered)) {
-                return attenuation * computeColor(scattered, bounces - 1);
+                const math::Color indirectLighting = computeColor(scattered, bounces - 1);
+                const math::Color directLighting = computeDirectLighting(res);
+
+                return attenuation * (indirectLighting + directLighting);
             }
             return {}; // Pure black
         }
 
-        math::Vec<3> dir = ray.direction.normalized();
-        const double a = .5 * (dir[1] + 1);
+        return {};
 
-        return (1.0 - a) * math::Color(1, 1, 1) + a * math::Color(.5, .7, 1);
+        // math::Vec<3> dir = ray.direction.normalized();
+        // const double a = .5 * (dir[1] + 1);
+
+        // return (1.0 - a) * math::Color(1, 1, 1) + a * math::Color(.5, .7, 1);
     }
 
-    math::Vec<3>
-    Renderer::getRandomUnitVector()
+    math::Color
+    Renderer::computeDirectLighting
+    (
+        const HitResult &res
+    )
+        const
     {
-        while (true) {
-            auto p = math::Vec<3>::random(-1, 1);
-            auto len = p.length() * p.length();
+        math::Color color;
 
-            if (len <= 1) {
-                return p / std::sqrt(len);
+        for (auto& light : this->_scene.getLights()) {
+            math::Vec<3> directionToLight;
+            double distanceToLight;
+            const math::Color lightColor = light->sample(res.p, directionToLight, distanceToLight);
+
+            if (light->isAmbient()) {
+                color += lightColor;
+                continue;
             }
+
+            math::Ray shadowRay(res.p + 1e-4 * directionToLight, directionToLight);
+            HitResult shadowHit;
+
+            if (this->_scene.hits(shadowRay, shadowHit)) {
+                if (shadowHit.t < distanceToLight) {
+                    continue; // Blocked by an object
+                }
+            }
+
+            const double nDotL = std::max(dot(res.n, directionToLight), 0.0);
+            color += lightColor * nDotL;
         }
+        return color;
     }
+
 }
