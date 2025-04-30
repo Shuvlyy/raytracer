@@ -9,11 +9,11 @@ camera:
     antialiasingSamples: 10
     maxBounces: 20
   position:
-    x: 0
+    x: 2
     y: 0
     z: 1
   rotation:
-    yaw: 0
+    yaw: 42
     pitch: 0
     roll: 0
   # In degrees
