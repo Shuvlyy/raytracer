@@ -39,7 +39,8 @@ namespace raytracer::factory {
                     math::Point<3>(
                         point["x"].as<double>(),
                         point["y"].as<double>(),
-                        point["z"].as<double>())
+                        point["z"].as<double>()),
+                    point["intensity"].as<double>()
                 ));
                 LOG_DEBUG("Added light point " + point.name + ".");
             }

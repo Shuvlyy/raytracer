@@ -4,16 +4,16 @@ outputDirectory: renders/
 
 camera:
   resolution:
-    width: 640
-    height: 480
-    antialiasingSamples: 10
-    maxBounces: 20
+    width: 1920
+    height: 1080
+    antialiasingSamples: 100
+    maxBounces: 50
   position:
-    x: 0
+    x: 2
     y: 0
     z: 1
   rotation:
-    yaw: 0
+    yaw: 42
     pitch: 0
     roll: 0
   # In degrees
@@ -21,32 +21,27 @@ camera:
   aperture: 2.8
   focalLength: 50.0
 
-#shapes:
-#  - first_ball:
-#    type: "SPHERE"
-#    x: 60
-#    y: 5
-#    z: 40
-#    radius: 10
-#    color: "#B762C1"
-#  - second_ball:
-#    type: "SPHERE"
-#    x: -40
-#    y: 20
-#    z: -10
-#    radius: 8
-#    color: "#B762C1"
-#  - floor:
-#    type: "PLANE"
-#    axis: "Z"
-#    position: -20
-#    color: "#000000"
-#
-#lights:
-#  ambient: 0.4
-#  diffuse: 0.6
-#  points:
-#    - 1:
-#      x: 400
-#      y: 100
-#      z: 500
+shapes:
+  - ground_plane:
+      type: "PLANE"
+      axis: "Y"
+      position: -0.5
+      color: "#CCCC33"
+      material: "LAMBERTIAN"
+  - center_sphere:
+      type: "SPHERE"
+      x: 0
+      y: 0
+      z: -1.2
+      radius: 0.5
+      material: "LAMBERTIAN"
+      color: "#1A3399"
+
+lights:
+  points:
+    - main_point:
+      x: 1
+      y: 0
+      z: -1.4
+      color: "#FFFFFF"
+      intensity: 100.0
