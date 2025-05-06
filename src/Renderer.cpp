@@ -14,7 +14,7 @@ namespace raytracer
         const yml::Yml &yml
     )
         : _camera(Camera::fromConfig(yml)),
-          _scene(yml),
+          // _scene(yml),
           _settings{}
     {
         yml::Node resolutionNode = yml["camera"]["resolution"];
