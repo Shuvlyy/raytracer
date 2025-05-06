@@ -24,9 +24,9 @@ namespace raytracer::shape::material {
             return std::make_shared<Lambertian>(math::getColor(shape));
         }
         if (shape["material"].as<>() == METAL) {
-            long fuzz = 0;
+            double fuzz = 0;
             if (shape.getNodes().contains("fuzz")) {
-                fuzz = shape["fuzz"].as<long>();
+                fuzz = shape["fuzz"].as<double>();
             } else {
                 LOG_WARN("No fuzz specified, falling back to 0 (perfect mirror).");
             }
