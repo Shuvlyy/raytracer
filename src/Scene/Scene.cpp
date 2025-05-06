@@ -12,7 +12,6 @@
 #include "Shape/Shapes/Sphere.hpp"
 #include "Shape/Shapes/Plane.hpp"
 
-
 namespace raytracer
 {
 

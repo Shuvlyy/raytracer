@@ -33,16 +33,17 @@ main
         LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
 
         Renderer renderer(config);
+        renderer.render(0, renderer.getHeight());
 
         /* Temporary!! ===------------------- */
-        image::Ppm image = renderer.render();
+        const std::unique_ptr<Image>& image = renderer.getRender();
 
         std::string outputDirectory = config["outputDirectory"].as();
 
         if (!fs::exists(outputDirectory)) {
             fs::create_directory(outputDirectory);
         }
-        image.save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp() + ".ppm");
+        image->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp() + ".ppm");
         /* ---------------------------------- */
     }
     catch (const std::exception& exception) {

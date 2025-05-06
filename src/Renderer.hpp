@@ -24,13 +24,18 @@ namespace raytracer
     public:
         explicit Renderer(const yml::Yml& yml);
 
-        [[nodiscard]] image::Ppm render() const; // TODO: Any type of image
+        void render(uint32_t fromY, uint32_t toY) const;
+
+        [[nodiscard]] uint32_t getWidth() const { return this->_width; }
+        [[nodiscard]] uint32_t getHeight() const { return this->_height; }
+        [[nodiscard]] const std::unique_ptr<Image>& getRender() const { return this->_render; }
 
     private:
         uint32_t _width, _height;
         Camera _camera;
         Scene _scene;
         renderer::Settings _settings;
+        std::unique_ptr<Image> _render;
 
         [[nodiscard]] math::Color computeColor(
             const math::Ray& ray,

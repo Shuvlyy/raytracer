@@ -24,6 +24,8 @@ namespace raytracer
         this->_settings.antiAliasingSamples = resolutionNode["antialiasingSamples"].as<int>();
         this->_settings.maxBounces = resolutionNode["maxBounces"].as<int>();
 
+        this->_render = std::make_unique<image::Ppm>(this->_width, this->_height);
+
         LOG_DEBUG(std::format(
             "Renderer successfully loaded. ({}x{}, {}, Maximum bounces: {})",
             this->_width, this->_height,
@@ -31,17 +33,29 @@ namespace raytracer
         ));
     }
 
-    image::Ppm
-    Renderer::render()
+    void
+    Renderer::render
+    (
+        const uint32_t fromY,
+        const uint32_t toY
+    )
         const
     {
-        LOG_INFO("Starting rendering...");
+        if (fromY > this->_height) {
+            LOG_FATAL("fromY is out of bounds.");
+            return;
+        }
 
-        image::Ppm image(this->_width, this->_height); // TODO: Change type of image according to user's choice (in a long time lol)
+        if (toY > this->_height) {
+            LOG_FATAL("toY is out of bounds.");
+            return;
+        }
+
+        LOG_INFO("Starting rendering...");
 
         const uint32_t totalPixels = this->_width * this->_height;
 
-        for (uint32_t y = 0; y < this->_height; y++) {
+        for (uint32_t y = fromY; y < toY; y++) {
             for (uint32_t x = 0; x < this->_width; x++) {
                 math::Color pixelColor;
 
@@ -56,7 +70,7 @@ namespace raytracer
                 pixelColor *= 1.0 / this->_settings.antiAliasingSamples;
                 pixelColor.clamp(0.0, 1.0);
 
-                image.setAt(x, y, pixelColor);
+                this->_render->setAt(x, y, pixelColor);
 
                 const uint32_t currentPixel = y * this->_width + x;
                 const auto progress = static_cast<uint8_t>(
@@ -68,7 +82,6 @@ namespace raytracer
         }
 
         LOG_INFO("Render finished.");
-        return image;
     }
 
     math::Color
