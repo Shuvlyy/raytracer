@@ -28,7 +28,6 @@ namespace raytracer::shape::material {
             if (shape.getNodes().contains("fuzz")) {
                 fuzz = shape["fuzz"].as<long>();
             } else {
-                fuzz = 0;
                 LOG_WARN("No fuzz specified, falling back to 0 (perfect mirror).");
             }
             return std::make_shared<Metal>(math::getColor(shape), fuzz);
@@ -49,28 +48,28 @@ namespace raytracer::factory {
     {
         if (shape["type"].as<>() == SPHERE) {
             return std::make_unique<shape::Sphere>(
-                math::Point<3>(shape["x"].as<int>(),
-                               shape["y"].as<int>(),
-                               shape["z"].as<int>()),
+                math::Point<3>(shape["x"].as<double>(),
+                               shape["y"].as<double>(),
+                               shape["z"].as<double>()),
                 shape["radius"].as<double>(),
                 shape::material::getMaterial(shape));
         }
         if (shape["type"].as<>() == PLANE) {
             if (shape["axis"].as<>() == X_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(shape["position"].as<int>(), 0, 0),
+                    math::Point<3>(shape["position"].as<double>(), 0, 0),
                     math::Vec<3>(1, 0, 0),
                     shape::material::getMaterial(shape));
             }
             if (shape["axis"].as<>() == Y_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(0, shape["position"].as<int>(), 0),
-                    math::Vec<3>(0, 1, 0),
+                    math::Point<3>(0, shape["position"].as<double>(), 0),
+                    math::Vec<3>(0, 1, 0), // TODO: Use a function to get the Vec<3>
                     shape::material::getMaterial(shape));
             }
             if (shape["axis"].as<>() == Z_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(0, 0, shape["position"].as<int>()),
+                    math::Point<3>(0, 0, shape["position"].as<double>()),
                     math::Vec<3>(0, 0, 1),
                     shape::material::getMaterial(shape));
             }
