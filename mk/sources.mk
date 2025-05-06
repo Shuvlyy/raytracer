@@ -20,4 +20,7 @@ SRC += src/Image/Image.cpp \
 
 SRC += src/Camera/Camera.cpp
 
-SRC += src/Scene/Scene.cpp
+SRC += src/Scene/Scene.cpp \
+	src/Factory/ShapeFactory.cpp \
+	src/Factory/LightFactory.cpp \
+	src/Factory/GetColor.cpp

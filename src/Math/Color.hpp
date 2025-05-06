@@ -1,8 +1,7 @@
 #pragma once
 
 #include "Vec.hpp"
-
-#include <cstdint>
+#include "yml/Yml.hpp"
 
 namespace raytracer::math
 {
@@ -19,5 +18,8 @@ namespace raytracer::math
      *       (0–255) color channels, depending on context.
      */
     using Color = Vec<3>;
+
+    Color getColor(const yml::Tree &shape);
+    Color getColor(const yml::Node &light);
 
 }

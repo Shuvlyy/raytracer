@@ -2,81 +2,45 @@
 
 #include <iostream>
 
-#include "Shape/Shapes/Sphere.hpp"
-#include "Shape/Shapes/Plane.hpp"
-#include "Shape/Material/Materials/Metal.hpp"
-#include "Shape/Material/Materials/Lambertian.hpp"
+#include "Factory/Factory.hpp"
 
 #include "Logger.hpp"
+#include "Light/Lights/Point.hpp"
 
 namespace raytracer
 {
 
-    static
-    math::Color
-    getColorFromHex
-    (
-        std::string color
-    )
-    {
-        int r = std::stoi(color.substr(3, 4), nullptr, 16);
-        int g = std::stoi(color.substr(5, 6), nullptr, 16);
-        int b = std::stoi(color.substr(7, 8), nullptr, 16);
-
-        return math::Color(r / 255.0f, g / 255.0f, b / 255.0f);
-    }
-
-    static
-    std::shared_ptr<shape::Material>
-    getMaterial
-    (
-        yml::Tree shape
-    )
-    {
-        auto mat = shape.getNodes().find("material");
-        if (mat == shape.getNodes().end()) {
-            return std::make_shared<shape::material::Lambertian>(getColorFromHex(shape["color"].as<>()));
-        }
-        if (mat->second.as<>() == "\"LAMBERTIAN\"") {
-            return std::make_shared<shape::material::Lambertian>(getColorFromHex(shape["color"].as<>()));
-        }
-        return nullptr;
-    }
-
     Scene::Scene
     (
         const yml::Yml &config
-    ) : Scene() // FIXME: Temporary!!
+    )
     {
-        const int nbShapes = config["shapes"].children.getNodes().size();
-        for (int i = 0; i < nbShapes; i++) {
-            const auto shape = config["shapes"][i].children;
-            if (shape["type"].as<>() == "\"SPHERE\"") {
-                this->_shapes.push_back(std::make_unique<shape::Sphere>(
-                    math::Point<3>(shape["x"].as<int>(),
-                                   shape["y"].as<int>(),
-                                   shape["z"].as<int>()),
-                    shape["radius"].as<double>(),
-                    getMaterial(shape)
-                ));
+        size_t size = config["lights"].children.getNodes().size();
+        for (size_t i = 0; i < size; i++) {
+            const auto lightConfig = config["lights"][i];
+            auto light = factory::getLightFromYml(lightConfig, this->_lights);
+            if (!light || dynamic_cast<light::Point*>(light.get())) {
+                continue;
             }
-            if (shape["type"].as<>() == "\"PLANE\"") {
-                this->_shapes.push_back(std::make_unique<shape::Plane>(
-                    math::Point<3>(0, 0, -20), // Axis: x, y, z (-20 for Z axi -- test.yml)
-                    math::Vec<3>(0, 0, 1), // Vector: x, y, z (0, 0, 1 because axis is Z ?)
-                    getMaterial(shape)
-                ));
-            }
-            LOG_DEBUG("Added " + shape["type"].as<>() + " " + config["shapes"][i].name);
+            this->_lights.push_back(std::move(light));
+            LOG_DEBUG("Added " + lightConfig.name + " light.");
         }
-        // ...
+        size = config["shapes"].children.getNodes().size();
+        for (size_t i = 0; i < size; i++) {
+            const auto shapeConfig = config["shapes"][i].children;
+            auto shape = factory::getShapeFromYml(shapeConfig);
+            if (shape == nullptr) {
+                continue;
+            }
+            this->_shapes.push_back(std::move(shape));
+            LOG_DEBUG("Added " + shapeConfig["type"].as<>() + " " + config["shapes"][i].name + ".");
+        }
         LOG_DEBUG("Scene successfully loaded.");
     }
 
-    // FIXME: Temporary!!
-    Scene::Scene
-    ()
-    {
+    // Scene::Scene
+    // ()
+    // {
         // auto material_ground = std::make_shared<shape::material::Metal>(math::Color(0.8, 0.8, 0.0), 0);
         // auto material_center = std::make_shared<shape::material::Lambertian>(math::Color(0.1, 0.2, 0.5));
         // auto material_left   = std::make_shared<shape::material::Metal>(math::Color(1, 1, 1), 0);
@@ -110,7 +74,7 @@ namespace raytracer
         // this->_shapes.push_back(std::move(ball1));
         // this->_shapes.push_back(std::move(ball2));
         // this->_shapes.push_back(std::move(ball3));
-    }
+    // }
 
     bool
     Scene::hits
