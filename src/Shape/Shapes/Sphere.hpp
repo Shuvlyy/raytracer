@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Shape/Shape.hpp"
+#define SPHERE "\"SPHERE\""
 
 namespace raytracer::shape
 {

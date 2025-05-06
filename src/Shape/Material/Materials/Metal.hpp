@@ -3,6 +3,8 @@
 #include "Shape/Material/Material.hpp"
 #include "Shape/Shape.hpp"
 
+#define METAL "\"METAL\""
+
 namespace raytracer::shape::material
 {
 

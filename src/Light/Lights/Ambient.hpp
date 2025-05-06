@@ -3,6 +3,8 @@
 #include "Math/Color.hpp"
 #include "Light/Light.hpp"
 
+#define AMBIENT "ambient"
+
 namespace raytracer::light
 {
 

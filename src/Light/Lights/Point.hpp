@@ -2,6 +2,8 @@
 
 #include "Light/Light.hpp"
 
+#define POINTS "points"
+
 namespace raytracer::light
 {
 

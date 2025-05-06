@@ -2,6 +2,8 @@
 
 #include "Light/Light.hpp"
 
+#define DIRECTIONAL "directional"
+
 namespace raytracer::light
 {
 

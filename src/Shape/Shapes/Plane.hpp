@@ -1,6 +1,10 @@
 #pragma once
 
 #include "Shape/Shape.hpp"
+#define PLANE "\"PLANE\""
+#define X_AXIS "\"X\""
+#define Y_AXIS "\"Y\""
+#define Z_AXIS "\"Z\""
 
 namespace raytracer::shape
 {
