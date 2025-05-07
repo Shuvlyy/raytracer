@@ -10,7 +10,6 @@
 #include "Shape/Material/Materials/Lambertian.hpp"
 #include "Shape/Material/Materials/Metal.hpp"
 #include "Shape/Shapes/Sphere.hpp"
-#include "Shape/Shapes/Plane.hpp"
 
 namespace raytracer
 {

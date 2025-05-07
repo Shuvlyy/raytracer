@@ -35,6 +35,8 @@
         return *this;                                                         \
     }
 
+#include <iostream>
+
 #include "Vec.hpp"
 
 namespace raytracer::math
@@ -59,6 +61,8 @@ namespace raytracer::math
         using Vec<N, T>::Vec;
         using Vec<N, T>::operator=;
         using Vec<N, T>::operator[];
+
+        explicit Point(Vec<N, T> data) : Vec<N, T>(data) {}
 
         /**
          * @brief   Constructs a vector representing the direction from p1 to

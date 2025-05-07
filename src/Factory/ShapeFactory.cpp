@@ -48,9 +48,7 @@ namespace raytracer::factory {
     {
         if (shape["type"].as<>() == SPHERE) {
             return std::make_unique<shape::Sphere>(
-                math::Point<3>(shape["x"].as<double>(),
-                               shape["y"].as<double>(),
-                               shape["z"].as<double>()),
+                math::Point(math::getVector3(shape)),
                 shape["radius"].as<double>(),
                 shape::material::getMaterial(shape));
         }

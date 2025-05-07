@@ -20,15 +20,12 @@ namespace raytracer::factory {
         if (light.name == AMBIENT) {
             return std::make_unique<light::Ambient>(
                 math::getColor(light),
-                light.as<double>());
+                light["intensity"].as<double>());
         }
         if (light.name == DIRECTIONAL) {
             return std::make_unique<light::Directional>(
                     math::getColor(light),
-                    math::Vec<3>(
-                        light["direction"]["x"].as<double>(),
-                        light["direction"]["y"].as<double>(),
-                        light["direction"]["z"].as<double>()),
+                    math::getVector3(light["direction"].children),
                     1);
         }
         if (light.name == POINTS) {
@@ -36,10 +33,7 @@ namespace raytracer::factory {
                 auto point = light.children[i];
                 lights.push_back(std::make_unique<light::Point>(
                     math::getColor(point),
-                    math::Point<3>(
-                        point["x"].as<double>(),
-                        point["y"].as<double>(),
-                        point["z"].as<double>()),
+                    math::Point(math::getVector3(point.children)),
                     point["intensity"].as<double>()
                 ));
                 LOG_DEBUG("Added light point " + point.name + ".");

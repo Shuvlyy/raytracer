@@ -1,5 +1,7 @@
 #pragma once
 
+#include "yml/Yml.hpp"
+
 /**
  * @brief   Macro to define element-wise vector-to-vector operators.
  *
@@ -394,5 +396,7 @@ namespace raytracer::math
     {
         return lhs - 2 * dot(lhs,rhs) * rhs;
     }
+
+    Vec<3> getVector3(const yml::Tree &config);
 
 }
