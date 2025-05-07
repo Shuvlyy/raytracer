@@ -7,7 +7,8 @@
 #include "Shape/Material/Materials/Metal.hpp"
 #include "Shape/Material/Materials/Lambertian.hpp"
 
-namespace raytracer::shape::material {
+namespace raytracer::shape::material
+{
 
     static
     std::shared_ptr<Material>
@@ -38,7 +39,8 @@ namespace raytracer::shape::material {
 
 }
 
-namespace raytracer::factory {
+namespace raytracer::factory
+{
 
     std::unique_ptr<Shape>
     getShapeFromYml
@@ -46,33 +48,43 @@ namespace raytracer::factory {
         const yml::Tree &shape
     )
     {
-        if (shape["type"].as<>() == SPHERE) {
+        const auto shapeType = shape["type"].as<std::string>();
+
+        if (shapeType == SPHERE) {
             return std::make_unique<shape::Sphere>(
                 math::Point(math::getVector3(shape)),
                 shape["radius"].as<double>(),
-                shape::material::getMaterial(shape));
+                shape::material::getMaterial(shape)
+            );
         }
-        if (shape["type"].as<>() == PLANE) {
-            if (shape["axis"].as<>() == X_AXIS) {
+        if (shapeType == PLANE) {
+            const auto axis = shape["axis"].as<std::string>();
+            const auto pos = shape["position"].as<double>();
+            const auto axisPos = pos >= 0 ? -1 : 1;
+
+            if (axis == X_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(shape["position"].as<double>(), 0, 0),
-                    math::Vec<3>(1, 0, 0),
-                    shape::material::getMaterial(shape));
+                    math::Point<3>(pos, 0, 0),
+                    math::Vec<3>(axisPos, 0, 0),
+                    shape::material::getMaterial(shape)
+                );
             }
-            if (shape["axis"].as<>() == Y_AXIS) {
+            if (axis == Y_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(0, shape["position"].as<double>(), 0),
-                    math::Vec<3>(0, 1, 0), // TODO: Use a function to get the Vec<3>
-                    shape::material::getMaterial(shape));
+                    math::Point<3>(0, pos, 0),
+                    math::Vec<3>(0, axisPos, 0), // TODO: Use a function to get the Vec<3>
+                    shape::material::getMaterial(shape)
+                );
             }
-            if (shape["axis"].as<>() == Z_AXIS) {
+            if (axis == Z_AXIS) {
                 return std::make_unique<shape::Plane>(
-                    math::Point<3>(0, 0, shape["position"].as<double>()),
-                    math::Vec<3>(0, 0, 1),
-                    shape::material::getMaterial(shape));
+                    math::Point<3>(0, 0, pos),
+                    math::Vec<3>(0, 0, axisPos),
+                    shape::material::getMaterial(shape)
+                );
             }
         }
-        LOG_WARN("Unknown shape: " + shape["type"].as<>() + " ignoring.");
+        LOG_WARN("Unknown shape: \"" + shapeType + "\". Ignoring...");
         return nullptr;
     }
 

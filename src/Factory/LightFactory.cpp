@@ -8,7 +8,8 @@
 
 #include "yml/Yml.hpp"
 
-namespace raytracer::factory {
+namespace raytracer::factory
+{
 
     std::unique_ptr<Light>
     getLightFromYml
