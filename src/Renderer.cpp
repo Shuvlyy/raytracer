@@ -51,11 +51,9 @@ namespace raytracer
             return;
         }
 
-        LOG_INFO("Starting rendering...");
+        //const uint32_t totalPixels = this->_width * this->_height;
 
-        const uint32_t totalPixels = this->_width * this->_height;
-
-        for (uint32_t y = fromY; y < toY; y++) {
+        for (uint32_t y = fromY; y <= toY; y++) {
             for (uint32_t x = 0; x < this->_width; x++) {
                 math::Color pixelColor;
 
@@ -72,16 +70,14 @@ namespace raytracer
 
                 this->_render->setAt(x, y, pixelColor);
 
-                const uint32_t currentPixel = y * this->_width + x;
-                const auto progress = static_cast<uint8_t>(
-                    static_cast<double>(currentPixel) /
-                    static_cast<double>(totalPixels) * 100
-                );
-                std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
+                //const uint32_t currentPixel = y * this->_width + x;
+                // const auto progress = static_cast<uint8_t>(
+                //     static_cast<double>(currentPixel) /
+                //     static_cast<double>(totalPixels) * 100
+                // );
+                //std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
-
-        LOG_INFO("Render finished.");
     }
 
     math::Color

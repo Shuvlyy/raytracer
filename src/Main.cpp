@@ -3,6 +3,7 @@
 #include "Logger.hpp"
 #include "yml/Yml.hpp"
 #include "Renderer.hpp"
+#include "Multithreading/Multithreading.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -33,7 +34,7 @@ main
         LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
 
         Renderer renderer(config);
-        renderer.render(0, renderer.getHeight());
+        multithreading::render(renderer);
 
         /* Temporary!! ===------------------- */
         const std::unique_ptr<Image>& image = renderer.getRender();
