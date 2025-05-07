@@ -41,12 +41,12 @@ namespace raytracer
     )
         const
     {
-        if (fromY > this->_height) {
+        if (fromY >= this->_height) {
             LOG_FATAL("fromY is out of bounds.");
             return;
         }
 
-        if (toY > this->_height) {
+        if (toY >= this->_height) {
             LOG_FATAL("toY is out of bounds.");
             return;
         }
