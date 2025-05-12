@@ -40,7 +40,7 @@ namespace raytracer::multithreading {
         std::vector<std::thread> threads;
 
         if (nbProcs == 1) {
-            renderer.render(0, renderer.getHeight());
+            renderer.render(0, renderer.getHeight() - 1);
             return;
         }
         for (int i = 1; i < nbProcs + 1; i++) {
