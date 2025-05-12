@@ -1,10 +1,23 @@
 #pragma once
 
+#include "Common/ProgramMode.hpp"
+#include "Common/Utils.hpp"
+
 #include <string>
 #include <vector>
 
 namespace raytracer
 {
+
+    struct Attributes
+    {
+        Mode programMode = Mode::SELF;
+        uint16_t threadsAmount = utils::getNbProcs();
+        uint16_t port;
+        std::string host;
+        bool debugMode = false;
+        std::string sceneFilepath;
+    };
 
     /**
      * @brief   A command-line argument parser.
@@ -17,13 +30,13 @@ namespace raytracer
     public:
 
         /**
-         * @brief   Constructs a Parser and immediately parses command-line
-         *          arguments.
+         * @brief   Parses the command-line arguments and stores flags, values,
+         *          and the scene path.
          *
          * @param   argc    Argument amount
          * @param   argv    Arguments
          */
-        explicit Parser(int argc, char *argv[]);
+        bool parse(int argc, char *argv[]);
 
         /**
          * @brief   Determines if the application should terminate after flag
@@ -47,31 +60,18 @@ namespace raytracer
          *          (e.g., --config=config.yml) => "config.yml".
          *
          * @param   flag    The flag name
-         * @return  The value associated with the flag, or an empty string if
+         * @return  The value associated with the flag or an empty string if
          *          not found
          */
         [[nodiscard]] std::string getFlagValue(const std::string &flag) const;
 
-        /**
-         * @brief   Returns the path to the scene file extracted from the
-         *          arguments.
-         *
-         * @return  The scene file path as a string
-         */
-        [[nodiscard]] std::string getSceneFilepath() const { return this->_sceneFilepath; }
+        [[nodiscard]] const Attributes& getAttributes() const { return this->_attributes; };
 
     private:
         std::vector<std::string> _tokens;
-        std::string _sceneFilepath;
+        Attributes _attributes{};
 
-        /**
-         * @brief   Parses the command-line arguments and stores flags, values,
-         *          and the scene path.
-         *
-         * @param   argc    Argument amount
-         * @param   argv    Arguments
-         */
-        void parse(int argc, char *argv[]);
+        void validateArguments() const;
     };
 
 }

@@ -4,20 +4,32 @@
 #include "Exception/Exceptions/UnknownFlag.hpp"
 
 #include <iostream>
+#include <unordered_map>
 
 namespace raytracer
 {
 
-	Parser::Parser
+    static std::string normalizeFlag
     (
-        const int argc,
-        char *argv[]
+        const std::string& flag
     )
     {
-        this->parse(argc, argv);
+        static const std::unordered_map<std::string, std::string> aliasMap =
+        {
+            {"-m", "--mode"},
+            {"--cores", "--threads"},
+            {"-c", "--threads"},
+            {"-t", "--threads"},
+            {"--debug", "-d"},
+            {"-v", "-d"},
+            {"--verbose", "-d"}
+        };
+
+        auto it = aliasMap.find(flag);
+        return it != aliasMap.end() ? it->second : flag;
     }
 
-    void
+    bool
     Parser::parse
     (
         const int argc,
@@ -28,39 +40,96 @@ namespace raytracer
             this->_tokens.emplace_back(argv[k]);
         }
 
-	    if (this->_tokens.size() != 1) {
-	        throw exception::InvalidUsage();
+        for (size_t i = 0; i < _tokens.size(); ++i) {
+            const std::string& token = normalizeFlag(_tokens[i]);
+
+            if (token.rfind("--mode=", 0) == 0) {
+                const std::string value = token.substr(7);
+                if (value == "self")        _attributes.programMode = Mode::SELF;
+                else if (value == "server") _attributes.programMode = Mode::SERVER;
+                else if (value == "client") _attributes.programMode = Mode::CLIENT;
+                else throw exception::InvalidUsage("Invalid mode: " + value);
+            }
+            else if (token.rfind("--threads=", 0) == 0) {
+                const std::string value = token.substr(10);
+
+                if (value != "auto") {
+                    try {
+                        _attributes.threadsAmount = static_cast<uint16_t>(std::stoi(value));
+                    } catch (...) {
+                        throw exception::InvalidUsage("Invalid thread count: " + value);
+                    }
+                }
+            }
+            else if (token == "-h") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected host after -h");
+                _attributes.host = _tokens[i];
+            }
+            else if (token == "-p") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected port after -p");
+                try {
+                    _attributes.port = static_cast<uint16_t>(std::stoi(_tokens[i]));
+                } catch (...) {
+                    throw exception::InvalidUsage("Invalid port number: " + _tokens[i]);
+                }
+            }
+            else if (token == "-d") {
+                _attributes.debugMode = true;
+            }
+            else if (token.starts_with("-")) {
+                // Leave for processFlags to handle unknown flags like --help
+                continue;
+            }
+            else {
+                if (!_attributes.sceneFilepath.empty()) {
+                    throw exception::InvalidUsage("Only one scene file path can be provided");
+                }
+                _attributes.sceneFilepath = token;
+            }
+        }
+
+	    if (!processFlags()) {
+	        this->validateArguments();
+	        return false;
 	    }
 
-	    this->_sceneFilepath = this->_tokens.at(0);
+        return true;
     }
 
     bool
-    Parser::processFlags
-    ()
+    Parser::processFlags()
         const
     {
-	    if (this->_tokens.at(0).at(0) != '-') {
+	    if (!(this->_tokens.size() == 1 && this->_tokens.at(0).at(0) == '-')) {
 	        return false;
 	    }
 
         if (this->hasFlag("--help") || this->hasFlag("-h")) {
-            std::cout << "USAGE: ./raytracer <scene_file>" << std::endl
-                      << "\tscene_file\tScene configuration file" << std::endl
-                      << std::endl;
+            std::cout
+                << "USAGE: ./raytracer [--mode=program_mode] [--threads=threads_amount] [-h host] [-p port] [-d] scene_filepath" << std::endl
+                << "\tprogram_mode\tProgram mode (`self`, `server`, `client`). Defaults to `self`." << std::endl
+                << "\tthreads_amount\tNumber of threads that will be used to render the image. Defaults to `auto` (maximum threads available)." << std::endl
+                << "\thost\t\tHost to connect to. Only works if mode is set to `client`." << std::endl
+                << "\tport\t\tPort to connect to / host from. Only works if clustering is used (mode is set to either `client` or `server`)." << std::endl
+                << "\tscene_filepath\tFile path of the scene to render. If mode is set to `client`, an exception will be thrown." << std::endl
+                << std::endl;
             return true;
         }
 
-        if (this->hasFlag("--about") || this->hasFlag("-a")) { /* TODO: Finish. */
-            std::cout << "OOP-400: Raytracer" << std::endl
-                      << "Made by:" << std::endl
-                      << "\tLysandre BOURSETTE (@shuvlyy)" << std::endl
-                      << "\tPierre MARGUERIE (@PierreMarguerie)" << std::endl
-                      << "\tPierre MONTARET (@impierrooo)" << std::endl;
+        if (this->hasFlag("--about") || this->hasFlag("-a")) {
+            std::cout
+                << "OOP-400: Raytracer" << std::endl
+                << "Made by:" << std::endl
+                << "\tLysandre BOURSETTE (@shuvlyy)" << std::endl
+                << "\tPierre MARGUERIE (@PierreMarguerie)" << std::endl
+                << "\tPierre MONTARET (@impierrooo)" << std::endl;
             return true;
         }
 
-        throw exception::UnknownFlag(this->_tokens.at(0));
+        return false; // ?
+        // throw exception::UnknownFlag(this->_tokens.at(0));
     }
 
     bool
@@ -86,6 +155,42 @@ namespace raytracer
             }
         }
         return {};
+    }
+
+    void
+    Parser::validateArguments()
+        const
+    {
+        const auto& attrs = _attributes;
+
+        switch (attrs.programMode) {
+            case Mode::CLIENT:
+                if (!attrs.host.length())
+                    throw exception::InvalidUsage("Client mode requires a host (-h <host>)");
+                if (!attrs.port)
+                    throw exception::InvalidUsage("Client mode requires a port (-p <port>)");
+                if (!attrs.sceneFilepath.empty())
+                    throw exception::InvalidUsage("Client mode must not include a scene file path");
+                break;
+
+            case Mode::SERVER:
+                if (!attrs.port)
+                    throw exception::InvalidUsage("Server mode requires a port (-p <port>)");
+                if (!attrs.sceneFilepath.empty())
+                    throw exception::InvalidUsage("Server mode must not include a scene file path");
+                if (!attrs.host.empty())
+                    throw exception::InvalidUsage("Server mode must not include a host");
+                break;
+
+            case Mode::SELF:
+                if (attrs.sceneFilepath.empty())
+                    throw exception::InvalidUsage("Self mode requires a scene file path");
+                if (!attrs.host.empty())
+                    throw exception::InvalidUsage("Self mode must not include a host");
+                if (attrs.port)
+                    throw exception::InvalidUsage("Self mode must not include a port");
+                break;
+        }
     }
 
 }

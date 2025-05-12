@@ -18,15 +18,17 @@ main
 )
 {
     try {
-        const Parser parser(argc, argv);
+        Parser parser;
 
-        if (parser.processFlags() == true) {
+        if (parser.parse(argc, argv) == true) {
             return EXIT_OK;
         }
 
-        const std::string sceneFilepath = parser.getSceneFilepath();
+        const Attributes& attributes = parser.getAttributes();
 
-        Logger::init(logger::Level::DEBUG);
+        const std::string sceneFilepath = attributes.sceneFilepath;
+
+        Logger::init(attributes.debugMode ? logger::Level::DEBUG : logger::Level::INFO);
 
         const yml::Yml config(sceneFilepath);
         LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
