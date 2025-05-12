@@ -41,10 +41,7 @@ namespace raytracer
             fs::create_directory(outputDirectory);
         }
 
-        image->save(std::format(
-            "{}/{}{}",
-            outputDirectory, Logger::getFormattedCurrentTimestamp(), ".ppm"
-        ));
+        image->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp());
     }
 
 }

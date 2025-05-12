@@ -3,12 +3,10 @@
 #include "Logger.hpp"
 #include "yml/Yml.hpp"
 #include "Renderer.hpp"
-#include "Multithreading/Multithreading.hpp"
+#include "App.hpp"
 
 #include <iostream>
 #include <filesystem>
-
-#include "App.hpp"
 
 using namespace raytracer;
 

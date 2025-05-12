@@ -1,5 +1,6 @@
 #pragma once
 
+#define PPM_EXTENSION       ".ppm"
 #define MAX_COLOR_SHADES    1024
 
 #include "Image/Image.hpp"

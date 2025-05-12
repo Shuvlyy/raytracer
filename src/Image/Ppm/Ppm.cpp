@@ -37,7 +37,7 @@ namespace raytracer::image
             }
         }
 
-        std::ofstream file(filepath, std::ios::out);
+        std::ofstream file(filepath + PPM_EXTENSION, std::ios::out);
 
         file << oss.str();
         file.close();

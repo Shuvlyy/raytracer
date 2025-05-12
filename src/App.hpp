@@ -25,7 +25,7 @@ namespace raytracer
         const yml::Yml& _config;
         Renderer _renderer;
         sf::RenderWindow _window;
-        std::unique_ptr<Server> _server;
+        std::unique_ptr<network::Server> _server;
         signal::Manager _signalManager;
     };
 
