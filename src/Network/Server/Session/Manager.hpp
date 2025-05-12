@@ -6,7 +6,7 @@
 #include <vector>
 #include <unordered_map>
 
-namespace raytracer::server::session
+namespace raytracer::network::server::session
 {
 
     class Manager final

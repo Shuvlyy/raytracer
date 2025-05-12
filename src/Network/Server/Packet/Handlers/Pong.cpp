@@ -5,14 +5,14 @@
 
 #include "Network/Packet/Packets/Pong.hpp"
 
-namespace raytracer::server::packet::handler
+namespace raytracer::network::packet::server::handler
 {
 
     void
     Pong::handle
     (
         const Packet &packet,
-        Session &session
+        network::server::Session &session
     )
         const
     {

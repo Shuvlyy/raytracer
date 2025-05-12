@@ -6,7 +6,7 @@
 #include "Exception/Exceptions/EmptyByteBuffer.hpp"
 #include "Exception/Exceptions/UnknownPacket.hpp"
 
-namespace raytracer::server
+namespace raytracer::network
 {
 
     Packet::Packet

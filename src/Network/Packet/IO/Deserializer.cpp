@@ -3,7 +3,7 @@
 #include "Exception/Exceptions/ValueOverflow.hpp"
 #include "Exception/Exceptions/InvalidPacketSize.hpp"
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     Deserializer::Deserializer

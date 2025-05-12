@@ -7,10 +7,9 @@
 
 #include "../../Packet/Packet.hpp"
 
-#include <string>
 #include <netinet/in.h>
 
-namespace raytracer::server
+namespace raytracer::network::server
 {
 
     class Socket

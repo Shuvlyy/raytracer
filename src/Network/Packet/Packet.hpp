@@ -5,7 +5,7 @@
 #include <unordered_map>
 #include <vector>
 
-namespace raytracer::server
+namespace raytracer::network
 {
 
     namespace packet

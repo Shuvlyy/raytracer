@@ -7,7 +7,7 @@
 #include <string>
 #include <arpa/inet.h>
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     class Serializer final

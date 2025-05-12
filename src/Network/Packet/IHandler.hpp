@@ -4,7 +4,7 @@
 
 #include "Network/Server/Session/Session.hpp"
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     class IHandler
@@ -14,7 +14,7 @@ namespace raytracer::server::packet
 
         virtual void handle(
             const Packet &packet,
-            Session &session
+            server::Session &session
         ) const = 0;
 
         TRIGGER_RET = 0;

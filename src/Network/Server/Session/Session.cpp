@@ -4,7 +4,7 @@
 
 #include "../../Packet/Packets/Ping.hpp"
 
-namespace raytracer::server
+namespace raytracer::network::server
 {
 
     Session::Session

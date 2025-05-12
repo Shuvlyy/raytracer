@@ -4,7 +4,7 @@
 
 #include "Network/Server/Game/Settings.hpp"
 
-namespace raytracer::server
+namespace raytracer::network::server
 {
 
     class Session final

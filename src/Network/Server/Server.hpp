@@ -10,7 +10,7 @@
 
 #include <sys/poll.h>
 
-namespace raytracer
+namespace raytracer::network
 {
 
     namespace server
@@ -38,7 +38,7 @@ namespace raytracer
         );
 
         [[nodiscard]] server::Properties &getProperties() { return this->_properties; }
-        [[nodiscard]] server::packet::Manager &getPacketManager() { return this->_packetManager; }
+        [[nodiscard]] packet::server::Manager &getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager &getSessionManager() { return this->_sessionManager; }
         [[nodiscard]] server::Socket &getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] int getMaxClients() const { return this->_maxClients; }
@@ -47,7 +47,7 @@ namespace raytracer
 
     private:
         server::Properties _properties;
-        server::packet::Manager _packetManager;
+        packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
         int _maxClients;
         bool _isRunning;

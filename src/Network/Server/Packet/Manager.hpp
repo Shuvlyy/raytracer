@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet::server
 {
 
     class Manager final
@@ -16,7 +16,7 @@ namespace raytracer::server::packet
 
         void dispatchPacket(
             const Packet &packet,
-            Session &session
+            network::server::Session &session
         ) const;
 
     private:

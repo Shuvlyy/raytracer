@@ -5,7 +5,7 @@
 #include "../IO/Deserializer.hpp"
 #include "../IO/Serializer.hpp"
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     Ping::Ping

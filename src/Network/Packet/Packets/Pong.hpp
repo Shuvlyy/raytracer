@@ -2,7 +2,7 @@
 
 #include "../Packet.hpp"
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     class Pong final

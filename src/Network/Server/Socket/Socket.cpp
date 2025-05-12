@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-namespace raytracer::server
+namespace raytracer::network::server
 {
 
     Socket::Socket
@@ -77,7 +77,7 @@ namespace raytracer::server
 
             LOG_DEBUG("Sent a packet of size " + std::to_string(size) + " (SFD: " + std::to_string(this->_fd) + ")");
 
-            LOG_DEBUG("Packet Type: " + Packet::fromTypeToString(Packet::fromRawTypeToType(data[0])));
+            LOG_DEBUG("Packet Type: " + network::Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0])));
             for (std::size_t i = 0; i < size; ++i) {
                 LOG_DEBUG("\t" + std::to_string(i) + ". [" + std::format("0x{:02X}", data[i]) + "]");
             }
@@ -143,7 +143,7 @@ namespace raytracer::server
     Socket::closeSocket
     ()
     {
-        /* If socket has already been closed, don't continue */
+        /* If the socket has already been closed, don't continue */
         if (this->_fd == -1) {
             return;
         }

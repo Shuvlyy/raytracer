@@ -5,7 +5,7 @@
 #include "Handlers/Ping.hpp"
 #include "Handlers/Pong.hpp"
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet::server
 {
 
     Manager::Manager
@@ -18,7 +18,7 @@ namespace raytracer::server::packet
     Manager::dispatchPacket
     (
         const Packet &packet,
-        Session &session
+        network::server::Session &session
     )
         const
     {

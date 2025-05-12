@@ -1,6 +1,6 @@
 #include "Manager.hpp"
 
-namespace raytracer::server::session
+namespace raytracer::network::server::session
 {
 
     Manager::Manager

@@ -2,7 +2,7 @@
 
 #include "../../../Packet/IHandler.hpp"
 
-namespace raytracer::server::packet::handler
+namespace raytracer::network::packet::server::handler
 {
 
     class Ping final
@@ -11,7 +11,7 @@ namespace raytracer::server::packet::handler
     public:
         void handle(
             const Packet &packet,
-            Session &session
+            network::server::Session &session
         ) const override;
 
         TRIGGER_RET override { return Type::PING; }

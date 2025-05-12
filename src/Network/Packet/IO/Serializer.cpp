@@ -6,7 +6,7 @@
 
 #include <limits>
 
-namespace raytracer::server::packet
+namespace raytracer::network::packet
 {
 
     void

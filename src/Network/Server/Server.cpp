@@ -12,7 +12,7 @@
 
 #include <netinet/in.h>
 
-namespace raytracer
+namespace raytracer::network
 {
 
     Server::Server
@@ -172,7 +172,7 @@ namespace raytracer
 
             LOG_DEBUG("Received packet client (SFD: " + std::to_string(clientSocket.getFd()) + ")");
 
-            const std::unique_ptr<server::Packet> packet = server::Packet::fromByteBuffer(rawPacket);
+            const std::unique_ptr<Packet> packet = Packet::fromByteBuffer(rawPacket);
 
             server::Session &session = this->getSessionManager()
                 .getSession(clientSocket);
