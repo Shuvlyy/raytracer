@@ -12,7 +12,7 @@ namespace raytracer::network::packet
     void
     Serializer::write
     (
-        const void *data,
+        const void* data,
         const size_t size
     )
     {
@@ -39,7 +39,7 @@ namespace raytracer::network::packet
     void
     Serializer::write
     (
-        const std::string &str
+        const std::string& str
     )
     {
         if (str.size() > std::numeric_limits<uint32_t>::max()) {

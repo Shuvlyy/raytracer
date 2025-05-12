@@ -14,12 +14,12 @@ namespace raytracer::network::packet
     {
     public:
         void write(
-            const void *data,
+            const void* data,
             size_t size
         );
 
         template<typename T>
-        void write(const T &value)
+        void write(const T& value)
         {
             static_assert(
                 std::is_trivially_copyable_v<T>,
@@ -47,11 +47,11 @@ namespace raytracer::network::packet
         }
 
         void write(bool value);
-        void write(const std::string &str);
+        void write(const std::string& str);
 
         void clear();
 
-        [[nodiscard]] const ByteBuffer &data() const { return this->_buf; }
+        [[nodiscard]] const ByteBuffer& data() const { return this->_buf; }
 
     private:
         ByteBuffer _buf;
