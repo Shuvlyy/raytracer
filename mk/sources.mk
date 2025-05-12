@@ -28,7 +28,9 @@ SRC += Scene/Scene.cpp \
 	Factory/GetColor.cpp \
 	Factory/GetVec3.cpp
 
-SRC += App.cpp
+SRC += App/Self/Self.cpp \
+	App/Server/Server.cpp \
+	App/Client/Client.cpp
 
 SRC += Signal/Manager.cpp \
 	Signal/Handlers/Int.cpp \
