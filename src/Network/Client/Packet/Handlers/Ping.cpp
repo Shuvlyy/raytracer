@@ -1,0 +1,24 @@
+#include "Ping.hpp"
+#include "Logger.hpp"
+
+#include "Network/Packet/Packets/Ping.hpp"
+#include "Network/Packet/Packets/Pong.hpp"
+
+namespace raytracer::network::packet::handler
+{
+
+    void
+    Ping::handle
+    (
+        const Packet &packet
+    )
+        const
+    {
+        LOG_DEBUG("[packet::handler::PING] Called.");
+
+        const auto &p = reinterpret_cast<const packet::Ping &>(packet);
+
+        const Pong pongPacket(p.getTimestamp());
+    }
+
+}
