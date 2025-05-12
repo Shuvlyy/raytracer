@@ -4,7 +4,7 @@
 #include "Network/Packet/Packet.hpp"
 
 #include "Manager.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 namespace raytracer::network::packet
 {

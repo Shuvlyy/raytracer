@@ -1,6 +1,6 @@
 #include <memory>
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Light/Lights/Ambient.hpp"
 #include "Light/Lights/Directional.hpp"
 #include "Light/Lights/Point.hpp"

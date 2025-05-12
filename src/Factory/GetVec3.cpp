@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Math/Vec.hpp"
 
 namespace raytracer::math {

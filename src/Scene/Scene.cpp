@@ -4,7 +4,7 @@
 
 #include "Factory/Factory.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Light/Lights/Point.hpp"
 
 #include "Shape/Material/Materials/Lambertian.hpp"

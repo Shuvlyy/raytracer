@@ -4,7 +4,7 @@
 #include "Handlers/Term.hpp"
 #include "Handlers/Int.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include <csignal>
 

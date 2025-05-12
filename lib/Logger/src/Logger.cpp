@@ -1,6 +1,6 @@
 #define EXIT_KO 84
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Colors.hpp"
 #include "Exception/Exceptions/CouldNotOpenFile.hpp"
 

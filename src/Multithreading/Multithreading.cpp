@@ -1,5 +1,5 @@
 #include "Multithreading.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Common/Utils.hpp"
 
 #include <format>

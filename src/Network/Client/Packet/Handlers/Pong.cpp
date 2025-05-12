@@ -1,7 +1,7 @@
 #include "Pong.hpp"
 
 #include "Network/Packet/Packets/Pong.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 namespace raytracer::network::packet::handler
 {

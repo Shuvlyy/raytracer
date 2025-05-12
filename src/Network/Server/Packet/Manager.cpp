@@ -1,6 +1,6 @@
 #include "Manager.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include "Handlers/Ping.hpp"
 #include "Handlers/Pong.hpp"

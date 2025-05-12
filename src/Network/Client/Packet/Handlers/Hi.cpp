@@ -1,6 +1,6 @@
 #include "Hi.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include "Network/Packet/Packets/Hi.hpp"
 

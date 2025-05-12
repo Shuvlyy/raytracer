@@ -1,7 +1,7 @@
 #include "Pong.hpp"
 
 #include "Common/Utils.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include "Network/Packet/Packets/Pong.hpp"
 

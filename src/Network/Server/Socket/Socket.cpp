@@ -1,6 +1,6 @@
 #include "Network/Server/Socket/Socket.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include "Exception/Exceptions/ClientDisconnected.hpp"
 #include "Exception/Exceptions/StandardFunctionFail.hpp"

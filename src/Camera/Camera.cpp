@@ -1,7 +1,7 @@
 #define DEG_TO_RAD(x)   x * std::numbers::pi / 180.0;
 
 #include "Camera.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Math/Random.hpp"
 #include "Math/Mat.hpp"
 

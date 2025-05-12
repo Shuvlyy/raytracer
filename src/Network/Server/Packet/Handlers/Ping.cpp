@@ -1,6 +1,6 @@
 #include "Ping.hpp"
 
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include "Network/Packet/Packets/Ping.hpp"
 #include "Network/Packet/Packets/Pong.hpp"

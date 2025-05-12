@@ -1,5 +1,5 @@
 #include "Renderer.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "Math/Random.hpp"
 #include "Shape/Material/Material.hpp"
 

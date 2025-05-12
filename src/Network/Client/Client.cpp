@@ -5,7 +5,7 @@
 #include "Exception/Exceptions/Network/EmptyPacket.hpp"
 
 #include "Client.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 
 #include <cstring>
 
