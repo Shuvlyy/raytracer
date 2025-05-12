@@ -21,18 +21,18 @@ include $(MK_DIR)/colors.mk
 
 OBJ	:= $(SRC:%.cpp=$(BUILD_DIR)/%.o)
 
-CC	:= g++
+CXX	:= g++
 
 all: libs $(NAME)
 
 $(NAME): $(OBJ)
-	@ $(CC) -o $@ $^ $(LDFLAGS) && \
+	@ $(CXX) -o $@ $^ $(LDFLAGS) && \
 	echo -e $(BOLD) $(BG_GRN) "Raytracer - BUILD OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Raytracer - BUILD KO" $(RESET)
 
 $(BUILD_DIR)/%.o: %.cpp
 	@ mkdir -p $(dir $@)
-	@ $(CC) -o $@ -c $< $(CXXFLAGS) && \
+	@ $(CXX) -o $@ -c $< $(CXXFLAGS) && \
 	echo -e $(BOLD) $(GRN) "(OK)" $(RESET) $< || \
 	echo -e $(BOLD) $(RED) "(KO)" $(RESET) $<
 
@@ -65,4 +65,4 @@ cleanRenders:
 	echo -e $(BOLD) $(BG_GRN) "Raytracer - RENDERS CLEAN OK" $(RESET) || \
 	echo -e $(BOLD) $(BG_RED) "Raytracer - RENDERS CLEAN KO" $(RESET)
 
-.PHONY: all libs clean fclean re cleanLogs
+.PHONY: all libs clean fclean re cleanLogs cleanRenders

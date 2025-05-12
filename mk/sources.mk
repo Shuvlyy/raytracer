@@ -7,42 +7,42 @@
 
 VPATH	:= src/
 
-SRC	+= src/Main.cpp
+SRC	+= Main.cpp
 
-SRC += src/Renderer.cpp
+SRC += Renderer.cpp
 
-SRC += src/Parser/Parser.cpp
+SRC += Parser/Parser.cpp
 
-#SRC += src/Library/Loader.cpp
+#SRC += Library/Loader.cpp
 
-SRC += src/Image/Image.cpp \
-	src/Image/Ppm/Ppm.cpp
+SRC += Image/Image.cpp \
+	Image/Ppm/Ppm.cpp
 
-SRC += src/Camera/Camera.cpp
+SRC += Camera/Camera.cpp
 
-SRC += src/Multithreading/Multithreading.cpp
+SRC += Multithreading/Multithreading.cpp
 
-SRC += src/Scene/Scene.cpp \
-	src/Factory/ShapeFactory.cpp \
-	src/Factory/LightFactory.cpp \
-	src/Factory/GetColor.cpp \
-	src/Factory/GetVec3.cpp
+SRC += Scene/Scene.cpp \
+	Factory/ShapeFactory.cpp \
+	Factory/LightFactory.cpp \
+	Factory/GetColor.cpp \
+	Factory/GetVec3.cpp
 
-SRC += src/App.cpp
+SRC += App.cpp
 
-SRC += src/Signal/Manager.cpp \
-	src/Signal/Handlers/Int.cpp \
-	src/Signal/Handlers/Term.cpp
+SRC += Signal/Manager.cpp \
+	Signal/Handlers/Int.cpp \
+	Signal/Handlers/Term.cpp
 
-SRC += src/Network/Server/Server.cpp \
-	src/Network/Server/Socket/Socket.cpp \
-	src/Network/Server/Session/Manager.cpp \
-	src/Network/Server/Session/Session.cpp \
-	src/Network/Packet/Packet.cpp \
-	src/Network/Server/Packet/Manager.cpp \
-	src/Network/Packet/Packets/Ping.cpp \
-	src/Network/Packet/Packets/Pong.cpp \
-	src/Network/Packet/IO/Serializer.cpp \
-	src/Network/Packet/IO/Deserializer.cpp \
-	src/Network/Server/Packet/Handlers/Ping.cpp \
-	src/Network/Server/Packet/Handlers/Pong.cpp
+SRC += Network/Server/Server.cpp \
+	Network/Server/Socket/Socket.cpp \
+	Network/Server/Session/Manager.cpp \
+	Network/Server/Session/Session.cpp \
+	Network/Packet/Packet.cpp \
+	Network/Server/Packet/Manager.cpp \
+	Network/Packet/Packets/Ping.cpp \
+	Network/Packet/Packets/Pong.cpp \
+	Network/Packet/IO/Serializer.cpp \
+	Network/Packet/IO/Deserializer.cpp \
+	Network/Server/Packet/Handlers/Ping.cpp \
+	Network/Server/Packet/Handlers/Pong.cpp
