@@ -9,8 +9,10 @@ namespace raytracer::exception
         : public AException
     {
     public:
-        explicit InvalidUsage()
-            : AException("Invalid usage. Use --help flag for help.")
+        explicit InvalidUsage(const std::string& reason)
+            : AException(
+                "Invalid usage: " + reason + ".\nUse --help flag for help."
+            )
         {}
     };
 
