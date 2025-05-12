@@ -19,7 +19,7 @@ namespace raytracer::network
     std::unique_ptr<Packet>
     Packet::fromByteBuffer
     (
-        const ByteBuffer &buf
+        const ByteBuffer& buf
     )
     {
         if (buf.empty()) {

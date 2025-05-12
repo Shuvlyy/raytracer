@@ -31,7 +31,7 @@ namespace raytracer::network::packet
     void
     Pong::deserialize
     (
-        const uint8_t *data,
+        const uint8_t* data,
         const size_t size
     )
     {

@@ -19,7 +19,7 @@ namespace raytracer::network::server::session
          *
          * @param   clientSocket    Client's socket
          */
-        void createSession(const Socket &clientSocket);
+        void createSession(const Socket& clientSocket);
 
         /**
          * Closes an active session.
@@ -27,14 +27,14 @@ namespace raytracer::network::server::session
          * @param   socketFd    File descriptor of the socket of the session to close
          * @param   session     Session to close
          */
-        void closeSession(int socketFd, Session &session);
+        void closeSession(int socketFd, Session& session);
 
         /**
          * Closes an active session.
          *
          * @param   clientSocket    Client's socket
          */
-        void closeSession(const Socket &clientSocket);
+        void closeSession(const Socket& clientSocket);
 
         /**
          * Closes all active sessions.
@@ -42,16 +42,17 @@ namespace raytracer::network::server::session
         void closeAllSessions();
 
         /**
-         * @return  true if client's socket has an active session. Otherwise, false.
+         * @return  True if the client's socket has an active session.
+         *          Otherwise, false.
          */
-        bool hasSession(const Socket &clientSocket) const;
+        bool hasSession(const Socket& clientSocket) const;
 
-        std::vector<Session *> getSessions();
+        std::vector<Session*> getSessions();
 
         /**
          * @return  Session associated with the socket
          */
-        Session &getSession(const Socket &clientSocket);
+        Session& getSession(const Socket& clientSocket);
 
     private:
         uint32_t _sessionsCreated;

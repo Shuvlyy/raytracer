@@ -23,7 +23,7 @@ namespace raytracer::network::server
         explicit Socket(uint16_t port);
 
         /**
-         * Creates a client socket, from an existing file descriptor.
+         * Creates a client socket from an existing file descriptor.
          *
          * @param   fd     File descriptor
          */

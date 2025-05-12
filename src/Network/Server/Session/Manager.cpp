@@ -11,7 +11,7 @@ namespace raytracer::network::server::session
     void
     Manager::createSession
     (
-        const Socket &clientSocket
+        const Socket& clientSocket
     )
     {
         if (this->hasSession(clientSocket)) {
@@ -30,7 +30,7 @@ namespace raytracer::network::server::session
     Manager::closeSession
     (
         const int socketFd,
-        Session &session
+        Session& session
     )
     {
         session.getControlSocket().closeSocket();
@@ -40,11 +40,11 @@ namespace raytracer::network::server::session
     void
     Manager::closeSession
     (
-        const Socket &clientSocket
+        const Socket& clientSocket
     )
     {
         const int socketFd = clientSocket.getFd();
-        Session &session = this->_sessions.at(socketFd);
+        Session& session = this->_sessions.at(socketFd);
 
         this->closeSession(socketFd, session);
     }
@@ -53,7 +53,7 @@ namespace raytracer::network::server::session
     Manager::closeAllSessions
     ()
     {
-        for (auto &[fd, session] : this->_sessions) {
+        for (auto& [fd, session] : this->_sessions) {
             session.getControlSocket().closeSocket();
         }
         this->_sessions.clear();
@@ -62,29 +62,29 @@ namespace raytracer::network::server::session
     bool
     Manager::hasSession
     (
-        const Socket &clientSocket
+        const Socket& clientSocket
     )
         const
     {
         return this->_sessions.contains(clientSocket.getFd());
     }
 
-    std::vector<Session *>
+    std::vector<Session*>
     Manager::getSessions
     ()
     {
-        std::vector<Session *> result;
+        std::vector<Session*> result;
 
-        for (auto &[_, session] : this->_sessions) {
+        for (auto& [_, session] : this->_sessions) {
             result.push_back(&session);
         }
         return result;
     }
 
-    Session &
+    Session&
     Manager::getSession
     (
-        const Socket &clientSocket
+        const Socket& clientSocket
     )
     {
         return this->_sessions.find(clientSocket.getFd())->second;

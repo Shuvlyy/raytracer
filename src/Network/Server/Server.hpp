@@ -34,13 +34,13 @@ namespace raytracer::network
         void stop();
 
         void disconnectClient(
-            const server::Socket &clientSocket
+            const server::Socket& clientSocket
         );
 
-        [[nodiscard]] server::Properties &getProperties() { return this->_properties; }
-        [[nodiscard]] packet::server::Manager &getPacketManager() { return this->_packetManager; }
-        [[nodiscard]] server::session::Manager &getSessionManager() { return this->_sessionManager; }
-        [[nodiscard]] server::Socket &getServerSocket() { return this->_serverSocket; }
+        [[nodiscard]] server::Properties& getProperties() { return this->_properties; }
+        [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
+        [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
+        [[nodiscard]] server::Socket& getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] int getMaxClients() const { return this->_maxClients; }
         [[nodiscard]] bool isRunning() const { return this->_isRunning; }
         // [[nodiscard]] server::Game &getGame() { return this->_game; }

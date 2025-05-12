@@ -12,7 +12,7 @@ namespace raytracer::network::packet
         explicit Pong(uint64_t timestamp = 0);
 
         [[nodiscard]] ByteBuffer serialize() const override;
-        void deserialize(const uint8_t *data, size_t size) override;
+        void deserialize(const uint8_t* data, size_t size) override;
 
         [[nodiscard]] uint64_t getTimestamp() const { return this->_timestamp; }
 

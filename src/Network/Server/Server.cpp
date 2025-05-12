@@ -89,7 +89,7 @@ namespace raytracer::network
                 throw exception::StandardFunctionFail("poll");
             }
 
-            for (const pollfd &fd : this->_pollFds) {
+            for (const pollfd& fd : this->_pollFds) {
                 server::Socket clientSocket(fd.fd);
 
                 /* Hmm, not really useful. */
@@ -126,7 +126,7 @@ namespace raytracer::network
         socklen_t clientAddrSize = sizeof(clientAddr);
         const int clientFd = accept(
             this->_serverSocket.getFd(),
-            reinterpret_cast<sockaddr *>(&clientAddr),
+            reinterpret_cast<sockaddr*>(&clientAddr),
             &clientAddrSize
         );
 
@@ -160,7 +160,7 @@ namespace raytracer::network
     void
     Server::handleClientRequest
     (
-        server::Socket &clientSocket
+        server::Socket& clientSocket
     )
     {
         try {
@@ -174,15 +174,15 @@ namespace raytracer::network
 
             const std::unique_ptr<Packet> packet = Packet::fromByteBuffer(rawPacket);
 
-            server::Session &session = this->getSessionManager()
+            server::Session& session = this->getSessionManager()
                 .getSession(clientSocket);
 
             this->_packetManager.dispatchPacket(*packet, session);
         }
-        catch (exception::ClientDisconnected &) {
+        catch (exception::ClientDisconnected&) {
             this->disconnectClient(clientSocket);
         }
-        catch (exception::IException &exception) {
+        catch (exception::IException& exception) {
             LOG_ERR(
                 "Error while handling Client's request (SFD: " +
                 std::to_string(clientSocket.getFd()) + "): " +
@@ -194,16 +194,16 @@ namespace raytracer::network
     void
     Server::disconnectClient
     (
-        const server::Socket &clientSocket
+        const server::Socket& clientSocket
     )
     {
-        const server::Session &session =
+        const server::Session& session =
             this->_sessionManager.getSession(clientSocket);
 
         // this->_game.removePlayer(session);
 
         for (size_t k = 0; k < this->_pollFds.size(); k++) {
-            pollfd &fd = this->_pollFds.at(k);
+            pollfd& fd = this->_pollFds.at(k);
 
             if (fd.fd == clientSocket.getFd()) {
                 this->_pollFds.erase(this->_pollFds.begin() + static_cast<long>(k));

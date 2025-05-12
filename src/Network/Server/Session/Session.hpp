@@ -2,8 +2,6 @@
 
 #include "Network/Server/Socket/Socket.hpp"
 
-#include "Network/Server/Game/Settings.hpp"
-
 namespace raytracer::network::server
 {
 
@@ -18,7 +16,7 @@ namespace raytracer::network::server
         void refreshLatency();
 
         [[nodiscard]] uint32_t getId() const { return this->_id; }
-        [[nodiscard]] Socket &getControlSocket() { return this->_controlSocket; }
+        [[nodiscard]] Socket& getControlSocket() { return this->_controlSocket; }
         [[nodiscard]] uint64_t getLatency() const { return this->_latency; }
 
         void setLatency(const uint64_t latency) { this->_latency = latency; }

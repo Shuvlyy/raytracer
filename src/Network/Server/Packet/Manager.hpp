@@ -15,14 +15,14 @@ namespace raytracer::network::packet::server
         explicit Manager();
 
         void dispatchPacket(
-            const Packet &packet,
-            network::server::Session &session
+            const Packet& packet,
+            network::server::Session& session
         ) const;
 
     private:
         std::unordered_map<Type, std::unique_ptr<IHandler>> _handlers;
 
-        IHandler *getHandler(Type type) const;
+        IHandler* getHandler(Type type) const;
 
         void registerHandlers();
         void registerHandler(std::unique_ptr<IHandler> handler);

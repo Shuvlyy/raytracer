@@ -44,7 +44,7 @@ namespace raytracer::network
          *
          * @param   buf Existing byte buffer
          */
-        static std::unique_ptr<Packet> fromByteBuffer(const ByteBuffer &buf);
+        static std::unique_ptr<Packet> fromByteBuffer(const ByteBuffer& buf);
 
         virtual ~Packet() = default;
 
@@ -65,7 +65,7 @@ namespace raytracer::network
          *                                              data have been found
          */
         virtual void deserialize(
-            const uint8_t *data,
+            const uint8_t* data,
             size_t size
         ) = 0;
 

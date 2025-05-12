@@ -17,8 +17,8 @@ namespace raytracer::network::packet::server
     void
     Manager::dispatchPacket
     (
-        const Packet &packet,
-        network::server::Session &session
+        const Packet& packet,
+        network::server::Session& session
     )
         const
     {
@@ -27,7 +27,7 @@ namespace raytracer::network::packet::server
             " (SID: " + std::to_string(session.getId()) + ")"
         );
 
-        const IHandler *handler = this->getHandler(packet.getType());
+        const IHandler* handler = this->getHandler(packet.getType());
 
         if (!handler) {
             LOG_DEBUG("No handler has been registered for this kind of Packet. Ignoring.");
@@ -64,7 +64,7 @@ namespace raytracer::network::packet::server
         );
     }
 
-    IHandler *
+    IHandler*
     Manager::getHandler
     (
         const Type type

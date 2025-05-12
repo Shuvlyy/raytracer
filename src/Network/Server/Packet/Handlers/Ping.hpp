@@ -10,8 +10,8 @@ namespace raytracer::network::packet::server::handler
     {
     public:
         void handle(
-            const Packet &packet,
-            network::server::Session &session
+            const Packet& packet,
+            network::server::Session& session
         ) const override;
 
         TRIGGER_RET override { return Type::PING; }
