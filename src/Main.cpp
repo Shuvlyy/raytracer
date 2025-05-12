@@ -8,8 +8,9 @@
 #include <iostream>
 #include <filesystem>
 
+#include "App.hpp"
+
 using namespace raytracer;
-namespace fs = std::filesystem;
 
 int
 main
@@ -18,7 +19,6 @@ main
     char *argv[]
 )
 {
-
     try {
         const Parser parser(argc, argv);
 
@@ -30,22 +30,11 @@ main
 
         Logger::init(logger::Level::DEBUG);
 
-        yml::Yml config(sceneFilepath);
+        const yml::Yml config(sceneFilepath);
         LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
 
-        Renderer renderer(config);
-        multithreading::render(renderer);
-
-        /* Temporary!! ===------------------- */
-        const std::unique_ptr<Image>& image = renderer.getRender();
-
-        std::string outputDirectory = config["outputDirectory"].as();
-
-        if (!fs::exists(outputDirectory)) {
-            fs::create_directory(outputDirectory);
-        }
-        image->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp() + ".ppm");
-        /* ---------------------------------- */
+        App app(config);
+        app.run();
     }
     catch (const std::exception& exception) {
         std::string message("Error while running Raytracer: ");
