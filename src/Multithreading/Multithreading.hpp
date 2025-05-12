@@ -5,6 +5,6 @@
 namespace raytracer::multithreading
 {
 
-    void render(Renderer &renderer);
+    void render(Renderer &renderer, int nbProcs);
 
 }

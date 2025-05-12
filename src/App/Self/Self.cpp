@@ -27,7 +27,7 @@ namespace raytracer::app
     {
         namespace fs = std::filesystem;
 
-        multithreading::render(this->_renderer);
+        multithreading::render(this->_renderer, this->_attributes.threadsAmount);
 
         const std::unique_ptr<Image>& image = this->_renderer.getRender();
 

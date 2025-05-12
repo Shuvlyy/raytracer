@@ -12,10 +12,10 @@ namespace raytracer::multithreading
     void
     render
     (
-        Renderer &renderer
+        Renderer &renderer,
+        int nbProcs
     )
     {
-        const uint16_t nbProcs = utils::getNbProcs();
         int last_y = 0;
         int portion_size = std::floor(renderer.getHeight() / nbProcs);
         LOG_INFO("Starting render with " + std::to_string(nbProcs) + " threads.");
