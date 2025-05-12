@@ -1,31 +1,13 @@
 #include "Multithreading.hpp"
 #include "Logger.hpp"
+#include "Common/Utils.hpp"
 
-#include <filesystem>
 #include <format>
 #include <fstream>
 #include <thread>
 
-static int
-getNbProcs
-()
+namespace raytracer::multithreading
 {
-    if (!std::filesystem::exists(CPU_INFO_FILE))
-        return 1;
-    std::ifstream file(CPU_INFO_FILE);
-    if (!file.is_open()) {
-        LOG_WARN("Couldn't open cpu file info, disabling multithreading");
-        return 1;
-    }
-    std::filebuf *s = file.rdbuf();
-    std::stringstream buffer;
-    buffer << s;
-    std::string temp = buffer.str();
-    file.close();
-    return std::stoi(temp.substr(2)) + 1;
-}
-
-namespace raytracer::multithreading {
 
     void
     render
@@ -33,7 +15,7 @@ namespace raytracer::multithreading {
         Renderer &renderer
     )
     {
-        const int nbProcs = getNbProcs();
+        const uint16_t nbProcs = utils::getNbProcs();
         int last_y = 0;
         int portion_size = std::floor(renderer.getHeight() / nbProcs);
         LOG_INFO("Starting render with " + std::to_string(nbProcs) + " threads.");
@@ -53,6 +35,7 @@ namespace raytracer::multithreading {
             }
             last_y = portion_size * i + 1;
         }
+        // TODO: SFML display
         for (auto & thread : threads) {
             thread.join();
         }

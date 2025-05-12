@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Logger.hpp"
+
 #include <chrono>
 #include <arpa/inet.h>
+#include <filesystem>
 
 namespace raytracer::utils
 {
@@ -33,6 +36,30 @@ namespace raytracer::utils
 #else
         return value;
 #endif
+    }
+
+    inline uint16_t getNbProcs()
+    {
+        const int defaultCpuAmount = 1;
+        const std::string cpuInfoFilepath = "/sys/devices/system/cpu/online";
+
+        if (!std::filesystem::exists(cpuInfoFilepath)) {
+            return defaultCpuAmount;
+        }
+
+        std::ifstream file(cpuInfoFilepath);
+        if (!file.is_open()) {
+            LOG_WARN("Couldn't open cpu file info, disabling multithreading");
+            return defaultCpuAmount;
+        }
+
+        std::filebuf *s = file.rdbuf();
+        std::stringstream buffer;
+        buffer << s;
+        std::string temp = buffer.str();
+        file.close();
+
+        return std::stoi(temp.substr(2)) + 1;
     }
 
 }
