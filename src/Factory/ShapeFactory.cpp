@@ -21,10 +21,13 @@ namespace raytracer::shape::material
             LOG_WARN("No material specified, falling back to lambertian.");
             return std::make_shared<Lambertian>(math::getColor(shape));
         }
-        if (shape["material"].as<>() == LAMBERTIAN) {
+
+        const auto material = shape["material"].as<std::string>();
+
+        if (material == LAMBERTIAN) {
             return std::make_shared<Lambertian>(math::getColor(shape));
         }
-        if (shape["material"].as<>() == METAL) {
+        if (material == METAL) {
             double fuzz = 0;
             if (shape.getNodes().contains("fuzz")) {
                 fuzz = shape["fuzz"].as<double>();
@@ -33,7 +36,7 @@ namespace raytracer::shape::material
             }
             return std::make_shared<Metal>(math::getColor(shape), fuzz);
         }
-        LOG_WARN("Unknown material: " + shape["material"].as<>() + " falling back to lambertian.");
+        LOG_WARN("Unknown material: " + material + " falling back to lambertian.");
         return std::make_shared<Lambertian>(math::getColor(shape));;
     }
 
