@@ -1,9 +1,9 @@
 #include "Common/Exit.hpp"
 #include "Parser/Parser.hpp"
-#include "Logger.hpp"
+#include "logger/Logger.hpp"
 #include "yml/Yml.hpp"
 #include "Renderer.hpp"
-#include "App.hpp"
+#include "Factory/AppFactory.hpp"
 
 #include <iostream>
 #include <filesystem>
@@ -30,11 +30,8 @@ main
 
         Logger::init(attributes.debugMode ? logger::Level::DEBUG : logger::Level::INFO);
 
-        const yml::Yml config(sceneFilepath);
-        LOG_DEBUG("Loaded YML configuration! (\"" + sceneFilepath + "\")");
-
-        App app(config);
-        app.run();
+        const std::unique_ptr<App> app = app::fromAttributes(attributes);
+        app->run();
     }
     catch (const std::exception& exception) {
         std::string message("Error while running Raytracer: ");

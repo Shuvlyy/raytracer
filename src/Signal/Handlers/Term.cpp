@@ -1,6 +1,5 @@
 #include "Term.hpp"
-#include "App.hpp"
-#include "Logger.hpp"
+#include "App/App.hpp"
 
 namespace raytracer::signal::handler
 {
@@ -12,8 +11,7 @@ namespace raytracer::signal::handler
     )
         const
     {
-        LOG_DEBUG("SIGINT TRIGGERED");
-        // app->stop();
+        app->stop();
     }
 
 }
