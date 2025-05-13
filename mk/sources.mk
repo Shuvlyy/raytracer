@@ -64,8 +64,7 @@ SRC += Network/Packet/Packets/Ping.cpp \
 	Network/Packet/Packets/Finito.cpp \
 	Network/Packet/Packets/Nvmstop.cpp
 
-SRC += Network/Server/Packet/Handlers/Ping.cpp \
-	Network/Server/Packet/Handlers/Pong.cpp \
+SRC += Network/Server/Packet/Handlers/Pong.cpp \
 #	Network/Server/Packet/Handlers/Kiss.cpp \
 #	Network/Server/Packet/Handlers/Workslave.cpp \
 #	Network/Server/Packet/Handlers/Cestciao.cpp \
