@@ -26,6 +26,8 @@ namespace yml
          * @brief   Constructs a Yml instance for a given file.
          *
          * @param   filepath        The path to the file to parse
+         * @param   isRawContent    If filepath param is the content of the
+         *                          file.
          * @param   nestingLevel    The number of spaces used to represent one
          *                          level of nesting. Defaults to
          *                          YML_NESTING_SPACES.
@@ -35,6 +37,7 @@ namespace yml
          */
         explicit Yml(
             std::string filepath,
+            bool isRawContent = false,
             uint8_t nestingLevel = YML_NESTING_SPACES
         );
 
