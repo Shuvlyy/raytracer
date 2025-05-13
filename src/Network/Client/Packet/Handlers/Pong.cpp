@@ -9,7 +9,8 @@ namespace raytracer::network::packet::handler
     void
     Pong::handle
     (
-        const Packet &
+        const Packet &,
+        Client &cli
     )
         const
     {

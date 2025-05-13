@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Channel/Channel.hpp"
 #include "Network/Packet/Packet.hpp"
-#include "Network/Socket.hpp"
-
-#include <vector>
+#include "Network/Client/Channel/Channel.hpp"
+#include "Network/Socket/Socket.hpp"
 
 #define POLL_TIMEOUT 200
 
@@ -26,26 +24,34 @@ namespace raytracer::network
 
             ~Client();
 
-            /**
-             * runs the network part of the client and handle received packets.
-             * This method modifies the content returned by getPlayers() the value returned by getDistance()
-             * and the value returned by getLatency()
-             * @note this method is aimed to be used in another thread than the main program
-             */
             void run();
 
             [[nodiscard]] Socket getSocket() const {return this->_socket;}
             [[nodiscard]] int getFd() const {return this->_socket.getFd();}
 
-            void sendPacket(std::unique_ptr<Packet> packet) { this->_toSend.push(std::move(packet)); }
-            [[nodiscard]] std::unique_ptr<Packet> getPacketToProcess() { return this->_toProcess.pop(); }
+            void sendPacket(const std::unique_ptr<Packet> &packet);
+            std::unique_ptr<Packet> receivePacket();
 
-            [[nodiscard]] bool hasPacketToProcess() const { return !this->_toProcess.empty(); }
+            /**
+             * @return A std::unique_ptr<Packet> to the packet to process
+             * @return A nullptr if there is no packet left in the Queue
+             * @note Returned packets are not processed either deserialized
+             */
+            std::unique_ptr<Packet> popPacket() { return this->_toProcess.pop(); }
+
+             /**
+              * @param packet a std::unique_ptr<Packet> to add in the waiting queue to be send
+              * @note add a packet in a queue
+             */
+            void pushPacket(std::unique_ptr<Packet> packet) { this->_toSend.push(std::move(packet)); }
+
+            bool hasPacketToProcess() const { return !this->_toProcess.empty(); }
 
         private:
             Socket _socket;
-            Channel _toProcess;
             Channel _toSend;
+            Channel _toProcess;
+            bool _running {false};
     };
 
 }

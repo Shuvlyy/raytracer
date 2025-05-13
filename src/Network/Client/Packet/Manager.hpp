@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Network/Packet/Packet.hpp"
-#include "Network/Packet/IHandler.hpp"
+#include "Network/Client/Packet/IHandler.hpp"
 
 #include <memory>
 #include <unordered_map>
@@ -15,7 +15,8 @@ namespace raytracer::network::packet
         explicit Manager();
 
         void dispatchPacket(
-            const Packet &packet
+            const Packet &packet,
+            Client &cli
         ) const;
 
     private:

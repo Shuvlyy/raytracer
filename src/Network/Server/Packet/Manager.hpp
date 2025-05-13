@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../../Packet/Packet.hpp"
-#include "../../Packet/IHandler.hpp"
+#include "Network/Packet/Packet.hpp"
+#include "IHandler.hpp"
 
 #include <memory>
 #include <unordered_map>

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../../Packet/IHandler.hpp"
+#include "Network/Server/Packet/IHandler.hpp"
 
 namespace raytracer::network::packet::server::handler
 {

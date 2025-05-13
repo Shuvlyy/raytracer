@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Network/Packet/Handler/IHandler.hpp"
+#include "Network/Client/Packet/IHandler.hpp"
 
 namespace raytracer::network::packet::handler
 {
@@ -10,7 +10,8 @@ namespace raytracer::network::packet::handler
     {
     public:
         void handle(
-            const Packet &packet
+            const Packet &packet,
+            Client &cli
         ) const override;
 
         [[nodiscard]] Type getTrigger()

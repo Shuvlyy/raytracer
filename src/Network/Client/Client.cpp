@@ -1,13 +1,15 @@
-#include "Exception/Exceptions/Network/ConnectionFail.hpp"
-#include "Exception/Exceptions/Network/SocketFail.hpp"
-#include "Exception/Exceptions/Network/StandardFunctionFail.hpp"
-#include "Exception/Exceptions/Network/ServerDisconnected.hpp"
-#include "Exception/Exceptions/Network/EmptyPacket.hpp"
+#include "Exception/Exceptions/SocketFail.hpp"
+#include "Exception/Exceptions/ServerDisconnected.hpp"
+#include "Exception/Exceptions/ConnectionFail.hpp"
+#include "Exception/Exceptions/StandardFunctionFail.hpp"
+#include "Exception/Exceptions/EmptyPacket.hpp"
 
 #include "Client.hpp"
 #include "logger/Logger.hpp"
+#include "Network/Socket/Socket.hpp"
 
 #include <cstring>
+#include <string>
 
 #include <arpa/inet.h>
 #include <unistd.h>
@@ -21,6 +23,7 @@ namespace raytracer::network
         const std::string &serverAddress,
         const int port
     )
+        : _socket(0)
     {
         sockaddr_in addr {};
 
@@ -49,18 +52,41 @@ namespace raytracer::network
     }
 
     void
-    Client::run
+    Client::sendPacket
+    (
+        const std::unique_ptr<Packet> &packet
+    )
+    {
+        if (!packet)
+            return;
+        this->_socket.sendPacket(packet->serialize());
+    }
+
+    std::unique_ptr<Packet>
+    Client::receivePacket
     ()
+    {
+        const auto rawPacket = this->_socket.receivePacket();
+
+        if (rawPacket.empty()) {
+            throw exception::EmptyPacket();
+        }
+        LOG_DEBUG("Received Packet");
+        return Packet::fromByteBuffer(rawPacket);
+    }
+
+    void
+    Client::run()
     {
         pollfd pfd{};
 
         pfd.fd = this->_socket.getFd();
         pfd.events = POLLIN;
 
-        while (true) {
+        while (this->_running) {
             try {
                 if (!this->_toSend.empty()) {
-                    this->_socket.sendPacket(this->_toSend.pop()->serialize());
+                    sendPacket(this->_toSend.pop());
                 }
                 if (poll(&pfd, 1, POLL_TIMEOUT) < 0) {
                     throw exception::StandardFunctionFail("poll");
@@ -68,17 +94,12 @@ namespace raytracer::network
                 if (!(pfd.revents & POLLIN)) {
                     continue;
                 }
-                const auto rawPacket = this->_socket.receivePacket();
-                if (rawPacket.empty()) {
-                    throw network::exception::EmptyPacket();
-                }
-                LOG_DEBUG("Received packet client (SFD: " + std::to_string(this->_socket.getFd()) + ")");
-                this->_toProcess.push(Packet::fromByteBuffer(rawPacket));
+                this->_toProcess.push(receivePacket());
             }
             catch (exception::ServerDisconnected &) {
                 LOG_FATAL("Server disconnected");
             }
-            catch (IException &exception) {
+            catch (exception::IException &exception) {
                 LOG_ERR(
                     "Error while handling Client `" +
                     std::to_string(this->_socket.getFd()) +

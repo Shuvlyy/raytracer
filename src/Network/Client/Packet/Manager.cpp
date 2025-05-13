@@ -18,7 +18,8 @@ namespace raytracer::network::packet
     void
     Manager::dispatchPacket
     (
-        const Packet &packet
+        const Packet &packet,
+        Client &cli
     )
         const
     {
@@ -31,7 +32,7 @@ namespace raytracer::network::packet
             return; // TODO: Throw exception?
         }
 
-        handler->handle(packet);
+        handler->handle(packet, cli);
     }
 
     void
