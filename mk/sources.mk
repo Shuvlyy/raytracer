@@ -47,6 +47,7 @@ SRC += Network/Server/Server.cpp \
 	Network/Server/Session/Manager.cpp \
 	Network/Server/Session/Session.cpp \
 	Network/Packet/Packet.cpp \
+	Network/Server/Cluster/Cluster.cpp \
 	Network/Server/Packet/Manager.cpp \
 	Network/Packet/Packets/Ping.cpp \
 	Network/Packet/Packets/Pong.cpp \
