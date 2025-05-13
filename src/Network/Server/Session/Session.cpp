@@ -11,10 +11,10 @@ namespace raytracer::network::server
     (
         const int fd,
         const uint32_t id
-    )
-        : _id(id),
-          _controlSocket(Socket(fd)),
-          _latency(0)
+    ) : _id(id),
+        _controlSocket(Socket(fd)),
+        _latency(0),
+        _lastLatencyRefresh(std::chrono::steady_clock::now())
     {}
 
     void
