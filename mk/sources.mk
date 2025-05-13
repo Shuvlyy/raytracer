@@ -39,8 +39,11 @@ SRC += Signal/Manager.cpp \
 SRC += Network/Client/Client.cpp \
 	Network/Client/Channel/Channel.cpp \
 	Network/Client/Packet/Manager.cpp \
-	Network/Client/Packet/Handlers/Ping.cpp \
-	Network/Client/Packet/Handlers/Pong.cpp
+
+SRC += Network/Client/Packet/Handlers/Ping.cpp \
+	Network/Client/Packet/Handlers/Kiss.cpp \
+	Network/Client/Packet/Handlers/NvmStop.cpp \
+	Network/Client/Packet/Handlers/WorkSlave.cpp
 
 SRC += Network/Server/Server.cpp \
 	Network/Socket/Socket.cpp \
