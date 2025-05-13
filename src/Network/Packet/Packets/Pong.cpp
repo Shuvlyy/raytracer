@@ -2,18 +2,19 @@
 
 #include "Exception/Exceptions/UnexpectedRemainingData.hpp"
 
-#include "../IO/Deserializer.hpp"
-#include "../IO/Serializer.hpp"
+#include "Network/Packet/IO/Deserializer.hpp"
+#include "Network/Packet/IO/Serializer.hpp"
 
 namespace raytracer::network::packet
 {
 
     Pong::Pong
     (
-        const uint64_t timestamp
-    )
-        : Packet(Type::PONG),
-          _timestamp(timestamp)
+        const uint64_t timestamp,
+        const uint8_t progress
+    ) : Packet(Type::PONG),
+        _timestamp(timestamp),
+        _progress(progress)
     {}
 
     ByteBuffer
@@ -25,6 +26,7 @@ namespace raytracer::network::packet
 
         s.write<uint8_t>(static_cast<uint8_t>(this->_type));
         s.write<uint64_t>(this->_timestamp);
+        s.write<uint8_t>(this->_progress);
         return s.data();
     }
 
@@ -41,6 +43,7 @@ namespace raytracer::network::packet
         const Type type = fromRawTypeToType(rawType);
 
         this->_timestamp = d.read<uint64_t>();
+        this->_progress = d.read<uint8_t>();
 
         if (d.hasRemaining()) {
             throw exception::UnexpectedRemainingData(type);
