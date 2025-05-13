@@ -8,19 +8,23 @@ namespace raytracer::app
         const Attributes& attributes
     )
         : App(attributes),
-          _server({ attributes.port })
+          _server({
+              attributes.port,
+              attributes.serverConfigFilepath,
+              attributes.sceneFilepath
+          })
     {}
 
     void
     Server::run()
     {
-        LOG_INFO("Server running...");
+        this->_server.start();
     }
 
     void
     Server::stop()
     {
-        LOG_INFO("Server stopping...");
+        this->_server.stop();
     }
 
 }
