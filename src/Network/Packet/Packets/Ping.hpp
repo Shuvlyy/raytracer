@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Packet.hpp"
+#include "Network/Packet/Packet.hpp"
 
 namespace raytracer::network::packet
 {

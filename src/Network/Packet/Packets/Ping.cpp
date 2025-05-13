@@ -2,8 +2,8 @@
 
 #include "Exception/Exceptions/UnexpectedRemainingData.hpp"
 
-#include "../IO/Deserializer.hpp"
-#include "../IO/Serializer.hpp"
+#include "Network/Packet/IO/Deserializer.hpp"
+#include "Network/Packet/IO/Serializer.hpp"
 
 namespace raytracer::network::packet
 {
