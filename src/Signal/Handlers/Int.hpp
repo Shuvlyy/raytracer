@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../IHandler.hpp"
+#include "Signal/IHandler.hpp"
 
 namespace raytracer::signal::handler
 {
