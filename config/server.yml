@@ -1,0 +1,5 @@
+# Raytracer - Clustering: Server configuration file
+
+serverName: Ly
+serverDescription: Goodbye My Sweet Strawberry
+maxClients: 2
