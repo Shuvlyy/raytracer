@@ -2,4 +2,9 @@
 
 serverName: Ly
 serverDescription: Goodbye My Sweet Strawberry
+
+# Maximum number of slaves
 maxClients: 2
+
+# In seconds
+heartbeatFrequency: 3
