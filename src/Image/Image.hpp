@@ -74,6 +74,12 @@ namespace raytracer
          */
         [[nodiscard]] math::Vec<2, uint32_t> getDimensions() const;
 
+
+        /**
+         * @returns Reference to the internal buffer containing all pixels
+         */
+        [[nodiscard]] const PixelBuffer& getData() const { return this->_data; }
+
         Image& operator+=(const Image& other);
 
     private:
