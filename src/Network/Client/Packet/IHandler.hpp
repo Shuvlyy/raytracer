@@ -4,7 +4,7 @@
 
 #include "Network/Client/Client.hpp"
 
-namespace raytracer::network::packet
+namespace raytracer::network::packet::client
 {
 
     class IHandler

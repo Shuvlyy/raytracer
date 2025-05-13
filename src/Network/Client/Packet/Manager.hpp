@@ -6,7 +6,7 @@
 #include <memory>
 #include <unordered_map>
 
-namespace raytracer::network::packet
+namespace raytracer::network::packet::client
 {
 
     class Manager final
