@@ -14,6 +14,7 @@ namespace raytracer
         const std::string& flag
     )
     {
+        /* FIXME: euh fix ça stp bâtard */
         static const std::unordered_map<std::string, std::string> aliasMap =
         {
             {"-m", "--mode"},
@@ -43,15 +44,22 @@ namespace raytracer
         for (size_t i = 0; i < _tokens.size(); ++i) {
             const std::string& token = normalizeFlag(_tokens[i]);
 
-            if (token.rfind("--mode=", 0) == 0) {
-                const std::string value = token.substr(7);
+            if (token == "--mode") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected mode after --mode");
+
+                const std::string value = _tokens[i];
+
                 if (value == "self")        _attributes.programMode = Mode::SELF;
                 else if (value == "server") _attributes.programMode = Mode::SERVER;
                 else if (value == "client") _attributes.programMode = Mode::CLIENT;
                 else throw exception::InvalidUsage("Invalid mode: " + value);
             }
-            else if (token.rfind("--threads=", 0) == 0) {
-                const std::string value = token.substr(10);
+            else if (token == "--threads") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected value after --threads");
+
+                const std::string value = _tokens[i];
 
                 if (value != "auto") {
                     try {
@@ -61,14 +69,22 @@ namespace raytracer
                     }
                 }
             }
+            else if (token == "--config") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected value after --config");
+
+                _attributes.serverConfigFilepath = _tokens[i];
+            }
             else if (token == "-h") {
                 if (++i >= _tokens.size())
                     throw exception::InvalidUsage("Expected host after -h");
+
                 _attributes.host = _tokens[i];
             }
             else if (token == "-p") {
                 if (++i >= _tokens.size())
                     throw exception::InvalidUsage("Expected port after -p");
+
                 try {
                     _attributes.port = static_cast<uint16_t>(std::stoi(_tokens[i]));
                 } catch (...) {
@@ -165,7 +181,7 @@ namespace raytracer
 
         switch (attrs.programMode) {
             case Mode::CLIENT:
-                if (!attrs.host.length())
+                if (attrs.host.empty())
                     throw exception::InvalidUsage("Client mode requires a host (-h <host>)");
                 if (!attrs.port)
                     throw exception::InvalidUsage("Client mode requires a port (-p <port>)");
@@ -176,8 +192,10 @@ namespace raytracer
             case Mode::SERVER:
                 if (!attrs.port)
                     throw exception::InvalidUsage("Server mode requires a port (-p <port>)");
-                if (!attrs.sceneFilepath.empty())
-                    throw exception::InvalidUsage("Server mode must not include a scene file path");
+                if (attrs.serverConfigFilepath.empty())
+                    throw exception::InvalidUsage("Server mode requires a configuration file (--config <file>)");
+                if (attrs.sceneFilepath.empty())
+                    throw exception::InvalidUsage("Server mode requires a scene file path");
                 if (!attrs.host.empty())
                     throw exception::InvalidUsage("Server mode must not include a host");
                 break;

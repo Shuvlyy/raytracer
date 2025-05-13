@@ -17,6 +17,7 @@ namespace raytracer
         std::string host;
         bool debugMode = false;
         std::string sceneFilepath;
+        std::string serverConfigFilepath;
     };
 
     /**
