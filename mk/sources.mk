@@ -36,6 +36,12 @@ SRC += Signal/Manager.cpp \
 	Signal/Handlers/Int.cpp \
 	Signal/Handlers/Term.cpp
 
+SRC += Network/Client/Client.cpp \
+	Network/Client/Channel/Channel.cpp \
+	Network/Client/Packet/Manager.cpp \
+	Network/Client/Packet/Handlers/Ping.cpp \
+	Network/Client/Packet/Handlers/Pong.cpp
+
 SRC += Network/Server/Server.cpp \
 	Network/Socket/Socket.cpp \
 	Network/Server/Session/Manager.cpp \
