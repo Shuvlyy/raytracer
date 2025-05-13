@@ -46,15 +46,28 @@ SRC += Network/Client/Packet/Handlers/Ping.cpp \
 	Network/Client/Packet/Handlers/WorkSlave.cpp
 
 SRC += Network/Server/Server.cpp \
-	Network/Socket/Socket.cpp \
-	Network/Server/Session/Manager.cpp \
-	Network/Server/Session/Session.cpp \
-	Network/Packet/Packet.cpp \
 	Network/Server/Cluster/Cluster.cpp \
 	Network/Server/Packet/Manager.cpp \
-	Network/Packet/Packets/Ping.cpp \
-	Network/Packet/Packets/Pong.cpp \
+	Network/Server/Session/Manager.cpp \
+	Network/Server/Session/Session.cpp \
+	Network/Socket/Socket.cpp
+
+SRC += Network/Packet/Packet.cpp \
 	Network/Packet/IO/Serializer.cpp \
-	Network/Packet/IO/Deserializer.cpp \
-	Network/Server/Packet/Handlers/Ping.cpp \
-	Network/Server/Packet/Handlers/Pong.cpp
+	Network/Packet/IO/Deserializer.cpp
+
+SRC += Network/Packet/Packets/Ping.cpp \
+	Network/Packet/Packets/Pong.cpp \
+	Network/Packet/Packets/Kiss.cpp \
+	Network/Packet/Packets/Workslave.cpp \
+	Network/Packet/Packets/Cestciao.cpp \
+	Network/Packet/Packets/Finito.cpp \
+	Network/Packet/Packets/Nvmstop.cpp
+
+SRC += Network/Server/Packet/Handlers/Ping.cpp \
+	Network/Server/Packet/Handlers/Pong.cpp \
+#	Network/Server/Packet/Handlers/Kiss.cpp \
+#	Network/Server/Packet/Handlers/Workslave.cpp \
+#	Network/Server/Packet/Handlers/Cestciao.cpp \
+#	Network/Server/Packet/Handlers/Finito.cpp \
+#	Network/Server/Packet/Handlers/Nvmstop.cpp
