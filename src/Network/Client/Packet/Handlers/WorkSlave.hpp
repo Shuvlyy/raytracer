@@ -2,10 +2,10 @@
 
 #include "Network/Client/Packet/IHandler.hpp"
 
-namespace raytracer::network::packet::handler
+namespace raytracer::network::packet::client::handler
 {
 
-    class Pong final
+    class WorkSlave final
         : public IHandler
     {
     public:
@@ -17,7 +17,7 @@ namespace raytracer::network::packet::handler
         [[nodiscard]] Type getTrigger()
             const override
         {
-            return Type::PONG;
+            return Type::WORKSLAVE;
         }
     };
 

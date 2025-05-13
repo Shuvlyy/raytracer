@@ -5,7 +5,7 @@
 namespace raytracer::network::packet::client::handler
 {
 
-    class Ping final
+    class Kiss final
         : public IHandler
     {
     public:
@@ -17,7 +17,7 @@ namespace raytracer::network::packet::client::handler
         [[nodiscard]] Type getTrigger()
             const override
         {
-            return Type::PING;
+            return Type::KISS;
         }
     };
 

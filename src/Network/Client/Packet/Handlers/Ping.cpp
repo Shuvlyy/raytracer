@@ -4,7 +4,7 @@
 #include "Network/Packet/Packets/Ping.hpp"
 #include "Network/Packet/Packets/Pong.hpp"
 
-namespace raytracer::network::packet::handler
+namespace raytracer::network::packet::client::handler
 {
 
     void
