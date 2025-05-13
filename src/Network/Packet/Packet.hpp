@@ -17,6 +17,11 @@ namespace raytracer::network
             UNKNOWN = 0x00,
             PING = 0x01,
             PONG = 0x02,
+            KISS = 0x03,
+            WORKSLAVE = 0x04,
+            CESTCIAO = 0x05,
+            FINITO = 0x06,
+            NVMSTOP = 0x07
         };
 
     }
@@ -81,6 +86,11 @@ namespace raytracer::network
             {
                 { 0x01, packet::Type::PING },
                 { 0x02, packet::Type::PONG },
+                { 0x03, packet::Type::KISS },
+                { 0x04, packet::Type::WORKSLAVE },
+                { 0x05, packet::Type::CESTCIAO },
+                { 0x06, packet::Type::FINITO },
+                { 0x07, packet::Type::NVMSTOP },
             };
 
             const auto it = lookup.find(rawType);
@@ -97,6 +107,11 @@ namespace raytracer::network
             {
                 { packet::Type::PING, "PING" },
                 { packet::Type::PONG, "PONG" },
+                { packet::Type::KISS, "KISS" },
+                { packet::Type::WORKSLAVE, "WORKSLAVE" },
+                { packet::Type::CESTCIAO, "CESTCIAO" },
+                { packet::Type::FINITO, "FINITO" },
+                { packet::Type::NVMSTOP, "NVMSTOP" },
             };
 
             const auto it = lookup.find(type);
