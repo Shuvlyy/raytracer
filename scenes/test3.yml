@@ -1,0 +1,89 @@
+# Basic test scene for Raytracer
+
+outputDirectory: renders/
+
+camera:
+  resolution:
+    width: 1280
+    height: 720
+    antialiasingSamples: 100
+    maxBounces: 50
+    # width: 3840
+    # height: 2160
+    # antialiasingSamples: 500
+    # maxBounces: 100
+  position:
+    x: 0
+    y: 0
+    z: 1
+  rotation:
+    yaw: 0
+    pitch: 0
+    roll: 0
+  # In degrees
+  fov: 80.0
+  aperture: 2.8
+  focalLength: 50.0
+
+shapes:
+  - ground:
+    type: "PLANE"
+    axis: "Y"
+    position: -1.5
+    color: "#999999"
+    material: "METAL"
+
+  - ceil:
+    type: "PLANE"
+    axis: "Y"
+    position: 1.5
+    color: "#999999"
+    material: "METAL"
+
+  - wall_left:
+    type: "PLANE"
+    axis: "X"
+    position: 1.5
+    color: "#999999"
+    material: "METAL"
+
+  - wall_right:
+    type: "PLANE"
+    axis: "X"
+    position: -1.5
+    color: "#999999"
+    material: "METAL"
+
+  - wall_back:
+    type: "PLANE"
+    axis: "Z"
+    position: -2.5
+    color: "#999999"
+    material: "METAL"
+
+  - center_sphere:
+    type: "SPHERE"
+    x: 0
+    y: 0
+    z: -1
+    radius: 0.5
+    material: "METAL"
+    color: "#B762C1"
+
+  - left_sphere:
+    type: "SPHERE"
+    x: -1
+    y: 0
+    z: -1
+    radius: 0.2
+    material: "METAL"
+    color: "#A77FAA"
+
+lights:
+  points:
+    - main_point:
+      x: .5
+      y: .5
+      z: 1
+      color: "#FFFFFF"
+      intensity: 40.0

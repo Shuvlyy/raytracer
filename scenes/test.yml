@@ -4,10 +4,10 @@ outputDirectory: renders/
 
 camera:
   resolution:
-    width: 1920
-    height: 1080
-    antialiasingSamples: 100
-    maxBounces: 50
+    width: 640
+    height: 480
+    antialiasingSamples: 10
+    maxBounces: 10
   position:
     x: 2
     y: 0
@@ -17,7 +17,7 @@ camera:
     pitch: 0
     roll: 0
   # In degrees
-  fov: 70.0
+  fov: 80.0
   aperture: 2.8
   focalLength: 50.0
 
