@@ -1,6 +1,7 @@
 #include "Server.hpp"
 #include "Socket/Socket.hpp"
 #include "logger/Logger.hpp"
+#include "yml/Yml.hpp"
 
 #include "Exception/Exceptions/ClientDisconnected.hpp"
 #include "Exception/Exceptions/StandardFunctionFail.hpp"
@@ -20,17 +21,24 @@ namespace raytracer::network
         server::Properties properties
     )
         : _properties(std::move(properties)),
-          _maxClients(DEFAULT_MAX_CLIENTS),
           _isRunning(false),
           _serverSocket(this->_properties.port)
           // _game({})
     {
+        yml::Yml config(this->_properties.configurationFilePath);
+
+        this->_settings = {
+            config["serverName"].as<std::string>(),
+            config["serverDescription"].as<std::string>(),
+            static_cast<uint16_t>(config["maxClients"].as<int>())
+        };
+
         // std::string configPath = properties.configurationFilePath;
         // if (!configPath.empty() && this->_config == nullptr) {
         //     throw exception::CouldNotOpenConfig();
         // }
 
-        this->_serverSocket.startListening(this->_maxClients);
+        this->_serverSocket.startListening(this->_settings.maxClients);
 
         this->_pollFds.push_back({
             .fd = this->_serverSocket.getFd(),
@@ -42,13 +50,13 @@ namespace raytracer::network
     Server::~Server
     ()
     {
-        LOG_DEBUG("Shutting down server...");
+        LOG_INFO("Shutting down server...");
 
         this->_isRunning = false;
         this->_sessionManager.closeAllSessions();
         this->_serverSocket.closeSocket();
 
-        LOG_DEBUG("Server shut down. Bye!");
+        LOG_INFO("Server shut down. Bye!");
     }
 
     void
@@ -57,15 +65,19 @@ namespace raytracer::network
     {
         this->_isRunning = true;
 
-        LOG_DEBUG("Server started!");
+        LOG_INFO("Server started!");
         LOG_DEBUG(
             "Server settings:\n"
             "\tPort: " + std::to_string(this->_properties.port) + "\n"
-            "\tConfiguration file: " + (
+            "\tConfiguration file: \"" + (
                 this->_properties.configurationFilePath.empty()
                     ? "NONE"
                     : this->_properties.configurationFilePath
-            )
+            ) + "\"\n"
+            "\tName: \"" + this->_settings.serverName + "\"\n"
+            "\tDescription: \"" + this->_settings.serverDescription + "\"\n"
+            "\tMax clients: " + std::to_string(this->_settings.maxClients) + "\n"
+            "\tScene filepath: \"" + this->_properties.sceneFilepath + "\""
         );
 
         while (true) {
@@ -115,7 +127,13 @@ namespace raytracer::network
     Server::stop
     ()
     {
+        if (!this->_isRunning) {
+            return;
+        }
+
         this->_isRunning = false;
+        this->_sessionManager.closeAllSessions();
+        this->_serverSocket.closeSocket();
     }
 
     void

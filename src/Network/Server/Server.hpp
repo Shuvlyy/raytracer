@@ -20,6 +20,14 @@ namespace raytracer::network
         {
             uint16_t port;
             std::string configurationFilePath {};
+            std::string sceneFilepath {};
+        };
+
+        struct Settings
+        {
+            std::string serverName;
+            std::string serverDescription;
+            uint16_t maxClients;
         };
 
     }
@@ -38,21 +46,21 @@ namespace raytracer::network
         );
 
         [[nodiscard]] server::Properties& getProperties() { return this->_properties; }
+        [[nodiscard]] server::Settings& getSettings() { return this->_settings; }
+        [[nodiscard]] bool isRunning() const { return this->_isRunning; }
+        [[nodiscard]] server::Socket& getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
-        [[nodiscard]] server::Socket& getServerSocket() { return this->_serverSocket; }
-        [[nodiscard]] int getMaxClients() const { return this->_maxClients; }
-        [[nodiscard]] bool isRunning() const { return this->_isRunning; }
         // [[nodiscard]] server::Game &getGame() { return this->_game; }
 
     private:
         server::Properties _properties;
-        packet::server::Manager _packetManager;
-        server::session::Manager _sessionManager;
-        int _maxClients;
+        server::Settings _settings;
         bool _isRunning;
         server::Socket _serverSocket;
         std::vector<pollfd> _pollFds;
+        packet::server::Manager _packetManager;
+        server::session::Manager _sessionManager;
         // server::Game _game;
 
         void handleNewConnection();
