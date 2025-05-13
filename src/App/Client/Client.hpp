@@ -1,6 +1,8 @@
 #pragma once
 
 #include "App/App.hpp"
+#include "Network/Client/Channel/Channel.hpp"
+#include "Network/Client/Client.hpp"
 #include "Parser/Parser.hpp"
 
 namespace raytracer::app
@@ -16,6 +18,8 @@ namespace raytracer::app
         void stop() override;
 
     private:
+        network::Client _client;
+        bool _running{false};
         // ...
     };
 
