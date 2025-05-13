@@ -28,10 +28,10 @@ namespace raytracer::multithreading
         for (int i = 1; i < nbProcs + 1; i++) {
             if (i == nbProcs) {
                 threads.emplace_back(&Renderer::render, &renderer, last_y, renderer.getHeight() - 1);
-                LOG_INFO(std::format("thread n°{} rendering from {} to {}.", i, last_y, renderer.getHeight() - 1));
+                LOG_DEBUG(std::format("thread n°{} rendering from {} to {}.", i, last_y, renderer.getHeight() - 1));
             } else {
                 threads.emplace_back(&Renderer::render, &renderer, last_y, portion_size * i);
-                LOG_INFO(std::format("thread n°{} rendering from {} to {}.", i, last_y, portion_size * i));
+                LOG_DEBUG(std::format("thread n°{} rendering from {} to {}.", i, last_y, portion_size * i));
             }
             last_y = portion_size * i + 1;
         }
