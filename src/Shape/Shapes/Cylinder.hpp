@@ -1,7 +1,8 @@
 #pragma once
 
+#define CYLINDER    "\"CYLINDER\""
+
 #include "Shape/Shape.hpp"
-#define CYLINDER "\"CYLINDER\""
 
 namespace raytracer::shape
 {
@@ -14,11 +15,11 @@ namespace raytracer::shape
         Cylinder(
             const math::Point<3>& baseCenter,
             const math::Vec<3>& axis,
-            double radius,
-            double height,
+            const double radius,
+            const double height,
             const std::shared_ptr<Material>& material
         ) : _base(baseCenter),
-            _axis(normalize(axis)),
+            _axis(axis.normalized()),
             _radius(radius),
             _height(height),
             _material(material)
@@ -66,8 +67,8 @@ namespace raytracer::shape
             res.t = t;
             res.p = hitPoint;
 
-            const math::Point<3> c = _base + projHeight * _axis;
-            res.n = normalize(hitPoint - c);
+            const math::Point<3> g = _base + projHeight * _axis;
+            res.n = (hitPoint - g).normalize();
             res.material = _material;
 
             return true;
@@ -79,7 +80,7 @@ namespace raytracer::shape
         double _radius;
         double _height;
         double _radius2;
-        std::shared_ptr<Material> this->_material;
+        std::shared_ptr<Material> _material;
     };
 
 }

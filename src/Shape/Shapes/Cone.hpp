@@ -1,7 +1,8 @@
 #pragma once
 
+#define CONE    "\"CONE\""
+
 #include "Shape/Shape.hpp"
-#define CONE "\"CONE\""
 
 namespace raytracer::shape
 {
@@ -10,14 +11,13 @@ namespace raytracer::shape
         : public Shape
     {
     public:
-
         Cone(
             const math::Point<3>& apex,
             const math::Vec<3>& axis,
             const double angle_rad,
             const std::shared_ptr<Material>& material
         ) : _apex(apex),
-            _axis(normalize(axis)),
+            _axis(axis.normalized()),
             _angle(angle_rad),
             _material(material)
         {
@@ -59,8 +59,8 @@ namespace raytracer::shape
 
             const math::Vec<3> v = res.p - _apex;
             const double h = dot(v, _axis);
-            const math::Point<3> c = _apex + h * _axis;
-            const math::Vec<3> n = normalize(v - _axis * h * (1 + _cos2));
+            // const math::Point<3> c = _apex + h * _axis;
+            const math::Vec<3> n = (v - _axis * h * (1 + _cos2)).normalized();
 
             res.n = n;
             res.material = this->_material;
