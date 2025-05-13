@@ -9,7 +9,7 @@
 
 #include <netinet/in.h>
 
-namespace raytracer::network::server
+namespace raytracer::network
 {
 
     class Socket

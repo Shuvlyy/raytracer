@@ -10,7 +10,7 @@
 #include <netinet/in.h>
 #include <sys/socket.h>
 
-namespace raytracer::network::server
+namespace raytracer::network
 {
 
     Socket::Socket

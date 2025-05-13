@@ -101,7 +101,7 @@ namespace raytracer::network
             }
 
             for (const pollfd& fd : this->_pollFds) {
-                server::Socket clientSocket(fd.fd);
+                Socket clientSocket(fd.fd);
 
                 /* Hmm, not really useful. */
                 /*if (fd.revents & POLLHUP) {
@@ -151,7 +151,7 @@ namespace raytracer::network
             throw exception::StandardFunctionFail("accept");
         }
 
-        const server::Socket clientSocket(clientFd);
+        const Socket clientSocket(clientFd);
 
         this->_pollFds.push_back({
             .fd = clientSocket.getFd(),
@@ -177,7 +177,7 @@ namespace raytracer::network
     void
     Server::handleClientRequest
     (
-        server::Socket& clientSocket
+        Socket& clientSocket
     )
     {
         try {
@@ -211,7 +211,7 @@ namespace raytracer::network
     void
     Server::disconnectClient
     (
-        const server::Socket& clientSocket
+        const Socket& clientSocket
     )
     {
         const server::Session& session =

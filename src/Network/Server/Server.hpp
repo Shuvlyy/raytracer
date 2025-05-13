@@ -42,13 +42,13 @@ namespace raytracer::network
         void stop();
 
         void disconnectClient(
-            const server::Socket& clientSocket
+            const Socket& clientSocket
         );
 
         [[nodiscard]] server::Properties& getProperties() { return this->_properties; }
         [[nodiscard]] server::Settings& getSettings() { return this->_settings; }
         [[nodiscard]] bool isRunning() const { return this->_isRunning; }
-        [[nodiscard]] server::Socket& getServerSocket() { return this->_serverSocket; }
+        [[nodiscard]] Socket& getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
         // [[nodiscard]] server::Game &getGame() { return this->_game; }
@@ -57,14 +57,14 @@ namespace raytracer::network
         server::Properties _properties;
         server::Settings _settings;
         bool _isRunning;
-        server::Socket _serverSocket;
+        Socket _serverSocket;
         std::vector<pollfd> _pollFds;
         packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
         // server::Game _game;
 
         void handleNewConnection();
-        void handleClientRequest(server::Socket &clientSocket);
+        void handleClientRequest(Socket &clientSocket);
     };
 
 }
