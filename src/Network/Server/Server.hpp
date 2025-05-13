@@ -1,8 +1,11 @@
 #pragma once
 
+#define DEFAULT_HEARTBEAT_FREQUENCY 1
+
 #include "Packet/Manager.hpp"
 #include "Session/Manager.hpp"
 #include "Network/Socket/Socket.hpp"
+#include "Cluster/Cluster.hpp"
 
 #include <string>
 #include <vector>
@@ -21,6 +24,7 @@ namespace raytracer::network
             uint16_t port;
             std::string configurationFilePath {};
             std::string sceneFilepath {};
+            int heartbeatFrequency = DEFAULT_HEARTBEAT_FREQUENCY;
         };
 
         struct Settings
@@ -51,7 +55,7 @@ namespace raytracer::network
         [[nodiscard]] Socket& getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
-        // [[nodiscard]] server::Game &getGame() { return this->_game; }
+        [[nodiscard]] server::Cluster& getCluster() { return this->_cluster; }
 
     private:
         server::Properties _properties;
@@ -61,7 +65,7 @@ namespace raytracer::network
         std::vector<pollfd> _pollFds;
         packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
-        // server::Game _game;
+        server::Cluster _cluster;
 
         void handleNewConnection();
         void handleClientRequest(Socket &clientSocket);

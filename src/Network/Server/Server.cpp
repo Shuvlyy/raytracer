@@ -21,16 +21,20 @@ namespace raytracer::network
     )
         : _properties(std::move(properties)),
           _isRunning(false),
-          _serverSocket(this->_properties.port)
-          // _game({})
+          _serverSocket(this->_properties.port),
+          _cluster(0) // Temporary, idk how to silence that
     {
         yml::Yml config(this->_properties.configurationFilePath);
 
         this->_settings = {
             config["serverName"].as<std::string>(),
             config["serverDescription"].as<std::string>(),
-            static_cast<uint16_t>(config["maxClients"].as<int>())
+            static_cast<uint16_t>(config["maxClients"].as<int>()),
         };
+
+        this->_properties.heartbeatFrequency = config["heartbeatFrequency"].as<int>() * 1000;
+
+        this->_cluster = server::Cluster(this->_properties.heartbeatFrequency);
 
         // std::string configPath = properties.configurationFilePath;
         // if (!configPath.empty() && this->_config == nullptr) {
@@ -76,10 +80,12 @@ namespace raytracer::network
             "\tName: \"" + this->_settings.serverName + "\"\n"
             "\tDescription: \"" + this->_settings.serverDescription + "\"\n"
             "\tMax clients: " + std::to_string(this->_settings.maxClients) + "\n"
-            "\tScene filepath: \"" + this->_properties.sceneFilepath + "\""
+            "\tScene filepath: \"" + this->_properties.sceneFilepath + "\"\n"
+            "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency / 1000) + "s"
         );
 
         while (true) {
+            this->_cluster.update(0);
             // this->_game.update(dt.count());
 
             // if (this->_game.getData().state == server::game::DEADASS) {
@@ -89,7 +95,7 @@ namespace raytracer::network
             const int ret = poll(
                 this->_pollFds.data(),
                 this->_pollFds.size(),
-                0
+                this->_properties.heartbeatFrequency
             );
 
             if (!this->_isRunning) {
@@ -161,9 +167,9 @@ namespace raytracer::network
 
         this->_sessionManager.createSession(clientSocket);
 
-        server::Session &session = this->_sessionManager.getSession(clientSocket);
-        // this->_game.addPlayer(session);
-        //
+        server::Session& session = this->_sessionManager.getSession(clientSocket);
+        this->_cluster.addSlave(session);
+
         // const server::packet::Hi hiPacket(
         //     session.getId(),
         //     this->_game.getSettings().getMap()
@@ -217,7 +223,7 @@ namespace raytracer::network
         const server::Session& session =
             this->_sessionManager.getSession(clientSocket);
 
-        // this->_game.removePlayer(session);
+        this->_cluster.removeSlave(session);
 
         for (size_t k = 0; k < this->_pollFds.size(); k++) {
             pollfd& fd = this->_pollFds.at(k);
