@@ -5,7 +5,7 @@
 #define DEFAULT_MAX_CLIENTS 192
 #define HEADER_SIZE         2
 
-#include "../../Packet/Packet.hpp"
+#include "../Packet/Packet.hpp"
 
 #include <netinet/in.h>
 

@@ -37,7 +37,7 @@ SRC += Signal/Manager.cpp \
 	Signal/Handlers/Term.cpp
 
 SRC += Network/Server/Server.cpp \
-	Network/Server/Socket/Socket.cpp \
+	Network/Socket/Socket.cpp \
 	Network/Server/Session/Manager.cpp \
 	Network/Server/Session/Session.cpp \
 	Network/Packet/Packet.cpp \

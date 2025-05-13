@@ -2,7 +2,7 @@
 
 #include "Packet/Manager.hpp"
 #include "Session/Manager.hpp"
-#include "Socket/Socket.hpp"
+#include "Network/Socket/Socket.hpp"
 
 #include <string>
 #include <vector>

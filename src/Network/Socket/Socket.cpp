@@ -1,4 +1,4 @@
-#include "Network/Server/Socket/Socket.hpp"
+#include "Socket.hpp"
 
 #include "logger/Logger.hpp"
 

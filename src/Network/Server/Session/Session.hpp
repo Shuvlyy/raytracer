@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Network/Server/Socket/Socket.hpp"
+#include "Network/Socket/Socket.hpp"
 
 namespace raytracer::network::server
 {

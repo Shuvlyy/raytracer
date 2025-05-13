@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Session.hpp"
-#include "Network/Server/Socket/Socket.hpp"
+#include "Network/Socket/Socket.hpp"
 
 #include <vector>
 #include <unordered_map>
