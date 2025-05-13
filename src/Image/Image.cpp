@@ -48,4 +48,22 @@ namespace raytracer
         return math::Vec<2, uint32_t>(this->_width, this->_height);
     }
 
+    Image &
+    Image::operator+=
+    (
+        const Image &other
+    )
+    {
+        std::transform(
+            this->_data.begin(),
+            this->_data.end(),
+            other._data.begin(),
+            this->_data.begin(),
+            [](const math::Color& a, const math::Color& b) {
+                return a + b;
+            }
+        );
+        return *this;
+    }
+
 }

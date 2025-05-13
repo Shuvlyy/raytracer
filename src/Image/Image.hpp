@@ -74,6 +74,8 @@ namespace raytracer
          */
         [[nodiscard]] math::Vec<2, uint32_t> getDimensions() const;
 
+        Image& operator+=(const Image& other);
+
     private:
         const uint32_t _width, _height;
         PixelBuffer _data;
