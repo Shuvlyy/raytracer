@@ -8,6 +8,7 @@
 #include <format>
 #include <unistd.h>
 #include <netinet/in.h>
+#include <sys/poll.h>
 #include <sys/socket.h>
 
 namespace raytracer::network
@@ -42,13 +43,6 @@ namespace raytracer::network
         }
     }
 
-    Socket::Socket
-    (
-        const int fd
-    )
-        : _fd(fd), _address{}
-    {}
-
     void
     Socket::sendPacket
     (
@@ -61,18 +55,53 @@ namespace raytracer::network
         }
 
         try {
+            auto& self = const_cast<Socket&>(*this);
+
             const auto size = static_cast<uint16_t>(data.size());
             const uint8_t header[HEADER_SIZE] = {
                 static_cast<uint8_t>((size >> 8) & 0xFF),
                 static_cast<uint8_t>(size & 0xFF)
             };
 
-            if (write(this->_fd, header, HEADER_SIZE) == -1) {
-                throw exception::StandardFunctionFail("write");
-            }
+            self._writeBuffer.insert(
+                self._writeBuffer.end(),
+                header, header + HEADER_SIZE
+            );
+            self._writeBuffer.insert(
+                self._writeBuffer.end(),
+                data.begin(), data.end()
+            );
 
-            if (write(this->_fd, data.data(), data.size()) == -1) {
-                throw exception::StandardFunctionFail("write");
+            while (!self._writeBuffer.empty()) {
+                pollfd pfd = {
+                    .fd = this->_fd,
+                    .events = POLLOUT,
+                    .revents = 0
+                };
+
+                const int res = poll(&pfd, 1, 1000);
+
+                if (res < 0) {
+                    throw exception::StandardFunctionFail("poll (write)");
+                }
+                if (res == 0 || !(pfd.revents & POLLOUT)) {
+                    continue;
+                }
+
+                const ssize_t bytesWritten = write(
+                    this->_fd,
+                    self._writeBuffer.data(),
+                    self._writeBuffer.size()
+                );
+
+                if (bytesWritten < 0) {
+                    throw exception::StandardFunctionFail("write");
+                }
+
+                self._writeBuffer.erase(
+                    self._writeBuffer.begin(),
+                    self._writeBuffer.begin() + bytesWritten
+                );
             }
 
             LOG_DEBUG("Sent a packet of size " + std::to_string(size) + " (SFD: " + std::to_string(this->_fd) + ")");
@@ -97,6 +126,21 @@ namespace raytracer::network
                 return {}; // Empty ByteBuffer
             }
 
+            pollfd pfd = {
+                .fd = this->_fd,
+                .events = POLLIN,
+                .revents = 0
+            };
+
+            int res = poll(&pfd, 1, 1000);
+
+            if (res < 0) {
+                throw exception::StandardFunctionFail("poll (read)");
+            }
+            if (res == 0 || !(pfd.revents & POLLIN)) {
+                continue;
+            }
+
             char buffer[BUFFER_SIZE];
             const ssize_t bytesRead = read(this->_fd, buffer, BUFFER_SIZE);
 
@@ -108,24 +152,28 @@ namespace raytracer::network
                 throw exception::ClientDisconnected(this->_fd);
             }
 
-            this->_bufferCache.insert(this->_bufferCache.end(), buffer, buffer + bytesRead);
+            this->_readBuffer.insert(
+                this->_readBuffer.end(),
+                buffer, buffer + bytesRead
+            );
 
-            while (this->_bufferCache.size() >= HEADER_SIZE) {
+            while (this->_readBuffer.size() >= HEADER_SIZE) {
                 const uint16_t packetSize =
-                    (static_cast<uint16_t>(this->_bufferCache[0]) << 8) + this->_bufferCache[1];
+                    (static_cast<uint16_t>(this->_readBuffer[0]) << 8) +
+                    this->_readBuffer[1];
 
-                if (this->_bufferCache.size() < static_cast<uint64_t>(packetSize) + HEADER_SIZE) {
+                if (this->_readBuffer.size() < static_cast<uint64_t>(packetSize) + HEADER_SIZE) {
                     break; // Wait for the entire packet to arrive
                 }
 
                 ByteBuffer packet(
-                    this->_bufferCache.begin() + HEADER_SIZE,
-                    this->_bufferCache.begin() + HEADER_SIZE + packetSize
+                    this->_readBuffer.begin() + HEADER_SIZE,
+                    this->_readBuffer.begin() + HEADER_SIZE + packetSize
                 );
 
-                this->_bufferCache.erase(
-                    this->_bufferCache.begin(),
-                    this->_bufferCache.begin() + HEADER_SIZE + packetSize
+                this->_readBuffer.erase(
+                    this->_readBuffer.begin(),
+                    this->_readBuffer.begin() + HEADER_SIZE + packetSize
                 );
 
                 LOG_DEBUG("Client (SFD: " + std::to_string(this->_fd) + ") received a packet of size " + std::to_string(packetSize));
@@ -153,14 +201,6 @@ namespace raytracer::network
         this->_fd = -1;
     }
 
-    int
-    Socket::getFd
-    ()
-        const
-    {
-        return this->_fd;
-    }
-
     void
     Socket::startListening
     (
@@ -180,13 +220,6 @@ namespace raytracer::network
             close(this->_fd);
             throw exception::StandardFunctionFail("listen");
         }
-    }
-
-    sockaddr_in&
-    Socket::getAddress
-    ()
-    {
-        return this->_address;
     }
 
 }

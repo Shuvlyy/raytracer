@@ -27,7 +27,8 @@ namespace raytracer::network
          *
          * @param   fd     File descriptor
          */
-        explicit Socket(int fd);
+        explicit Socket(const int fd)
+            : _fd(fd), _address{} {}
 
         ~Socket() = default;
 
@@ -49,16 +50,17 @@ namespace raytracer::network
         /**
          * @return Socket's file descriptor
          */
-        [[nodiscard]] int getFd() const;
+        [[nodiscard]] int getFd() const { return this->_fd; }
 
-        [[nodiscard]] sockaddr_in& getAddress();
+        [[nodiscard]] sockaddr_in& getAddress() { return this->_address; }
 
         void startListening(int maxClients);
 
     protected:
         int _fd;
         sockaddr_in _address;
-        ByteBuffer _bufferCache;
+        ByteBuffer _readBuffer;
+        ByteBuffer _writeBuffer;
     };
 
 }
