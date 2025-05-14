@@ -9,7 +9,7 @@ VPATH	:= src/
 
 SRC	+= Main.cpp
 
-SRC += Renderer.cpp
+SRC += Renderer/Renderer.cpp
 
 SRC += Parser/Parser.cpp
 
@@ -43,7 +43,7 @@ SRC += Network/Client/Client.cpp \
 SRC += Network/Client/Packet/Handlers/Ping.cpp \
 	Network/Client/Packet/Handlers/Kiss.cpp \
 	Network/Client/Packet/Handlers/NvmStop.cpp \
-	Network/Client/Packet/Handlers/WorkSlave.cpp
+	Network/Client/Packet/Handlers/Workslave.cpp
 
 SRC += Network/Server/Server.cpp \
 	Network/Server/Cluster/Cluster.cpp \
