@@ -13,37 +13,69 @@ namespace raytracer::multithreading
     render
     (
         Renderer &renderer,
-        const int nbProcs
+        const int nbProcs,
+        const int tileWidth,
+        const int tileHeight,
+        const std::atomic<bool>& shouldStop
     )
     {
-        int last_y = 0;
-        int portion_size = std::floor(renderer.getHeight() / nbProcs);
-        std::vector<std::thread> threads;
-
         LOG_INFO("Starting render with " + std::to_string(nbProcs) + " threads.");
 
         if (nbProcs == 1) {
             renderer.render(
                 0, 0,
-                renderer.getWidth(), renderer.getHeight() - 1
+                renderer.getWidth(), renderer.getHeight() - 1,
+                shouldStop
             );
+            LOG_INFO("Render finished.");
             return;
         }
 
-        for (int i = 1; i < nbProcs + 1; i++) {
-            if (i == nbProcs) {
-                // threads.emplace_back(&Renderer::render, &renderer, last_y, renderer.getHeight() - 1);
-                LOG_DEBUG(std::format("thread n°{} rendering from {} to {}.", i, last_y, renderer.getHeight() - 1));
-            } else {
-                // threads.emplace_back(&Renderer::render, &renderer, last_y, portion_size * i);
-                LOG_DEBUG(std::format("thread n°{} rendering from {} to {}.", i, last_y, portion_size * i));
+        const int width = static_cast<int>(renderer.getWidth());
+        const int height = static_cast<int>(renderer.getHeight() - 1);
+
+        const int tilesX = (width + tileWidth - 1) / tileWidth;
+        const int tilesY = (height + tileHeight - 1) / tileHeight;
+
+        std::vector<renderer::Tile> tiles;
+
+        for (int y = 0; y < tilesY; y++) {
+            for (int x = 0; x < tilesX; x++) {
+                tiles.emplace_back(
+                    x * tileWidth,
+                    y * tileHeight,
+                    std::min(tileWidth, width - x * tileWidth),
+                    std::min(tileHeight, height - y * tileHeight)
+                );
             }
-            last_y = portion_size * i + 1;
         }
 
-        // TODO: SFML display
+        std::atomic<size_t> nextTile = 0;
+        std::vector<std::thread> threads;
 
-        for (auto& thread : threads) {
+        renderer.setTiles(std::move(tiles));
+        auto& tileList = renderer.getTiles();
+
+        for (int k = 0; k < nbProcs; ++k) {
+            threads.emplace_back([&, k]() {
+                while (shouldStop.load() == false) {
+                    const size_t index = nextTile.fetch_add(1);
+
+                    if (index >= tileList.size() || shouldStop.load() == true) {
+                        break;
+                    }
+
+                    renderer::Tile& tile = tileList.at(index);
+                    tile.threadNumber = k;
+
+                    renderer.render(tile, shouldStop);
+
+                    tile.threadNumber = -1; // done
+                }
+            });
+        }
+
+        for (auto& thread: threads) {
             thread.join();
         }
 
