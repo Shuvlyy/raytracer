@@ -4,9 +4,10 @@
 #include "Shape/Material/Material.hpp"
 
 #include <format>
-#include <iostream>
 
-namespace raytracer {
+namespace raytracer
+{
+
     Renderer::Renderer
     (
         const yml::Yml& yml
@@ -31,20 +32,12 @@ namespace raytracer {
         ));
     }
 
-    Renderer::Renderer
-    ()
-        : _width(0),
-          _height(0),
-          _settings{}
-    {
-    }
-
-
     void
     Renderer::render
     (
         const uint32_t x, const uint32_t y,
-        const uint32_t width, const uint32_t height
+        const uint32_t width, const uint32_t height,
+        const std::atomic<bool>& shouldStop
     )
         const
     {
@@ -58,6 +51,11 @@ namespace raytracer {
             return;
         }
 
+        LOG_DEBUG(std::format(
+            "Rendering image: x: {} y: {} width: {} height: {}",
+            x, y, width, height
+        ));
+
         // const uint32_t totalPixels = this->_width * this->_height;
 
         for (uint32_t j = y; j <= y + height; j++) {
@@ -65,6 +63,10 @@ namespace raytracer {
                 math::Color pixelColor;
 
                 for (size_t spl = 0; spl < this->_settings.antiAliasingSamples; spl++) {
+                    if (shouldStop.load() == true) {
+                        return;
+                    }
+
                     const double u = (i + math::randomDouble()) / this->_width;
                     const double v = (j + math::randomDouble()) / this->_height;
 
@@ -85,6 +87,17 @@ namespace raytracer {
                 //std::clog << "\r[" << std::to_string(progress) << "%]" << std::flush;
             }
         }
+    }
+
+    void
+    Renderer::render
+    (
+        const renderer::Tile &tile,
+        const std::atomic<bool> &shouldStop
+    )
+        const
+    {
+        this->render(tile.x, tile.y, tile.width, tile.height, shouldStop);
     }
 
     math::Color
