@@ -52,7 +52,7 @@ namespace raytracer::network
     void
     Socket::sendPacket
     (
-        const ByteBuffer &data
+        const ByteBuffer& data
     )
         const
     {
@@ -78,6 +78,7 @@ namespace raytracer::network
             LOG_DEBUG("Sent a packet of size " + std::to_string(size) + " (SFD: " + std::to_string(this->_fd) + ")");
 
             LOG_DEBUG("Packet Type: " + network::Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0])));
+            LOG_DEBUG("Packet Content:");
             for (std::size_t i = 0; i < size; ++i) {
                 LOG_DEBUG("\t" + std::to_string(i) + ". [" + std::format("0x{:02X}", data[i]) + "]");
             }
@@ -168,7 +169,7 @@ namespace raytracer::network
     {
         if (bind(
             this->_fd,
-            reinterpret_cast<sockaddr *>(&this->_address),
+            reinterpret_cast<sockaddr*>(&this->_address),
             sizeof(this->_address)
         ) < 0) {
             this->closeSocket();
@@ -181,7 +182,7 @@ namespace raytracer::network
         }
     }
 
-    sockaddr_in &
+    sockaddr_in&
     Socket::getAddress
     ()
     {

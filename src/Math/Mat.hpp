@@ -144,7 +144,8 @@ namespace raytracer::math
          * @param   row Row index
          * @returns A const reference to the specified row.
          */
-        const std::array<T, N>& operator[](std::size_t row) const { return _data[row]; }
+        const std::array<T, N>& operator[](std::size_t row) const
+            { return _data[row]; }
 
     private:
         std::array<std::array<T, N>, N> _data;

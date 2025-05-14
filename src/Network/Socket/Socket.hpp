@@ -34,7 +34,7 @@ namespace raytracer::network
         /**
          * @param   data        Data to write
          */
-        void sendPacket(const ByteBuffer &data) const;
+        void sendPacket(const ByteBuffer& data) const;
 
         /**
          * Reads from the file descriptor and returns its content.
@@ -51,14 +51,14 @@ namespace raytracer::network
          */
         [[nodiscard]] int getFd() const;
 
-        [[nodiscard]] sockaddr_in &getAddress();
+        [[nodiscard]] sockaddr_in& getAddress();
 
         void startListening(int maxClients);
 
     protected:
         int _fd;
         sockaddr_in _address;
-        std::vector<uint8_t> _bufferCache;
+        ByteBuffer _bufferCache;
     };
 
 }
