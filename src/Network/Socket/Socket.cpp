@@ -104,13 +104,21 @@ namespace raytracer::network
                 );
             }
 
+
             LOG_DEBUG("Sent a packet of size " + std::to_string(size) + " (SFD: " + std::to_string(this->_fd) + ")");
 
-            LOG_DEBUG("Packet Type: " + network::Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0])));
-            LOG_DEBUG("Packet Content:");
-            for (std::size_t i = 0; i < size; ++i) {
-                LOG_DEBUG("\t" + std::to_string(i) + ". [" + std::format("0x{:02X}", data[i]) + "]");
+            const std::string type = Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0]));
+            std::string content;
+
+            for (uint16_t i = 0; i < size; ++i) {
+                content += std::format("{:02X}{}", data[i], i == size - 1 ? "" : " ");
             }
+
+            LOG_DEBUG(
+                "Packet details:\n"
+                "\tType: " + type + "\n"
+                "\tContent: [" + content + "]"
+            );
         }
         catch (exception::IException &exception) {
             LOG_ERR("Error while sending packet (SFD: " + std::to_string(this->_fd) + "): " + exception.what());
@@ -178,10 +186,18 @@ namespace raytracer::network
 
                 LOG_DEBUG("Client (SFD: " + std::to_string(this->_fd) + ") received a packet of size " + std::to_string(packetSize));
 
-                LOG_DEBUG("Packet Type: " + Packet::fromTypeToString(Packet::fromRawTypeToType(packet[0])));
-                for (std::size_t i = 0; i < packetSize; ++i) {
-                    LOG_DEBUG("\t" + std::to_string(i) + ". [" + std::format("0x{:02X}", packet[i]) + "]");
+                const std::string type = Packet::fromTypeToString(Packet::fromRawTypeToType(packet[0]));
+                std::string content;
+
+                for (uint16_t i = 0; i < packetSize; ++i) {
+                    content += std::format("{:02X}{}", packet[i], i == packetSize - 1 ? "" : " ");
                 }
+
+                LOG_DEBUG(
+                    "Packet details:\n"
+                    "\tType: " + type + "\n"
+                    "\tContent: [" + content + "]"
+                );
 
                 return packet;
             }
