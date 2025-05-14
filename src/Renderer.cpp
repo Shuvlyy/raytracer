@@ -9,7 +9,7 @@
 namespace raytracer {
     Renderer::Renderer
     (
-        const yml::Yml &yml
+        const yml::Yml& yml
     )
         : _camera(Camera::fromConfig(yml)),
           _scene(yml),
