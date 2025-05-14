@@ -36,39 +36,39 @@ namespace raytracer
     void
     Renderer::render
     (
-        const uint32_t fromY,
-        const uint32_t toY
+        const uint32_t x, const uint32_t y,
+        const uint32_t width, const uint32_t height
     )
         const
     {
-        if (fromY >= this->_height) {
-            LOG_FATAL("fromY is out of bounds.");
+        if (x > this->_width || y > this->_height ||
+            width + x > this->_width || height + y > this->_height) {
+            LOG_FATAL(std::format(
+                "Rectangle to render is out of bounds.\n"
+                "x: {}, y: {}, width: {}, height: {}.",
+                x, y, width, height
+            ));
             return;
         }
 
-        if (toY >= this->_height) {
-            LOG_FATAL("toY is out of bounds.");
-            return;
-        }
+        // const uint32_t totalPixels = this->_width * this->_height;
 
-        //const uint32_t totalPixels = this->_width * this->_height;
-
-        for (uint32_t y = fromY; y <= toY; y++) {
-            for (uint32_t x = 0; x < this->_width; x++) {
+        for (uint32_t j = y; j <= y + height; j++) {
+            for (uint32_t i = x; i < x + width; i++) {
                 math::Color pixelColor;
 
                 for (size_t spl = 0; spl < this->_settings.antiAliasingSamples; spl++) {
-                    const double u = (x + math::randomDouble()) / this->_width;
-                    const double v = (y + math::randomDouble()) / this->_height;
+                    const double u = (i + math::randomDouble()) / this->_width;
+                    const double v = (j + math::randomDouble()) / this->_height;
 
                     math::Ray ray = this->_camera.ray(u, v);
                     pixelColor += computeColor(ray, this->_settings.maxBounces);
                 }
 
-                pixelColor *= 1.0 / this->_settings.antiAliasingSamples;
+                pixelColor *= 1.0 / static_cast<double>(this->_settings.antiAliasingSamples);
                 pixelColor.clamp(0.0, 1.0);
 
-                this->_render->setAt(x, y, pixelColor);
+                this->_render->setAt(i, j, pixelColor);
 
                 //const uint32_t currentPixel = y * this->_width + x;
                 // const auto progress = static_cast<uint8_t>(

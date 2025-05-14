@@ -24,7 +24,10 @@ namespace raytracer
     public:
         explicit Renderer(const yml::Yml& yml);
 
-        void render(uint32_t fromY, uint32_t toY) const;
+        void render(
+            uint32_t x, uint32_t y,
+            uint32_t width, uint32_t height
+        ) const;
 
         [[nodiscard]] uint32_t getWidth() const { return this->_width; }
         [[nodiscard]] uint32_t getHeight() const { return this->_height; }
