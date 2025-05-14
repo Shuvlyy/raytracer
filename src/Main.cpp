@@ -10,6 +10,8 @@
 #include <iostream>
 #include <filesystem>
 
+#define PROJECT_NAME    "Raytracer"
+
 using namespace raytracer;
 
 int
@@ -30,7 +32,11 @@ main
 
         const std::string sceneFilepath = attributes.sceneFilepath;
 
-        Logger::init(attributes.debugMode ? logger::Level::DEBUG : logger::Level::INFO);
+        Logger::init(
+            PROJECT_NAME,
+            argc, const_cast<const char **>(argv),
+            attributes.debugMode ? logger::Level::DEBUG : logger::Level::INFO
+        );
 
         const std::unique_ptr<App> app = app::fromAttributes(attributes);
         app->run();

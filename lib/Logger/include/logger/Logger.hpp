@@ -42,7 +42,9 @@ namespace logger
 }
 
 /**
- * Thread-safe singleton Logger class that writes to both console and file.
+ * Defines a Logger class responsible for logging messages with varying
+ * severity levels, writing to both console and file, and providing formatting
+ * utilities for log details.
  */
 class Logger final
 {
@@ -57,6 +59,9 @@ public:
      * @param   minimumLevel    Minimum log level to be recorded
      */
     static void init(
+        const std::string& projectName,
+        int argc,
+        const char* argv[],
         logger::Level minimumLevel = logger::Level::INFO
     );
 
@@ -138,11 +143,12 @@ protected:
     );
 
     /**
-     * Generates the full log file path with timestamp.
+     * Generates the full log file path with the project name and timestamp.
      *
+     * @param   projectName Name of the project that is being logged
      * @returns The full path to the log file
      */
-    static std::string generateLogFile();
+    static std::string generateLogFile(const std::string& projectName);
 
     /**
      * Writes the log message to console and file, depending on level.
@@ -157,7 +163,26 @@ protected:
         const std::source_location &loc
     );
 
+
+    /**
+     * Writes the header information to the log file including project name,
+     * command line arguments, system information (OS name, kernel version),
+     * and minimum log level configuration. Also includes a random quote for
+     * entertainment :)
+     *
+     * @param   projectName Name of the project that is being logged
+     * @param   argc        Number of command line arguments
+     * @param   argv        Array of command line argument strings
+     */
+    void writeHeader(
+        const std::string& projectName,
+        int argc,
+        const char* argv[]
+    );
+
 private:
     static Logger *INSTANCE;
     static std::recursive_mutex MUTEX;
+
+    static std::string getRandomQuote();
 };
