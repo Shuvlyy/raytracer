@@ -83,12 +83,12 @@ namespace raytracer::network
         pfd.fd = this->_socket.getFd();
         pfd.events = POLLIN;
 
-        while (this->_running) {
+        while (true) {
             try {
                 if (!this->_toSend.empty()) {
                     sendPacket(this->_toSend.pop());
                 }
-                if (poll(&pfd, 1, POLL_TIMEOUT) < 0) {
+                if (poll(&pfd, 1, -1) < 0) {
                     throw exception::StandardFunctionFail("poll");
                 }
                 if (!(pfd.revents & POLLIN)) {

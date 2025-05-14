@@ -25,6 +25,7 @@ namespace raytracer::network
             ~Client();
 
             void run();
+            void stop() { this->_running = false; }
 
             [[nodiscard]] Socket getSocket() const {return this->_socket;}
             [[nodiscard]] int getFd() const {return this->_socket.getFd();}
