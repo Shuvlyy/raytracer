@@ -1,10 +1,9 @@
-#include "Exception/Exceptions/EmptyPacket.hpp"
-#include "Exception/Exceptions/ServerDisconnected.hpp"
-#include "Exception/Exceptions/StandardFunctionFail.hpp"
+#include "Network/Client/Packet/IHandler.hpp"
 
 #include "Client.hpp"
 
 #include <poll.h>
+#include <thread>
 
 namespace raytracer::app
 {
@@ -20,16 +19,23 @@ namespace raytracer::app
     void
     Client::run()
     {
-        this->_running = true;
         LOG_INFO("Client running...");
-        this->_client.run();
+        this->_running = true;
+        std::thread th(&network::Client::run, &this->_client);
+        while (this->_running) {
+            if (this->_client.hasPacketToProcess()) {
+                auto packet = this->_client.popPacket();
+                this->_manager.dispatchPacket(*packet, *this);
+            }
+        }
     }
 
     void
     Client::stop()
     {
-        this->_running = false;
         LOG_INFO("Client stopping...");
+        this->_running = false;
+        this->_client.stop();
     }
 
 }
