@@ -1,13 +1,17 @@
 #pragma once
 
-#include "Network/Packet/Packet.hpp"
-#include "Network/Client/Packet/IHandler.hpp"
-
 #include <memory>
 #include <unordered_map>
 
+namespace raytracer::app {
+
+    class Client;
+
+}
+
 namespace raytracer::network::packet::client
 {
+    class IHandler;
 
     class Manager final
     {
@@ -16,7 +20,7 @@ namespace raytracer::network::packet::client
 
         void dispatchPacket(
             const Packet &packet,
-            Client &cli
+            app::Client &cli
         ) const;
 
     private:

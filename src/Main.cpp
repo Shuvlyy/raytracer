@@ -5,6 +5,8 @@
 #include "Renderer.hpp"
 #include "Factory/AppFactory.hpp"
 
+#include "Network/Client/Packet/IHandler.hpp"
+
 #include <iostream>
 #include <filesystem>
 

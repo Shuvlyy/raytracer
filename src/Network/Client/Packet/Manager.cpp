@@ -2,6 +2,7 @@
 #include "Network/Client/Packet/Handlers/Kiss.hpp"
 #include "Network/Client/Packet/Handlers/NvmStop.hpp"
 #include "Network/Client/Packet/Handlers/WorkSlave.hpp"
+#include "Network/Client/Packet/IHandler.hpp"
 
 #include "Network/Packet/Packet.hpp"
 
@@ -21,7 +22,7 @@ namespace raytracer::network::packet::client
     Manager::dispatchPacket
     (
         const Packet &packet,
-        Client &cli
+        app::Client &cli
     )
         const
     {

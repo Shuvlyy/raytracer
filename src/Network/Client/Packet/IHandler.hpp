@@ -2,7 +2,8 @@
 
 #define TRIGGER_RET [[nodiscard]] virtual Type getTrigger() const
 
-#include "Network/Client/Client.hpp"
+#include "Network/Packet/Packet.hpp"
+#include "App/Client/Client.hpp"
 
 namespace raytracer::network::packet::client
 {
@@ -14,7 +15,7 @@ namespace raytracer::network::packet::client
 
         virtual void handle(
             const Packet& packet,
-            Client &cli
+             app::Client &cli
         ) const = 0;
 
         TRIGGER_RET = 0;

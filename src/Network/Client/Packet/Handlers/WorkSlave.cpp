@@ -9,7 +9,7 @@ namespace raytracer::network::packet::client::handler
     WorkSlave::handle
     (
         const Packet &packet,
-        Client &cli
+        app::Client &cli
     )
         const
     {

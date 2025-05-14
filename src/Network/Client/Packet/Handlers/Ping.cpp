@@ -11,7 +11,7 @@ namespace raytracer::network::packet::client::handler
     Ping::handle
     (
         const Packet &packet,
-        Client &cli
+        app::Client &cli
     )
         const
     {

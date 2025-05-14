@@ -11,7 +11,7 @@ namespace raytracer::network::packet::client::handler
     public:
         void handle(
             const Packet &packet,
-            Client &cli
+            app::Client &cli
         ) const override;
 
         [[nodiscard]] Type getTrigger()
