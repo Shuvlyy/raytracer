@@ -2,8 +2,9 @@
 
 #include "logger/Logger.hpp"
 
-#include "Handlers/Ping.hpp"
 #include "Handlers/Pong.hpp"
+#include "Handlers/Cestciao.hpp"
+#include "Handlers/Finito.hpp"
 
 namespace raytracer::network::packet::server
 {
@@ -41,8 +42,9 @@ namespace raytracer::network::packet::server
     Manager::registerHandlers
     ()
     {
-        this->registerHandler(std::make_unique<handler::Ping>());
         this->registerHandler(std::make_unique<handler::Pong>());
+        this->registerHandler(std::make_unique<handler::Cestciao>());
+        this->registerHandler(std::make_unique<handler::Finito>());
     }
 
     void
