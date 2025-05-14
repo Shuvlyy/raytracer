@@ -14,6 +14,7 @@ namespace raytracer
     {
     public:
         explicit Scene(const yml::Yml &config);
+        explicit Scene() = default;
 
         [[nodiscard]] bool hits(const math::Ray& ray, HitResult& res) const;
 

@@ -6,9 +6,7 @@
 #include <format>
 #include <iostream>
 
-namespace raytracer
-{
-
+namespace raytracer {
     Renderer::Renderer
     (
         const yml::Yml &yml
@@ -32,6 +30,15 @@ namespace raytracer
             this->_settings.antiAliasingSamples, this->_settings.maxBounces
         ));
     }
+
+    Renderer::Renderer
+    ()
+        : _width(0),
+          _height(0),
+          _settings{}
+    {
+    }
+
 
     void
     Renderer::render

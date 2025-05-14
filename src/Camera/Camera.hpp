@@ -32,6 +32,9 @@ namespace raytracer
         double lensRadius;
 
         explicit Camera(const camera::Settings& settings);
+        explicit Camera() :
+            lensRadius(0)
+        {}
 
         static Camera fromConfig(const yml::Yml& config);
 

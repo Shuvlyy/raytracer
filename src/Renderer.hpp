@@ -23,6 +23,9 @@ namespace raytracer
     {
     public:
         explicit Renderer(const yml::Yml& yml);
+        explicit Renderer();
+
+        static Renderer fromConfig(const yml::Yml& yml) {return Renderer(yml);}
 
         void render(
             uint32_t x, uint32_t y,
