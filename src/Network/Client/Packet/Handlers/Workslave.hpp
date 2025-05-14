@@ -5,7 +5,7 @@
 namespace raytracer::network::packet::client::handler
 {
 
-    class WorkSlave final
+    class Workslave final
         : public IHandler
     {
     public:

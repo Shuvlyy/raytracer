@@ -1,4 +1,5 @@
 #include "Kiss.hpp"
+#include "Network/Packet/Packets/Kiss.hpp"
 #include "logger/Logger.hpp"
 
 namespace raytracer::network::packet::client::handler
@@ -14,6 +15,7 @@ namespace raytracer::network::packet::client::handler
     {
         LOG_DEBUG("[packet::handler::KISS] Called.");
 
+        cli.stop();
     }
 
 }

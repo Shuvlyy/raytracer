@@ -1,7 +1,7 @@
 #include "Network/Client/Packet/Handlers/Ping.hpp"
 #include "Network/Client/Packet/Handlers/Kiss.hpp"
 #include "Network/Client/Packet/Handlers/NvmStop.hpp"
-#include "Network/Client/Packet/Handlers/WorkSlave.hpp"
+#include "Network/Client/Packet/Handlers/Workslave.hpp"
 #include "Network/Client/Packet/IHandler.hpp"
 
 #include "Network/Packet/Packet.hpp"
@@ -45,7 +45,7 @@ namespace raytracer::network::packet::client
         this->registerHandler(std::make_unique<handler::Ping>());
         this->registerHandler(std::make_unique<handler::Kiss>());
         this->registerHandler(std::make_unique<handler::NvmStop>());
-        this->registerHandler(std::make_unique<handler::WorkSlave>());
+        this->registerHandler(std::make_unique<handler::Workslave>());
     }
 
     void
