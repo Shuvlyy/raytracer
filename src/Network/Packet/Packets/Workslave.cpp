@@ -11,11 +11,13 @@ namespace raytracer::network::packet
     Workslave::Workslave
     (
         const std::string& sceneContent,
-        const uint32_t fromY,
-        const uint32_t toY
+        const uint32_t x,
+        const uint32_t y,
+        const uint32_t width,
+        const uint32_t height
     ) : Packet(Type::WORKSLAVE),
         _sceneContent(sceneContent),
-        _fromY(fromY), _toY(toY)
+        _x(x), _y(y), _width(width), _height(height)
     {}
 
     ByteBuffer
@@ -27,8 +29,10 @@ namespace raytracer::network::packet
 
         s.write<uint8_t>(static_cast<uint8_t>(this->_type));
         s.write(this->_sceneContent);
-        s.write<uint32_t>(this->_fromY);
-        s.write<uint32_t>(this->_toY);
+        s.write<uint32_t>(this->_x);
+        s.write<uint32_t>(this->_y);
+        s.write<uint32_t>(this->_width);
+        s.write<uint32_t>(this->_height);
         return s.data();
     }
 
@@ -45,8 +49,10 @@ namespace raytracer::network::packet
         const Type type = fromRawTypeToType(rawType);
 
         this->_sceneContent = d.readString();
-        this->_fromY = d.read<uint32_t>();
-        this->_toY = d.read<uint32_t>();
+        this->_x = d.read<uint32_t>();
+        this->_y = d.read<uint32_t>();
+        this->_width = d.read<uint32_t>();
+        this->_height = d.read<uint32_t>();
 
         if (d.hasRemaining()) {
             throw exception::UnexpectedRemainingData(type);

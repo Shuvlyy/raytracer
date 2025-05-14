@@ -14,22 +14,24 @@ namespace raytracer::network::packet
     public:
         explicit Workslave(
             const std::string& sceneContent = "",
-            uint32_t fromY = 0,
-            uint32_t toY = 0
+            uint32_t x = 0,
+            uint32_t y = 0,
+            uint32_t width = 0,
+            uint32_t height = 0
         );
 
         [[nodiscard]] ByteBuffer serialize() const override;
         void deserialize(const uint8_t* data, size_t size) override;
 
-        void setSceneContent(const std::string& sceneContent)
-            { this->_sceneContent = sceneContent; }
-        void setFromY(const uint32_t fromY) { this->_fromY = fromY; }
-        void setToY(const uint32_t toY) { this->_toY = toY; }
+        [[nodiscard]] std::string getSceneContent() const { return this->_sceneContent; }
+        [[nodiscard]] uint32_t getX() const { return this->_x; }
+        [[nodiscard]] uint32_t getY() const { return this->_y; }
+        [[nodiscard]] uint32_t getWidth() const { return this->_width; }
+        [[nodiscard]] uint32_t getHeight() const { return this->_height; }
 
     private:
         std::string _sceneContent;
-        uint32_t _fromY;
-        uint32_t _toY;
+        uint32_t _x, _y, _width, _height;
     };
 
 }
