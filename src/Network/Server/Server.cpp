@@ -32,7 +32,7 @@ namespace raytracer::network
             static_cast<uint16_t>(config["maxClients"].as<int>()),
         };
 
-        this->_properties.heartbeatFrequency = config["heartbeatFrequency"].as<int>() * 1000;
+        this->_properties.heartbeatFrequency = config["heartbeatFrequency"].as<int>();
 
         this->_cluster = server::Cluster(this->_properties.heartbeatFrequency);
 
@@ -81,12 +81,11 @@ namespace raytracer::network
             "\tDescription: \"" + this->_settings.serverDescription + "\"\n"
             "\tMax clients: " + std::to_string(this->_settings.maxClients) + "\n"
             "\tScene filepath: \"" + this->_properties.sceneFilepath + "\"\n"
-            "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency / 1000) + "s"
+            "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency) + "s"
         );
 
         while (true) {
             this->_cluster.update(0);
-            // this->_game.update(dt.count());
 
             // if (this->_game.getData().state == server::game::DEADASS) {
                 // break;
@@ -95,7 +94,7 @@ namespace raytracer::network
             const int ret = poll(
                 this->_pollFds.data(),
                 this->_pollFds.size(),
-                this->_properties.heartbeatFrequency
+                this->_properties.heartbeatFrequency * 1000
             );
 
             if (!this->_isRunning) {
