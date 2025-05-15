@@ -51,7 +51,7 @@ namespace raytracer::network::packet::client::handler
 
         const auto &p = reinterpret_cast<const packet::Workslave &>(packet);
         cli.setRenderer(yml::Yml(p.getSceneContent(), true));
-        std::thread(&renderAndSendResult, std::ref(cli), p);
+        std::thread(&renderAndSendResult, std::ref(cli), p).detach();
     }
 
 }
