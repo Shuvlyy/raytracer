@@ -9,13 +9,12 @@
 namespace raytracer::multithreading
 {
 
-    void
-    render
+        void
+        render
     (
         Renderer &renderer,
         const int nbProcs,
-        const int tileWidth,
-        const int tileHeight,
+        const renderer::Tile &tileToRender,
         const std::atomic<bool>& shouldStop
     )
     {
@@ -24,28 +23,28 @@ namespace raytracer::multithreading
         if (nbProcs == 1) {
             renderer.render(
                 0, 0,
-                renderer.getWidth(), renderer.getHeight() - 1,
+                tileToRender.width, tileToRender.height - 1,
                 shouldStop
             );
             LOG_INFO("Render finished.");
             return;
         }
 
-        const int width = static_cast<int>(renderer.getWidth());
-        const int height = static_cast<int>(renderer.getHeight() - 1);
+        const uint32_t tileWidth = 64;
+        const uint32_t tileHeight = 64;
 
-        const int tilesX = (width + tileWidth - 1) / tileWidth;
-        const int tilesY = (height + tileHeight - 1) / tileHeight;
+        const uint32_t tilesX = (tileToRender.width + tileWidth - 1) / tileWidth;
+        const uint32_t tilesY = (tileToRender.height + tileHeight - 1) / tileHeight;
 
         std::vector<renderer::Tile> tiles;
 
-        for (int y = 0; y < tilesY; y++) {
-            for (int x = 0; x < tilesX; x++) {
+        for (uint32_t y = 0; y < tilesY; y++) {
+            for (uint32_t x = 0; x < tilesX; x++) {
                 tiles.emplace_back(
                     x * tileWidth,
                     y * tileHeight,
-                    std::min(tileWidth, width - x * tileWidth),
-                    std::min(tileHeight, height - y * tileHeight)
+                    std::min(tileWidth, tileToRender.width - x * tileWidth),
+                    std::min(tileHeight, tileToRender.height - y * tileHeight)
                 );
             }
         }

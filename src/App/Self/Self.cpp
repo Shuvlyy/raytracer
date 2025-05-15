@@ -31,11 +31,13 @@ namespace raytracer::app
     {
         namespace fs = std::filesystem;
 
+        renderer::Tile tile(0, 0, this->_renderer.getWidth(), this->_renderer.getHeight() - 1);
+
         std::thread renderThread(
             &multithreading::render,
             std::ref(this->_renderer),
             this->_attributes.threadsAmount,
-            64, 64,
+            std::ref(tile),
             std::ref(this->_shouldStop)
         );
 

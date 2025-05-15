@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Renderer/Renderer.hpp"
+#include "Renderer/Tile.hpp"
 
 namespace raytracer::multithreading
 {
@@ -8,9 +9,7 @@ namespace raytracer::multithreading
     void render(
         Renderer &renderer,
         int nbProcs,
-        int tileWidth,
-        int tileHeight,
+        const renderer::Tile &tileToRender,
         const std::atomic<bool>& shouldStop
     );
-
 }
