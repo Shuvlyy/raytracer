@@ -92,7 +92,7 @@ namespace raytracer::network
                 if (!this->_toSend.empty()) {
                     sendPacket(this->_toSend.pop());
                 }
-                if (poll(&pfd, 1, -1) < 0) {
+                if (poll(&pfd, 1, 200) < 0) {
                     throw exception::StandardFunctionFail("poll");
                 }
                 if (!(pfd.revents & POLLIN)) {
