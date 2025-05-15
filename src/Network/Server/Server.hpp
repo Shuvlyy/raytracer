@@ -56,6 +56,7 @@ namespace raytracer::network
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
         [[nodiscard]] server::Cluster& getCluster() { return this->_cluster; }
+        [[nodiscard]] yml::Yml getConfig() const { return this->_config; }
 
     private:
         server::Properties _properties;
@@ -66,6 +67,7 @@ namespace raytracer::network
         packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
         server::Cluster _cluster;
+        yml::Yml _config;
 
         void handleNewConnection();
         void handleClientRequest(Socket &clientSocket);

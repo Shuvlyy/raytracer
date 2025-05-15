@@ -23,17 +23,16 @@ namespace raytracer::network
           _isRunning(false),
           _serverSocket(this->_properties.port),
           _packetManager(*this),
-          _cluster(*this)
+          _cluster(*this),
+          _config(this->_properties.configurationFilePath)
     {
-        yml::Yml config(this->_properties.configurationFilePath);
-
         this->_settings = {
-            config["serverName"].as<std::string>(),
-            config["serverDescription"].as<std::string>(),
-            static_cast<uint16_t>(config["maxClients"].as<int>()),
+            this->_config["serverName"].as<std::string>(),
+            this->_config["serverDescription"].as<std::string>(),
+            static_cast<uint16_t>(this->_config["maxClients"].as<int>()),
         };
 
-        this->_properties.heartbeatFrequency = config["heartbeatFrequency"].as<int>();
+        this->_properties.heartbeatFrequency = this->_config["heartbeatFrequency"].as<int>();
         this->_cluster.setHeartbeatFrequency(this->_properties.heartbeatFrequency);
 
         // std::string configPath = properties.configurationFilePath;
@@ -86,10 +85,6 @@ namespace raytracer::network
 
         while (true) {
             this->_cluster.update(0);
-
-            // if (this->_game.getData().state == server::game::DEADASS) {
-                // break;
-            // }
 
             const int ret = poll(
                 this->_pollFds.data(),
@@ -168,13 +163,6 @@ namespace raytracer::network
 
         server::Session& session = this->_sessionManager.getSession(clientSocket);
         this->_cluster.addSlave(session);
-
-        // const server::packet::Hi hiPacket(
-        //     session.getId(),
-        //     this->_game.getSettings().getMap()
-        // );
-
-        // session.getControlSocket().sendPacket(hiPacket.serialize());
 
         LOG_INFO("Client (SFD: " + std::to_string(clientFd) + ") connected.");
     }
