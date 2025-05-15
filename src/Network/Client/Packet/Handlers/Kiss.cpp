@@ -8,7 +8,7 @@ namespace raytracer::network::packet::client::handler
     void
     Kiss::handle
     (
-        const Packet &packet,
+        const Packet &,
         app::Client &cli
     )
         const
