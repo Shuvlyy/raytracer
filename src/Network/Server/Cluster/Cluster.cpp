@@ -34,6 +34,8 @@ namespace raytracer::network::server
             this->_state = cluster::State::RENDERING;
 
             for (auto& [_, s] : this->_slaves) {
+                s.get().setState(session::State::RENDERING);
+
                 packet::Workslave p(this->_server.getSceneConfig().getRawContent(), 0, 0, 640, 480);
 
                 s.get().getControlSocket().sendPacket(p.serialize());
