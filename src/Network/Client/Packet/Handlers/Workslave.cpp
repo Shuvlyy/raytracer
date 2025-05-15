@@ -25,7 +25,7 @@ namespace raytracer::network::packet::client::handler
             std::ref(tile),
             std::ref(cli.shouldStop())
         );
-        if (cli.shouldStop().load != true)
+        if (cli.shouldStop().load() != true)
             cli.push(std::make_unique<Finito>(cli.getRenderer().getRender()->getData()));
     }
 
@@ -37,7 +37,7 @@ namespace raytracer::network::packet::client::handler
     )
         const
     {
-        LOG_DEBUG("[packet::handler::WORKSLAVE] Called.");
+        LOG_DEBUG("Called.");
 
         const auto &p = reinterpret_cast<const packet::Workslave &>(packet);
         cli.setRenderer(yml::Yml(p.getSceneContent()));
