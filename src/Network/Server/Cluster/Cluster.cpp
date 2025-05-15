@@ -16,13 +16,7 @@ namespace raytracer::network::server
         : _server(server),
           _state(cluster::State::WAITING),
           _heartbeatFrequency(0)
-    {
-        const yml::Node res = server.getSceneConfig()["camera"]["resolution"];
-        const uint32_t width = res["width"].as<int>();
-        const uint32_t height = res["height"].as<int>();
-
-        this->_result = std::make_unique<image::Ppm>(width, height);
-    }
+    {}
 
     void
     Cluster::update()
@@ -133,4 +127,8 @@ namespace raytracer::network::server
         this->_slaves.erase(session.getId());
     }
 
+    void Cluster::setupImageOutput(uint32_t width, uint32_t height)
+    {
+        this->_result = std::make_unique<image::Ppm>(width, height);
+    }
 }

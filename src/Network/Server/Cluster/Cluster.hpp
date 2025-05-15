@@ -34,6 +34,8 @@ namespace raytracer::network::server
         void addSlave(Session& session);
         void removeSlave(const Session& session);
 
+        void setupImageOutput(uint32_t width, uint32_t height);
+
         [[nodiscard]] int getHeartbeatFrequency() const
             { return this->_heartbeatFrequency; }
         void setHeartbeatFrequency(const int heartbeatFrequency)

@@ -20,11 +20,11 @@ namespace raytracer::network
         server::Properties properties
     )
         : _properties(std::move(properties)),
+          _sceneConfig(this->_properties.sceneFilepath),
           _isRunning(false),
           _serverSocket(this->_properties.port),
           _packetManager(*this),
-          _cluster(*this),
-          _sceneConfig(this->_properties.sceneFilepath)
+          _cluster(*this)
     {
         auto serverConfig = yml::Yml(this->_properties.configurationFilePath);
 
@@ -84,6 +84,12 @@ namespace raytracer::network
             "\tScene filepath: \"" + this->_properties.sceneFilepath + "\"\n"
             "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency) + "s"
         );
+
+        const yml::Node res = this->_sceneConfig["camera"]["resolution"];
+        const uint32_t width = res["width"].as<int>();
+        const uint32_t height = res["height"].as<int>();
+
+        this->_cluster.setupImageOutput(width, height);
 
         while (true) {
             this->_cluster.update();

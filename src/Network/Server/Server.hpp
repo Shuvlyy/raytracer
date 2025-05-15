@@ -51,23 +51,23 @@ namespace raytracer::network
 
         [[nodiscard]] server::Properties& getProperties() { return this->_properties; }
         [[nodiscard]] server::Settings& getSettings() { return this->_settings; }
+        [[nodiscard]] yml::Yml getSceneConfig() const { return this->_sceneConfig; }
         [[nodiscard]] bool isRunning() const { return this->_isRunning; }
         [[nodiscard]] Socket& getServerSocket() { return this->_serverSocket; }
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
         [[nodiscard]] server::Cluster& getCluster() { return this->_cluster; }
-        [[nodiscard]] yml::Yml getSceneConfig() const { return this->_sceneConfig; }
 
     private:
         server::Properties _properties;
         server::Settings _settings;
+        yml::Yml _sceneConfig;
         bool _isRunning;
         Socket _serverSocket;
         std::vector<pollfd> _pollFds;
         packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
         server::Cluster _cluster;
-        yml::Yml _sceneConfig;
 
         void handleNewConnection();
         void handleClientRequest(Socket &clientSocket);
