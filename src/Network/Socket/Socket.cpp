@@ -51,67 +51,52 @@ namespace raytracer::network
         const
     {
         if (this->_fd == -1 || data.empty()) {
+            LOG_WARN("Skipping send: invalid fd or empty data");
             return;
         }
 
         try {
             auto& self = const_cast<Socket&>(*this);
+            size_t offset = 0;
 
-            const auto size = static_cast<uint16_t>(data.size());
-            const uint8_t header[HEADER_SIZE] = {
-                static_cast<uint8_t>((size >> 8) & 0xFF),
-                static_cast<uint8_t>(size & 0xFF)
-            };
-
-            self._writeBuffer.insert(
-                self._writeBuffer.end(),
-                header, header + HEADER_SIZE
-            );
-            self._writeBuffer.insert(
-                self._writeBuffer.end(),
-                data.begin(), data.end()
-            );
-
-            while (!self._writeBuffer.empty()) {
-                pollfd pfd = {
-                    .fd = this->_fd,
-                    .events = POLLOUT,
-                    .revents = 0
+            while (offset < data.size()) {
+                const size_t chunkSize = std::min(CHUNK_SIZE, data.size() - offset);
+                const uint8_t header[HEADER_SIZE] = {
+                    static_cast<uint8_t>((chunkSize >> 8) & 0xFF),
+                    static_cast<uint8_t>(chunkSize & 0xFF)
                 };
 
-                const int res = poll(&pfd, 1, 1000);
-
-                if (res < 0) {
-                    throw exception::StandardFunctionFail("poll (write)");
-                }
-                if (res == 0 || !(pfd.revents & POLLOUT)) {
-                    continue;
-                }
-
-                const ssize_t bytesWritten = write(
-                    this->_fd,
-                    self._writeBuffer.data(),
-                    self._writeBuffer.size()
+                self._writeBuffer.insert(
+                    self._writeBuffer.end(),
+                    header,
+                    header + HEADER_SIZE
                 );
 
-                if (bytesWritten < 0) {
-                    throw exception::StandardFunctionFail("write");
-                }
-
-                self._writeBuffer.erase(
-                    self._writeBuffer.begin(),
-                    self._writeBuffer.begin() + bytesWritten
+                self._writeBuffer.insert(
+                    self._writeBuffer.end(),
+                    data.begin() + offset,
+                    data.begin() + offset + chunkSize
                 );
+
+                self.flushWriteBuffer();
+
+                offset += chunkSize;
             }
 
+            self._writeBuffer.insert(
+                self._writeBuffer.end(),
+                END_HEADER.begin(),
+                END_HEADER.end()
+            );
 
-            LOG_DEBUG("Sent a packet of size " + std::to_string(size) + " (SFD: " + std::to_string(this->_fd) + ")");
+            self.flushWriteBuffer();
+
+            LOG_DEBUG("Sent a packet of size " + std::to_string(data.size()) + " (SFD: " + std::to_string(this->_fd) + ")");
 
             const std::string type = Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0]));
             std::string content;
-
-            for (uint16_t i = 0; i < size; ++i) {
-                content += std::format("{:02X}{}", data[i], i == size - 1 ? "" : " ");
+            for (uint16_t i = 0; i < data.size(); ++i) {
+                content += std::format("{:02X}{}", data[i], i == data.size() - 1 ? "" : " ");
             }
 
             LOG_DEBUG(
@@ -129,6 +114,8 @@ namespace raytracer::network
     Socket::receivePacket
     ()
     {
+        ByteBuffer packet;
+
         while (true) {
             if (this->_fd == -1) {
                 return {}; // Empty ByteBuffer
@@ -166,40 +153,55 @@ namespace raytracer::network
             );
 
             while (this->_readBuffer.size() >= HEADER_SIZE) {
-                const uint16_t packetSize =
-                    (static_cast<uint16_t>(this->_readBuffer[0]) << 8) +
-                    this->_readBuffer[1];
+                uint16_t chunkSize =
+                    (static_cast<uint16_t>(this->_readBuffer[0]) << 8)
+                    | static_cast<uint16_t>(this->_readBuffer[1]);
 
-                if (this->_readBuffer.size() < static_cast<uint64_t>(packetSize) + HEADER_SIZE) {
+                LOG_DEBUG("Parsing chunkSize: " + std::to_string(chunkSize) + " bytes");
+
+                if (chunkSize == 0) {
+                    this->_readBuffer.erase(
+                        this->_readBuffer.begin(),
+                        this->_readBuffer.begin() + HEADER_SIZE
+                    );
+
+                    LOG_DEBUG("Client (SFD: " + std::to_string(this->_fd) + ") received a packet of size " + std::to_string(packet.size()));
+
+                    if (!packet.empty()) {
+                        const std::string type = Packet::fromTypeToString(Packet::fromRawTypeToType(packet[0]));
+                        // std::string content;
+
+                        // for (uint16_t i = 0; i < packet.size(); ++i) {
+                            // content += std::format("{:02X}{}", packet[i], i == packet.size() - 1 ? "" : " ");
+                        // }
+
+                        LOG_DEBUG(
+                            "Packet details:\n"
+                            "\tType: " + type + "\n"
+                            // "\tContent: [" + content + "]"
+                        );
+                    }
+
+                    return packet;
+                }
+
+                if (this->_readBuffer.size() < HEADER_SIZE + chunkSize) {
+                    LOG_DEBUG("Waiting for more data...");
                     break; // Wait for the entire packet to arrive
                 }
 
-                ByteBuffer packet(
+                LOG_DEBUG("Inserting in packet");
+
+                packet.insert(
+                    packet.end(),
                     this->_readBuffer.begin() + HEADER_SIZE,
-                    this->_readBuffer.begin() + HEADER_SIZE + packetSize
+                    this->_readBuffer.begin() + HEADER_SIZE + chunkSize
                 );
 
                 this->_readBuffer.erase(
                     this->_readBuffer.begin(),
-                    this->_readBuffer.begin() + HEADER_SIZE + packetSize
+                    this->_readBuffer.begin() + HEADER_SIZE + chunkSize
                 );
-
-                LOG_DEBUG("Client (SFD: " + std::to_string(this->_fd) + ") received a packet of size " + std::to_string(packetSize));
-
-                const std::string type = Packet::fromTypeToString(Packet::fromRawTypeToType(packet[0]));
-                std::string content;
-
-                for (uint16_t i = 0; i < packetSize; ++i) {
-                    content += std::format("{:02X}{}", packet[i], i == packetSize - 1 ? "" : " ");
-                }
-
-                LOG_DEBUG(
-                    "Packet details:\n"
-                    "\tType: " + type + "\n"
-                    "\tContent: [" + content + "]"
-                );
-
-                return packet;
             }
         }
     }
@@ -237,5 +239,53 @@ namespace raytracer::network
             throw exception::StandardFunctionFail("listen");
         }
     }
+
+    void
+    Socket::flushWriteBuffer()
+    {
+        while (!this->_writeBuffer.empty()) {
+            pollfd pfd = {
+                .fd = this->_fd,
+                .events = POLLOUT,
+                .revents = 0
+            };
+
+            const int res = poll(&pfd, 1, 1000);
+
+            if (res < 0) {
+                throw exception::StandardFunctionFail("poll (write)");
+            }
+            if (res == 0 || !(pfd.revents & POLLOUT)) {
+                continue;
+            }
+
+            LOG_DEBUG("Write buffer size before write: " + std::to_string(this->_writeBuffer.size()));
+
+            const ssize_t bytesWritten = write(
+                this->_fd,
+                this->_writeBuffer.data(),
+                this->_writeBuffer.size()
+            );
+
+            LOG_DEBUG("Bytes written: " + std::to_string(bytesWritten));
+
+            if (bytesWritten < 0) {
+                throw exception::StandardFunctionFail("write");
+            }
+
+            if (static_cast<size_t>(bytesWritten) > this->_writeBuffer.size()) {
+                LOG_ERR("Wrote more bytes than in buffer — possible logic bug or buffer corruption!");
+                break;
+            }
+
+            this->_writeBuffer.erase(
+                this->_writeBuffer.begin(),
+                this->_writeBuffer.begin() + bytesWritten
+            );
+
+            LOG_DEBUG("Wrote " + std::to_string(bytesWritten) + " bytes (SFD: " + std::to_string(this->_fd) + ")");
+        }
+    }
+
 
 }

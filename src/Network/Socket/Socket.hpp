@@ -3,11 +3,13 @@
 #define PROTOCOL_ANY        0
 #define BUFFER_SIZE         1024
 #define DEFAULT_MAX_CLIENTS 192
-#define HEADER_SIZE         2
+#define CHUNK_SIZE          (size_t) 32768
+#define HEADER_SIZE         (size_t) 2
 
 #include "../Packet/Packet.hpp"
 
 #include <netinet/in.h>
+#include <array>
 
 namespace raytracer::network
 {
@@ -61,6 +63,10 @@ namespace raytracer::network
         sockaddr_in _address;
         ByteBuffer _readBuffer;
         ByteBuffer _writeBuffer;
+
+        void flushWriteBuffer();
     };
+
+    inline constexpr std::array<uint8_t, HEADER_SIZE> END_HEADER = { 0x00, 0x00 };
 
 }
