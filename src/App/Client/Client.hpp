@@ -40,12 +40,17 @@ namespace raytracer::app
             }
         }
 
+        [[nodiscard]] std::atomic<size_t> getTotal() const { return this->_totalPixel.load(); }
+
+        void setTotal(const size_t tile) { this->_totalPixel.store(tile); }
+
     private:
         network::Client _client;
         network::packet::client::Manager _manager;
         std::promise<std::exception_ptr> _exceptionPromise;
         std::atomic<bool> _running{false};
         std::atomic<bool> _shouldStop{false};
+        std::atomic<size_t> _totalPixel{0};
         Renderer _renderer;
     };
 

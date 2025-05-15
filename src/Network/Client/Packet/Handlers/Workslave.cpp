@@ -21,6 +21,8 @@ namespace raytracer::network::packet::client::handler
         try {
             renderer::Tile tile(p.getX(), p.getY(), p.getWidth(), p.getHeight() - 1);
 
+            renderer::totalComputedPixels.store(0);
+            cli.setTotal(p.getWidth() * p.getHeight());
             multithreading::render(
                 cli.getRenderer(),
                 cli.nbThread(),

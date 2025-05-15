@@ -14,6 +14,8 @@ namespace raytracer
     namespace renderer
     {
 
+        extern std::atomic<size_t> totalComputedPixels;
+
         struct Settings
         {
             size_t antiAliasingSamples;
