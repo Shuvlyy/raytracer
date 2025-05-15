@@ -13,7 +13,7 @@ namespace raytracer::network::packet::client::handler
     )
         const
     {
-        LOG_DEBUG("[packet::handler::KISS] Called.");
+        LOG_DEBUG("Called.");
 
         cli.stop();
     }

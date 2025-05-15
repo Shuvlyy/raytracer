@@ -12,7 +12,7 @@ namespace raytracer::network::packet::client::handler
     )
         const
     {
-        LOG_DEBUG("[packet::handler::NVMSTOP] Called.");
+        LOG_DEBUG("Called.");
 
         cli.stopRender();
     }

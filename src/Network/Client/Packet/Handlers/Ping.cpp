@@ -15,7 +15,7 @@ namespace raytracer::network::packet::client::handler
     )
         const
     {
-        LOG_DEBUG("[packet::handler::PING] Called.");
+        LOG_DEBUG("Called.");
 
         const auto &p = reinterpret_cast<const packet::Ping &>(packet);
 
