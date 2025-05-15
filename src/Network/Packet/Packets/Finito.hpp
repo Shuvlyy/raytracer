@@ -10,7 +10,7 @@ namespace raytracer::network::packet
         : public Packet
     {
     public:
-        explicit Finito();
+        explicit Finito(const PixelBuffer& pixelBuffer = {});
 
         [[nodiscard]] ByteBuffer serialize() const override;
         void deserialize(const uint8_t* data, size_t size) override;
