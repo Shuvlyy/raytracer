@@ -7,26 +7,27 @@
 namespace raytracer::shape
 {
 
-    class Cone final
-        : public Shape
+    class Cone final : public Shape
     {
     public:
         Cone(
             const math::Point<3>& apex,
             const math::Vec<3>& axis,
-            const double angle_rad,
+            const double radius,
+            const double height,
             const std::shared_ptr<Material>& material
         ) : _apex(apex),
             _axis(axis.normalized()),
-            _angle(angle_rad),
+            _radius(radius),
+            _height(height),
             _material(material)
         {
-            const double clamped_angle = std::clamp(_angle, 0.0, M_PI_2);
+            const double angle = std::atan(_radius / _height);
+            const double clamped_angle = std::clamp(angle, 0.0, M_PI_2);
             _cos2 = std::cos(clamped_angle) * std::cos(clamped_angle);
         }
 
-        [[nodiscard]] bool hits(const math::Ray& ray, HitResult& res)
-            const override
+        [[nodiscard]] bool hits(const math::Ray& ray, HitResult& res) const override
         {
             const math::Vec<3> co = ray.origin - _apex;
             const double dv = dot(ray.direction, _axis);
@@ -41,12 +42,9 @@ namespace raytracer::shape
 
             const double delta = b * b - 4.0 * a * c;
 
-            if (delta < 0.0) {
-                return false;
-            }
+            if (delta < 0.0) return false;
 
             double t = (-b - std::sqrt(delta)) / (2.0 * a);
-
             if (t < RAY_T_MIN || t > ray.t_max) {
                 t = (-b + std::sqrt(delta)) / (2.0 * a);
                 if (t < RAY_T_MIN || t > ray.t_max) {
@@ -54,14 +52,18 @@ namespace raytracer::shape
                 }
             }
 
-            res.t = t;
-            res.p = ray[res.t];
-
-            const math::Vec<3> v = res.p - _apex;
+            const math::Point<3> hit_point = ray[t];
+            const math::Vec<3> v = hit_point - _apex;
             const double h = dot(v, _axis);
-            // const math::Point<3> c = _apex + h * _axis;
-            const math::Vec<3> n = (v - _axis * h * (1 + _cos2)).normalized();
 
+            if (h < 0.0 || h > _height) {
+                return false;
+            }
+
+            res.t = t;
+            res.p = hit_point;
+
+            const math::Vec<3> n = (v - _axis * h * (1 + _cos2)).normalized();
             res.n = n;
             res.material = this->_material;
             return true;
@@ -70,7 +72,8 @@ namespace raytracer::shape
     private:
         math::Point<3> _apex;
         math::Vec<3> _axis;
-        double _angle;
+        double _radius;
+        double _height;
         double _cos2;
         std::shared_ptr<Material> _material;
     };

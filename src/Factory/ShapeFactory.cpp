@@ -95,17 +95,21 @@ namespace raytracer::factory
                 shape["y"].as<double>(),
                 shape["z"].as<double>()
             );
-        
+
             const auto axis = math::Vec<3>(
                 shape["axis_x"].as<double>(),
                 shape["axis_y"].as<double>(),
                 shape["axis_z"].as<double>()
             );
-        
+
+            const double radius = shape["radius"].as<double>();
+            const double height = shape["height"].as<double>();
+
             return std::make_unique<shape::Cone>(
                 apex,
                 axis,
-                shape["angle"].as<double>(),
+                radius,
+                height,
                 shape::material::getMaterial(shape)
             );
         }
