@@ -79,8 +79,11 @@ namespace yml
          */
         const Node& operator[](const std::string& name) const { return this->_tree[name]; }
 
+        [[nodiscard]] std::string getRawContent() const { return this->_rawContent; }
+
     private:
         const std::string _filepath;
+        std::string _rawContent;
         Tree _tree;
 
         /**

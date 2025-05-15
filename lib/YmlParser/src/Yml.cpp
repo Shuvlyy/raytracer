@@ -19,13 +19,13 @@ namespace yml
     )
         : _filepath(std::move(filepath))
     {
-        std::string rawContent = this->_filepath;
+        this->_rawContent = this->_filepath;
 
         if (!isRawContent) {
-            rawContent = getFileContent(this->_filepath);
+            this->_rawContent = getFileContent(this->_filepath);
         }
 
-        Parser parser(*this, rawContent, this->_tree, nestingLevel);
+        Parser parser(*this, this->_rawContent, this->_tree, nestingLevel);
     }
 
     std::optional<std::reference_wrapper<Node>>
