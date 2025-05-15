@@ -15,8 +15,9 @@ namespace raytracer::renderer
         (
             const uint32_t x, const uint32_t y,
             const uint32_t width, const uint32_t height
-        )
-            : x(x), y(y), width(width), height(height), threadNumber(-1) {}
+        ) : x(x), y(y), width(width), height(height), threadNumber(-1) {}
+
+        Tile() : x(0), y(0), width(0), height(0), threadNumber(-1) {}
 
         Tile(Tile&& other) noexcept
             : x(other.x), y(other.y), width(other.width), height(other.height),
