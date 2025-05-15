@@ -1,16 +1,19 @@
 #include "Cluster.hpp"
 
 #include "logger/Logger.hpp"
+#include "Network/Packet/Packets/Workslave.hpp"
+#include "Network/Server/Server.hpp"
 
 namespace raytracer::network::server
 {
 
     Cluster::Cluster
     (
-        const int heartbeatFrequency
+        Server& server
     )
-        : _state(cluster::State::WAITING),
-          _heartbeatFrequency(heartbeatFrequency)
+        : _server(server),
+          _state(cluster::State::WAITING),
+          _heartbeatFrequency(0)
     {}
 
     void
@@ -21,16 +24,20 @@ namespace raytracer::network::server
     {
         using namespace std::chrono;
 
-        LOG_DEBUG("updating cluster");
-        // if (this->_state == cluster::State::WAITING) {
-            // return;
-        // }
+        this->updateState();
+
+        if (this->_state == cluster::State::WAITING) {
+            return;
+        }
 
         for (auto& [_, s] : this->_slaves) {
             Session& slave = s.get();
             Socket& slaveSocket = slave.getControlSocket();
 
             auto now = steady_clock::now();
+
+            LOG_DEBUG("Updating slave " + std::to_string(slave.getId()));
+
             if (duration_cast<seconds>(now - slave.getLastLatencyRefresh()).count() >= this->_heartbeatFrequency) {
                 slave.refreshLatency();
                 slave.setLastLatencyRefresh(now);
@@ -38,12 +45,31 @@ namespace raytracer::network::server
                 LOG_DEBUG("Slave latency: " + std::to_string(slave.getLatency()) + " ms");
             }
         }
+
+        if (this->_state == cluster::State::READY) {
+            this->_state = cluster::State::RENDERING;
+
+            for (auto& [_, s] : this->_slaves) {
+                packet::Workslave p("", 0, 0, 640, 480);
+            }
+        }
+    }
+
+    void
+    Cluster::updateState
+    ()
+    {
+        if (this->_state == cluster::State::WAITING) {
+            if (this->_slaves.size() == 2) {
+                this->_state = cluster::State::READY;
+            }
+        }
     }
 
     void
     Cluster::addSlave
     (
-        Session &session
+        Session& session
     )
     {
         if (this->_slaves.contains(session.getId())) {
@@ -55,7 +81,7 @@ namespace raytracer::network::server
     void
     Cluster::removeSlave
     (
-        const Session &session
+        const Session& session
     )
     {
         if (!this->_slaves.contains(session.getId())) {

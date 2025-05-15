@@ -4,6 +4,11 @@
 
 #include <unordered_map>
 
+namespace raytracer::network
+{
+    class Server;
+}
+
 namespace raytracer::network::server
 {
 
@@ -22,17 +27,25 @@ namespace raytracer::network::server
     class Cluster final
     {
     public:
-        explicit Cluster(int heartbeatFrequency);
+        explicit Cluster(Server& server);
 
         void update(float dt);
 
         void addSlave(Session& session);
         void removeSlave(const Session& session);
 
+        [[nodiscard]] int getHeartbeatFrequency() const
+            { return this->_heartbeatFrequency; }
+        void setHeartbeatFrequency(const int heartbeatFrequency)
+            { this->_heartbeatFrequency = heartbeatFrequency; }
+
     private:
+        Server& _server;
         cluster::State _state;
         int _heartbeatFrequency;
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
+
+        void updateState();
     };
 
 }

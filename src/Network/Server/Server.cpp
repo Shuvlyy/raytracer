@@ -22,7 +22,8 @@ namespace raytracer::network
         : _properties(std::move(properties)),
           _isRunning(false),
           _serverSocket(this->_properties.port),
-          _cluster(0) // Temporary, idk how to silence that
+          _packetManager(*this),
+          _cluster(*this)
     {
         yml::Yml config(this->_properties.configurationFilePath);
 
@@ -33,8 +34,7 @@ namespace raytracer::network
         };
 
         this->_properties.heartbeatFrequency = config["heartbeatFrequency"].as<int>();
-
-        this->_cluster = server::Cluster(this->_properties.heartbeatFrequency);
+        this->_cluster.setHeartbeatFrequency(this->_properties.heartbeatFrequency);
 
         // std::string configPath = properties.configurationFilePath;
         // if (!configPath.empty() && this->_config == nullptr) {
