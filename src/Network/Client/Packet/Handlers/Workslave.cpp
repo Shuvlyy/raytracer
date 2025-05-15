@@ -1,6 +1,7 @@
 #include "Workslave.hpp"
 #include "Network/Packet/Packets/Workslave.hpp"
 #include "Network/Packet/Packets/Finito.hpp"
+#include "Exception/IException.hpp"
 
 #include <thread>
 
@@ -17,16 +18,25 @@ namespace raytracer::network::packet::client::handler
         const packet::Workslave &p
     )
     {
-        renderer::Tile tile(p.getX(), p.getY(), p.getWidth(), p.getHeight());
+        try {
+            renderer::Tile tile(p.getX(), p.getY(), p.getWidth(), p.getHeight() - 1);
 
-        multithreading::render(
-            cli.getRenderer(),
-            cli.nbThread(),
-            std::ref(tile),
-            std::ref(cli.shouldStop())
-        );
-        if (cli.shouldStop().load() != true)
-            cli.push(std::make_unique<Finito>(cli.getRenderer().getRender()->getData()));
+            multithreading::render(
+                cli.getRenderer(),
+                cli.nbThread(),
+                std::ref(tile),
+                std::ref(cli.shouldStop())
+            );
+            if (cli.shouldStop().load() != true)
+                cli.push(std::make_unique<Finito>(cli.getRenderer().getRender()->getData()));
+        }
+        catch (exception::IException &exception) {
+            LOG_ERR(
+                "Error during Rendering: " +
+                std::string(exception.what())
+            );
+            cli.setException(std::current_exception());
+        }
     }
 
     void
@@ -40,7 +50,7 @@ namespace raytracer::network::packet::client::handler
         LOG_DEBUG("Called.");
 
         const auto &p = reinterpret_cast<const packet::Workslave &>(packet);
-        cli.setRenderer(yml::Yml(p.getSceneContent()));
+        cli.setRenderer(yml::Yml(p.getSceneContent(), true));
         std::thread(&renderAndSendResult, std::ref(cli), p);
     }
 
