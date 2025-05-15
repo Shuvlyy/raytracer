@@ -7,13 +7,14 @@ namespace raytracer::network::packet::client::handler
     void
     NvmStop::handle
     (
-        const Packet &packet,
+        const Packet &,
         app::Client &cli
     )
         const
     {
         LOG_DEBUG("[packet::handler::NVMSTOP] Called.");
 
+        cli.stopRender();
     }
 
 }
