@@ -17,7 +17,7 @@ namespace raytracer::network::packet::server::handler
     {
         const auto& p = reinterpret_cast<const packet::Finito&>(packet);
 
-        session.setState(network::server::session::State::RENDERING);
+        session.setState(network::server::session::State::READY);
         session.getData().result = p.getPixelBuffer();
 
         LOG_DEBUG("Client (SFD: " + std::to_string(session.getId()) + ") finished rendering.");
