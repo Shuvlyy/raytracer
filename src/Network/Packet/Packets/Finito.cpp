@@ -9,7 +9,7 @@ namespace raytracer::network::packet
 {
 
     Finito::Finito(const PixelBuffer& pixelBuffer)
-        : Packet(Type::PONG), _pixelBuffer(pixelBuffer) {}
+        : Packet(Type::FINITO), _pixelBuffer(pixelBuffer) {}
 
     ByteBuffer
     Finito::serialize
@@ -20,12 +20,8 @@ namespace raytracer::network::packet
 
         s.write<uint8_t>(static_cast<uint8_t>(this->_type));
 
-        s.write<uint32_t>(this->_pixelBuffer.size());
-        for (const auto& pixel : this->_pixelBuffer) {
-            for (const auto& color : pixel.data()) {
-                s.write<double>(color);
-            }
-        }
+        s.writeVector(this->_pixelBuffer);
+
         return s.data();
     }
 
@@ -41,15 +37,7 @@ namespace raytracer::network::packet
         const auto rawType = d.read<uint8_t>();
         const Type type = fromRawTypeToType(rawType);
 
-        const auto s = d.read<uint32_t>();
-
-        this->_pixelBuffer.resize(s);
-
-        for (uint32_t k = 0; k < s; ++k) {
-            for (uint32_t i = 0; i < 3; ++i) {
-                this->_pixelBuffer[k][i] = d.read<double>();
-            }
-        }
+        this->_pixelBuffer = d.readVector<math::Color>();
 
         if (d.hasRemaining()) {
             throw exception::UnexpectedRemainingData(type);
