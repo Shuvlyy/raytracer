@@ -6,6 +6,12 @@
 
 #define POLL_TIMEOUT 200
 
+namespace raytracer::app {
+
+    class Client;
+
+}
+
 namespace raytracer::network
 {
 
@@ -24,7 +30,7 @@ namespace raytracer::network
 
             ~Client();
 
-            void run();
+            void run(app::Client &cli);
             void stop() { this->_running = false; }
 
             [[nodiscard]] Socket getSocket() const {return this->_socket;}

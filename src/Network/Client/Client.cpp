@@ -1,10 +1,11 @@
 #include "Exception/Exceptions/SocketFail.hpp"
-#include "Exception/Exceptions/ServerDisconnected.hpp"
 #include "Exception/Exceptions/ConnectionFail.hpp"
 #include "Exception/Exceptions/StandardFunctionFail.hpp"
 #include "Exception/Exceptions/EmptyPacket.hpp"
 
 #include "Client.hpp"
+#include "App/Client/Client.hpp"
+
 #include "logger/Logger.hpp"
 #include "Network/Socket/Socket.hpp"
 
@@ -14,6 +15,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <poll.h>
+
+#include "Exception/Exceptions/ClientDisconnected.hpp"
+#include "Exception/Exceptions/ServerDisconnected.hpp"
 
 namespace raytracer::network
 {
@@ -76,15 +80,15 @@ namespace raytracer::network
     }
 
     void
-    Client::run()
+    Client::run(app::Client &cli)
     {
         pollfd pfd{};
 
         pfd.fd = this->_socket.getFd();
         pfd.events = POLLIN;
 
-        while (true) {
-            try {
+        try {
+            while (true) {
                 if (!this->_toSend.empty()) {
                     sendPacket(this->_toSend.pop());
                 }
@@ -96,17 +100,9 @@ namespace raytracer::network
                 }
                 this->_toProcess.push(receivePacket());
             }
-            catch (exception::ServerDisconnected &) {
-                LOG_FATAL("Server disconnected");
-            }
-            catch (exception::IException &exception) {
-                LOG_ERR(
-                    "Error while handling Client `" +
-                    std::to_string(this->_socket.getFd()) +
-                    "`'s requests: " +
-                    std::string(exception.what())
-                );
-            }
+        }
+        catch (...) {
+            cli.setException(std::current_exception());
         }
     }
 

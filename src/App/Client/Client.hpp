@@ -1,6 +1,7 @@
 #pragma once
 
 #include <atomic>
+#include <future>
 
 #include "Renderer/Renderer.hpp"
 #include "App/App.hpp"
@@ -31,13 +32,21 @@ namespace raytracer::app
         void stopRender() { this->_shouldStop = true; }
         std::atomic<bool> &shouldStop() { return this->_shouldStop; }
 
+        void setException(const std::exception_ptr &e) {
+            try {
+                this->_exceptionPromise.set_exception(e);
+            } catch (const std::future_error &fe) {
+                LOG_FATAL("Idk wtf is happening: " + std::string(fe.what()));
+            }
+        }
+
     private:
         network::Client _client;
         network::packet::client::Manager _manager;
+        std::promise<std::exception_ptr> _exceptionPromise;
         std::atomic<bool> _running{false};
         std::atomic<bool> _shouldStop{false};
         Renderer _renderer;
-        // ...
     };
 
 }
