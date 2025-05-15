@@ -1,10 +1,7 @@
 #include "Finito.hpp"
-
-#include "logger/Logger.hpp"
-
 #include "Network/Packet/Packets/Finito.hpp"
-
 #include "Network/Server/Server.hpp"
+#include "logger/Logger.hpp"
 
 namespace raytracer::network::packet::server::handler
 {
@@ -18,11 +15,12 @@ namespace raytracer::network::packet::server::handler
     )
         const
     {
-        LOG_DEBUG("Called (SFD: " + std::to_string(session.getId()) + ")");
-
         const auto& p = reinterpret_cast<const packet::Finito&>(packet);
 
-        // TODO: Finish this.
+        session.setState(network::server::session::State::RENDERING);
+        session.getData().result = p.getPixelBuffer();
+
+        LOG_DEBUG("Client (SFD: " + std::to_string(session.getId()) + ") finished rendering.");
     }
 
 }
