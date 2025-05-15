@@ -29,8 +29,17 @@ namespace raytracer::network::packet::client::handler
                 std::ref(tile),
                 std::ref(cli.shouldStop())
             );
-            if (cli.shouldStop().load() != true)
+            if (cli.shouldStop().load() != true) {
+                PixelBuffer& buf = cli.getRenderer().getRender()->getData();
+                std::ranges::transform(
+                    buf,
+                    buf.begin(),
+                    [](const math::Color &pixel) {
+                        return pixel * MAX_COLOR_SHADES;
+                    }
+                );
                 cli.push(std::make_unique<Finito>(cli.getRenderer().getRender()->getData()));
+            }
         }
         catch (exception::IException &exception) {
             LOG_ERR(

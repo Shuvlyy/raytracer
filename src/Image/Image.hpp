@@ -78,7 +78,7 @@ namespace raytracer
         /**
          * @returns Reference to the internal buffer containing all pixels
          */
-        [[nodiscard]] const PixelBuffer& getData() const { return this->_data; }
+        [[nodiscard]] PixelBuffer& getData() { return this->_data; }
 
         Image& operator+=(const Image& other);
         Image& operator+=(const PixelBuffer& buf);
