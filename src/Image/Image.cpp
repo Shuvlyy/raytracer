@@ -51,19 +51,28 @@ namespace raytracer
     Image &
     Image::operator+=
     (
-        const Image &other
+        const PixelBuffer &buf
     )
     {
         std::transform(
             this->_data.begin(),
             this->_data.end(),
-            other._data.begin(),
+            buf.begin(),
             this->_data.begin(),
             [](const math::Color& a, const math::Color& b) {
                 return a + b;
             }
         );
         return *this;
+    }
+
+    Image&
+    Image::operator+=
+    (
+        const Image &other
+    )
+    {
+        return *this += other._data;
     }
 
 }

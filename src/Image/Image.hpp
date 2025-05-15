@@ -81,6 +81,7 @@ namespace raytracer
         [[nodiscard]] const PixelBuffer& getData() const { return this->_data; }
 
         Image& operator+=(const Image& other);
+        Image& operator+=(const PixelBuffer& buf);
 
     private:
         const uint32_t _width, _height;
