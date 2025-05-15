@@ -22,7 +22,7 @@ namespace raytracer::app
         LOG_INFO("Client running...");
         this->_running = true;
         std::thread th(&network::Client::run, &this->_client);
-        while (this->_running) {
+        while (this->_running.load()) {
             if (this->_client.hasPacketToProcess()) {
                 auto packet = this->_client.popPacket();
                 this->_manager.dispatchPacket(*packet, *this);
@@ -34,6 +34,7 @@ namespace raytracer::app
     Client::stop()
     {
         LOG_INFO("Client stopping...");
+        this->_shouldStop = true;
         this->_running = false;
         this->_client.stop();
     }

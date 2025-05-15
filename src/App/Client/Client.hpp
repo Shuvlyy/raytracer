@@ -22,13 +22,20 @@ namespace raytracer::app
 
         void setRenderer(const yml::Yml &config) { this->_renderer = Renderer::fromConfig(config); }
 
-        void render(const uint32_t x, const uint32_t y, const uint32_t w, const uint32_t h) const
-            { this->_renderer.render(x, y, w, h, false); }
+        void push(std::unique_ptr<network::Packet> packet) { this->_client.pushPacket(std::move(packet)); }
+
+        Renderer &getRenderer() { return this->_renderer; }
+
+        uint16_t nbThread() const { return this->_attributes.threadsAmount; }
+
+        void stopRender() { this->_shouldStop = true; }
+        std::atomic<bool> &shouldStop() { return this->_shouldStop; }
 
     private:
         network::Client _client;
         network::packet::client::Manager _manager;
-        std::atomic_bool _running{false};
+        std::atomic<bool> _running{false};
+        std::atomic<bool> _shouldStop{false};
         Renderer _renderer;
         // ...
     };
