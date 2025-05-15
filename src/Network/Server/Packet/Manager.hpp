@@ -12,7 +12,7 @@ namespace raytracer::network::packet::server
     class Manager final
     {
     public:
-        explicit Manager();
+        explicit Manager(Server& server);
 
         void dispatchPacket(
             const Packet& packet,
@@ -20,6 +20,7 @@ namespace raytracer::network::packet::server
         ) const;
 
     private:
+        Server& _server;
         std::unordered_map<Type, std::unique_ptr<IHandler>> _handlers;
 
         IHandler* getHandler(Type type) const;

@@ -10,7 +10,10 @@ namespace raytracer::network::packet::server
 {
 
     Manager::Manager
-    ()
+    (
+        Server& server
+    )
+        : _server(server)
     {
         this->registerHandlers();
     }
@@ -35,7 +38,7 @@ namespace raytracer::network::packet::server
             return;
         }
 
-        handler->handle(packet, session);
+        handler->handle(packet, this->_server, session);
     }
 
     void

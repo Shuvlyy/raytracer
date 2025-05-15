@@ -4,6 +4,8 @@
 
 #include "Network/Packet/Packets/Finito.hpp"
 
+#include "Network/Server/Server.hpp"
+
 namespace raytracer::network::packet::server::handler
 {
 
@@ -11,6 +13,7 @@ namespace raytracer::network::packet::server::handler
     Finito::handle
     (
         const Packet& packet,
+        Server& server,
         network::server::Session& session
     )
         const

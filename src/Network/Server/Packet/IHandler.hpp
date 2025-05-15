@@ -4,6 +4,11 @@
 
 #include "Network/Server/Session/Session.hpp"
 
+namespace raytracer::network
+{
+    class Server;
+}
+
 namespace raytracer::network::packet
 {
 
@@ -14,6 +19,7 @@ namespace raytracer::network::packet
 
         virtual void handle(
             const Packet& packet,
+            Server& server,
             server::Session& session
         ) const = 0;
 

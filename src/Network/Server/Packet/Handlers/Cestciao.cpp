@@ -11,6 +11,7 @@ namespace raytracer::network::packet::server::handler
     Cestciao::handle
     (
         const Packet& packet,
+        Server& server,
         network::server::Session& session
     )
         const
