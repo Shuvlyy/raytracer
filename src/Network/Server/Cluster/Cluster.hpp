@@ -46,6 +46,7 @@ namespace raytracer::network::server
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
 
         void updateState();
+        void updateSlavesData();
     };
 
 }

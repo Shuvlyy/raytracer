@@ -22,13 +22,40 @@ namespace raytracer::network::server
         const float dt
     )
     {
-        using namespace std::chrono;
-
         this->updateState();
 
         if (this->_state == cluster::State::WAITING) {
             return;
         }
+
+        this->updateSlavesData();
+
+        if (this->_state == cluster::State::READY) {
+            LOG_DEBUG("Rendering lol");
+            this->_state = cluster::State::RENDERING;
+
+            for (auto& [_, s] : this->_slaves) {
+                packet::Workslave p(this->_server.getConfig().getRawContent(), 0, 0, 640, 480);
+
+                s.get().getControlSocket().sendPacket(p.serialize());
+            }
+        }
+    }
+
+    void
+    Cluster::updateState
+    ()
+    {
+        if (this->_state == cluster::State::WAITING) {
+            if (this->_slaves.size() == this->_server.getSettings().maxClients) {
+                this->_state = cluster::State::READY;
+            }
+        }
+    }
+
+    void Cluster::updateSlavesData()
+    {
+        using namespace std::chrono;
 
         for (auto& [_, s] : this->_slaves) {
             Session& slave = s.get();
@@ -43,25 +70,6 @@ namespace raytracer::network::server
                 slave.setLastLatencyRefresh(now);
 
                 LOG_DEBUG("Slave latency: " + std::to_string(slave.getLatency()) + " ms");
-            }
-        }
-
-        if (this->_state == cluster::State::READY) {
-            this->_state = cluster::State::RENDERING;
-
-            for (auto& [_, s] : this->_slaves) {
-                packet::Workslave p("", 0, 0, 640, 480);
-            }
-        }
-    }
-
-    void
-    Cluster::updateState
-    ()
-    {
-        if (this->_state == cluster::State::WAITING) {
-            if (this->_slaves.size() == 2) {
-                this->_state = cluster::State::READY;
             }
         }
     }
