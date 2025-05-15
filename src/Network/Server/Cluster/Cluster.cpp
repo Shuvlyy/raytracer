@@ -1,8 +1,10 @@
 #include "Cluster.hpp"
-
+#include "Image/Ppm/Ppm.hpp"
 #include "logger/Logger.hpp"
 #include "Network/Packet/Packets/Workslave.hpp"
 #include "Network/Server/Server.hpp"
+
+#include <filesystem>
 
 namespace raytracer::network::server
 {
@@ -14,13 +16,16 @@ namespace raytracer::network::server
         : _server(server),
           _state(cluster::State::WAITING),
           _heartbeatFrequency(0)
-    {}
+    {
+        const yml::Node res = server.getSceneConfig()["camera"]["resolution"];
+        const uint32_t width = res["width"].as<int>();
+        const uint32_t height = res["height"].as<int>();
+
+        this->_result = std::make_unique<image::Ppm>(width, height);
+    }
 
     void
-    Cluster::update
-    (
-        const float dt
-    )
+    Cluster::update()
     {
         this->updateState();
 
@@ -35,10 +40,40 @@ namespace raytracer::network::server
             this->_state = cluster::State::RENDERING;
 
             for (auto& [_, s] : this->_slaves) {
-                packet::Workslave p(this->_server.getConfig().getRawContent(), 0, 0, 640, 480);
+                packet::Workslave p(this->_server.getSceneConfig().getRawContent(), 0, 0, 640, 480);
 
                 s.get().getControlSocket().sendPacket(p.serialize());
             }
+        }
+
+        if (this->_state == cluster::State::RENDERING) {
+            size_t i = 0;
+
+            for (auto& [_, s] : this->_slaves) {
+                if (s.get().getState() == session::State::READY) {
+                    i++;
+                }
+            }
+
+            if (i != this->_slaves.size()) {
+                return;
+            }
+
+            namespace fs = std::filesystem;
+
+            for (auto& [_, s] : this->_slaves) {
+                *this->_result += s.get().getData().result;
+            }
+            const auto outputDirectory =
+                this->_server.getSceneConfig()["outputDirectory"].as<std::string>();
+
+            if (!fs::exists(outputDirectory)) {
+                fs::create_directory(outputDirectory);
+            }
+            this->_result->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp());
+
+            LOG_INFO("Done.");
+            this->_state = cluster::State::READY;
         }
     }
 

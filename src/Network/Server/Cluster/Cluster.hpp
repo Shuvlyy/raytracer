@@ -29,7 +29,7 @@ namespace raytracer::network::server
     public:
         explicit Cluster(Server& server);
 
-        void update(float dt);
+        void update();
 
         void addSlave(Session& session);
         void removeSlave(const Session& session);
@@ -44,6 +44,7 @@ namespace raytracer::network::server
         cluster::State _state;
         int _heartbeatFrequency;
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
+        std::unique_ptr<Image> _result;
 
         void updateState();
         void updateSlavesData();
