@@ -24,15 +24,17 @@ namespace raytracer::network
           _serverSocket(this->_properties.port),
           _packetManager(*this),
           _cluster(*this),
-          _config(this->_properties.configurationFilePath)
+          _sceneConfig(this->_properties.sceneFilepath)
     {
+        auto serverConfig = yml::Yml(this->_properties.configurationFilePath);
+
         this->_settings = {
-            this->_config["serverName"].as<std::string>(),
-            this->_config["serverDescription"].as<std::string>(),
-            static_cast<uint16_t>(this->_config["maxClients"].as<int>()),
+            serverConfig["serverName"].as<std::string>(),
+            serverConfig["serverDescription"].as<std::string>(),
+            static_cast<uint16_t>(serverConfig["maxClients"].as<int>()),
         };
 
-        this->_properties.heartbeatFrequency = this->_config["heartbeatFrequency"].as<int>();
+        this->_properties.heartbeatFrequency = serverConfig["heartbeatFrequency"].as<int>();
         this->_cluster.setHeartbeatFrequency(this->_properties.heartbeatFrequency);
 
         // std::string configPath = properties.configurationFilePath;
@@ -84,7 +86,7 @@ namespace raytracer::network
         );
 
         while (true) {
-            this->_cluster.update(0);
+            this->_cluster.update();
 
             const int ret = poll(
                 this->_pollFds.data(),
