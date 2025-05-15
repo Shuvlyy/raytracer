@@ -14,10 +14,16 @@ namespace raytracer::network::server
     namespace session
     {
 
+        enum class State
+        {
+            READY,
+            RENDERING,
+            DEADASS
+        };
+
         struct Data
         {
             renderer::Tile tile;
-            uint8_t progress = 0;
             PixelBuffer result;
         };
 
@@ -36,17 +42,22 @@ namespace raytracer::network::server
         [[nodiscard]] uint32_t getId() const { return this->_id; }
         [[nodiscard]] Socket& getControlSocket() { return this->_controlSocket; }
         [[nodiscard]] uint64_t getLatency() const { return this->_latency; }
-        [[nodiscard]] TIME_POINT getLastLatencyRefresh() const { return this->_lastLatencyRefresh; }
+        [[nodiscard]] TIME_POINT getLastLatencyRefresh() const
+            { return this->_lastLatencyRefresh; }
+        [[nodiscard]] session::State getState() const { return _state; }
         [[nodiscard]] session::Data& getData() { return this->_data; }
 
         void setLatency(const uint64_t latency) { this->_latency = latency; }
-        void setLastLatencyRefresh(const TIME_POINT lastLatencyRefresh) { this->_lastLatencyRefresh = lastLatencyRefresh; }
+        void setLastLatencyRefresh(const TIME_POINT lastLatencyRefresh)
+            { this->_lastLatencyRefresh = lastLatencyRefresh; }
+        void setState(const session::State state) { this->_state = state; }
 
     private:
         uint32_t _id;
         Socket _controlSocket;
         uint64_t _latency;
         TIME_POINT _lastLatencyRefresh;
+        session::State _state;
         session::Data _data;
     };
 

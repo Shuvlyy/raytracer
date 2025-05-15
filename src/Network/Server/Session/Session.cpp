@@ -1,8 +1,6 @@
 #include "Session.hpp"
-
 #include "Common/Utils.hpp"
-
-#include "../../Packet/Packets/Ping.hpp"
+#include "Network/Packet/Packets/Ping.hpp"
 
 namespace raytracer::network::server
 {
@@ -14,7 +12,8 @@ namespace raytracer::network::server
     ) : _id(id),
         _controlSocket(Socket(fd)),
         _latency(0),
-        _lastLatencyRefresh(std::chrono::steady_clock::now())
+        _lastLatencyRefresh(std::chrono::steady_clock::now()),
+        _state(session::State::READY)
     {}
 
     void
