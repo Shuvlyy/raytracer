@@ -15,13 +15,13 @@ namespace raytracer::network
             : uint8_t
         {
             UNKNOWN = 0x00,
-            PING = 0x01,
-            PONG = 0x02,
-            KISS = 0x03,
-            WORKSLAVE = 0x04,
-            CESTCIAO = 0x05,
-            FINITO = 0x06,
-            NVMSTOP = 0x07
+            PING = 0x01,        /// | Server -> Client | Sent to get a slave's status: Latency, progress...
+            PONG = 0x02,        /// | Client -> Server | Response to PING
+            KISS = 0x03,        /// | Server -> Client | Sent to disconnect a client
+            WORKSLAVE = 0x04,   /// | Server -> Client | Sent to notify a slave of a new render it has to do
+            CESTCIAO = 0x05,    /// | Client -> Server | Sent when a slave disconnects
+            FINITO = 0x06,      /// | Client -> Server | Sent when a slave has finished its render
+            NVMSTOP = 0x07      /// | Server -> Client | Sent to stop a slave's rendering process
         };
 
     }
