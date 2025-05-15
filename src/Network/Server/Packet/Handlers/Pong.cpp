@@ -5,6 +5,8 @@
 
 #include "Network/Packet/Packets/Pong.hpp"
 
+#include "Network/Server/Server.hpp"
+
 namespace raytracer::network::packet::server::handler
 {
 
@@ -24,7 +26,12 @@ namespace raytracer::network::packet::server::handler
         const uint64_t t1 = utils::getCurrentTimestamp();
         const uint64_t t = p.getTimestamp();
 
-        session.setLatency(t1 - t);
+        if (t > t1) {
+            // ... gros souci mdr
+            return;
+        }
+
+        session.setLatency(t1 - t - server.getProperties().heartbeatFrequency * 1000);
     }
 
 }
