@@ -19,7 +19,7 @@ namespace raytracer::network::packet::client::handler
 
         const auto &p = reinterpret_cast<const packet::Ping &>(packet);
 
-        const Pong pongPacket(p.getTimestamp());
+        cli.push(std::make_unique<Pong>(p.getTimestamp()));
     }
 
 }
