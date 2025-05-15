@@ -4,6 +4,8 @@
 
 #include "Common/Utils.hpp"
 
+#include "Math/Vec.hpp"
+
 #include <string>
 #include <arpa/inet.h>
 
@@ -44,6 +46,23 @@ namespace raytracer::network::packet
             }
 
             this->write(&toWrite, sizeof(T));
+        }
+
+        template<typename T>
+        void writeVector(const std::vector<T>& vec)
+        {
+            this->write<uint32_t>(vec.size());
+            for (const auto& item : vec) {
+                this->write(item);
+            }
+        }
+
+        template<size_t N, typename T>
+        void write(const math::Vec<N, T>& vec)
+        {
+            for (const auto& val : vec.data()) {
+                this->write(val);
+            }
         }
 
         void write(bool value);

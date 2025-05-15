@@ -3,6 +3,7 @@
 #include "../Packet.hpp"
 
 #include "Common/Utils.hpp"
+#include "Math/Vec.hpp"
 
 #include <cstring>
 
@@ -49,6 +50,31 @@ namespace raytracer::network::packet
             return value;
         }
 
+        template<typename T>
+        std::vector<T> readVector()
+        {
+            const auto size = this->read<uint32_t>();
+
+            std::vector<T> vec;
+            vec.reserve(size);
+            for (uint32_t i = 0; i < size; ++i) {
+                vec.push_back(this->read<T>());
+            }
+            return vec;
+        }
+
+        template<size_t N, typename T>
+        math::Vec<N, T> readVec()
+        {
+            std::array<T, N> data;
+            for (size_t i = 0; i < N; ++i) {
+                data[i] = this->read<T>();
+            }
+            math::Vec<N, T> vec;
+            vec.data() = data;
+            return vec;
+        }
+
         bool readBool();
         std::string readString();
 
@@ -61,5 +87,11 @@ namespace raytracer::network::packet
 
         void ensureAvailable(size_t size) const;
     };
+
+    template<>
+    inline math::Vec<3> Deserializer::read<math::Vec<3>>()
+    {
+        return this->readVec<3, double>();
+    }
 
 }

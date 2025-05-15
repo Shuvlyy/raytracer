@@ -16,7 +16,7 @@ namespace raytracer::network::packet
         const size_t size
     )
     {
-        const auto bytes = static_cast<const uint8_t *>(data);
+        const auto bytes = static_cast<const uint8_t*>(data);
 
         this->_buf.insert(
             this->_buf.end(),
@@ -46,7 +46,6 @@ namespace raytracer::network::packet
             throw exception::ValueOverflow(str.size());
         }
 
-        LOG_DEBUG("String size: " + std::to_string(str.size()));
         this->write<uint32_t>(str.size());
         this->write(str.data(), str.size());
     }

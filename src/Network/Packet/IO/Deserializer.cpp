@@ -35,7 +35,7 @@ namespace raytracer::network::packet
         this->ensureAvailable(length);
 
         std::string res(
-            reinterpret_cast<const char *>(this->_buf.data() + this->_offset),
+            reinterpret_cast<const char*>(this->_buf.data() + this->_offset),
             length
         );
 
