@@ -311,7 +311,7 @@ Logger::writeHeader
         << "║ Command: " << command.str()                                   << std::endl
         << "║ OS: " << getOsName()                                          << std::endl
         << "║ Kernel: " << getKernelName()                                  << std::endl
-        << "║ Minimum log level: " << levelToString(this->_minimumLevel)    << std::endl
+        << "║ Minimum log level: " << levelToString(this->_minimumLevel)  << std::endl
         << "║"                                                              << std::endl
         << "║ " << getRandomQuote()                                         << std::endl
         << "╚══════════════════━━━━━━━━╍╍╍╍╍"                               << std::endl

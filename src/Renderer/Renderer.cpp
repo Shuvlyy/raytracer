@@ -10,10 +10,9 @@
 namespace raytracer
 {
 
-    namespace renderer {
-
+    namespace renderer
+    {
         std::atomic<size_t> totalComputedPixels {0};
-
     }
 
     Renderer::Renderer
