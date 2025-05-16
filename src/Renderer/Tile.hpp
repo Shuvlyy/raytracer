@@ -33,6 +33,21 @@ namespace raytracer::renderer
         }
 
         Tile&
+        operator=(const Tile& other)
+        {
+            if (this == &other) {
+                return *this;
+            }
+
+            x = other.x;
+            y = other.y;
+            width = other.width;
+            height = other.height;
+            threadNumber.store(other.threadNumber.load());
+            return *this;
+        }
+
+        Tile&
         operator=(Tile&& other) noexcept
         {
             if (*this == other) {
