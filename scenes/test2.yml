@@ -293,7 +293,8 @@ shapes:
       fuzz: 0.07
 
 lights:
-  ambient: 0.2
+  ambient:
+    intensity: 0.2
   points:
     - main_point:
         x: 0
