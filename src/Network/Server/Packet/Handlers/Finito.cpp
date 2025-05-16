@@ -18,18 +18,19 @@ namespace raytracer::network::packet::server::handler
         const
     {
         const auto& p = reinterpret_cast<const packet::Finito&>(packet);
+        PixelBuffer pixelBuffer = p.getPixelBuffer();
 
         session.setState(network::server::session::State::READY);
-        session.getData().result = p.getPixelBuffer();
 
-        PixelBuffer& buf = session.getData().result;
         std::ranges::transform(
-            buf,
-            buf.begin(),
+            pixelBuffer,
+            pixelBuffer.begin(),
             [](const math::Color &pixel) {
                 return pixel / MAX_COLOR_SHADES;
             }
         );
+
+        *server.getCluster().getResult() += pixelBuffer;
 
         LOG_DEBUG("Client (SFD: " + std::to_string(session.getId()) + ") finished rendering.");
     }

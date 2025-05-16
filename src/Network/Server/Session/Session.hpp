@@ -3,7 +3,6 @@
 #define TIME_POINT std::chrono::steady_clock::time_point
 
 #include "Network/Socket/Socket.hpp"
-#include "Image/Image.hpp"
 #include "Renderer/Tile.hpp"
 
 #include <chrono>
@@ -23,8 +22,7 @@ namespace raytracer::network::server
 
         struct Data
         {
-            renderer::Tile tile;
-            PixelBuffer result;
+            renderer::Tile currentTile;
         };
 
     }
