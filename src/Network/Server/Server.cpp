@@ -20,12 +20,17 @@ namespace raytracer::network
         server::Properties properties
     )
         : _properties(std::move(properties)),
-          _sceneConfig(this->_properties.sceneFilepath),
+          _sceneConfig(this->_properties.sceneFilepaths.at(0)),
           _isRunning(false),
           _serverSocket(this->_properties.port),
           _packetManager(*this),
-          _cluster(*this)
+          _cluster(*this),
+          _currentlyProcessingScene(0)
     {
+        for (const auto& sceneFilepath : properties.sceneFilepaths) {
+            LOG_DEBUG("Found filepath: " + sceneFilepath);
+        }
+
         auto serverConfig = yml::Yml(this->_properties.configurationFilePath);
 
         this->_settings = {
@@ -36,11 +41,6 @@ namespace raytracer::network
 
         this->_properties.heartbeatFrequency = serverConfig["heartbeatFrequency"].as<int>();
         this->_cluster.setHeartbeatFrequency(this->_properties.heartbeatFrequency);
-
-        // std::string configPath = properties.configurationFilePath;
-        // if (!configPath.empty() && this->_config == nullptr) {
-        //     throw exception::CouldNotOpenConfig();
-        // }
 
         this->_serverSocket.startListening(this->_settings.maxClients);
 
@@ -81,18 +81,33 @@ namespace raytracer::network
             "\tName: \"" + this->_settings.serverName + "\"\n"
             "\tDescription: \"" + this->_settings.serverDescription + "\"\n"
             "\tMax clients: " + std::to_string(this->_settings.maxClients) + "\n"
-            "\tScene filepath: \"" + this->_properties.sceneFilepath + "\"\n"
+            "\tScene filepaths:\n" +
+            [&] {
+                std::string res;
+                for (const auto& sceneFilepath: this->_properties.sceneFilepaths)
+                    res += "\"" + sceneFilepath + "\"";
+                return res;
+            }() +
             "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency) + "s"
         );
 
         const yml::Node res = this->_sceneConfig["camera"]["resolution"];
-        const uint32_t width = res["width"].as<int>();
-        const uint32_t height = res["height"].as<int>();
-
-        this->_cluster.setupImageOutput(width, height);
+        this->_cluster.setupImageOutput(res);
 
         while (true) {
             this->_cluster.update();
+
+            if (this->_cluster.getState() == server::cluster::State::FINISHED) {
+                this->_currentlyProcessingScene++;
+                if (this->_properties.sceneFilepaths.size() <= this->_currentlyProcessingScene) {
+                    this->stop();
+                    return;
+                }
+                this->_sceneConfig.loadFromFilepath(this->_properties.sceneFilepaths.at(this->_currentlyProcessingScene));
+                const yml::Node node = this->_sceneConfig["camera"]["resolution"];
+                this->_cluster.setupImageOutput(node);
+                this->_cluster.setState(server::cluster::State::READY);
+            }
 
             const int ret = poll(
                 this->_pollFds.data(),

@@ -36,12 +36,15 @@ namespace raytracer::network::server
         void addSlave(Session& session);
         void removeSlave(const Session& session);
 
+        void setupImageOutput(const yml::Node& dimensionsNode);
         void setupImageOutput(uint32_t width, uint32_t height);
 
+        [[nodiscard]] cluster::State getState() const { return this->_state; }
         [[nodiscard]] std::unique_ptr<Image>& getResult() { return this->_result; }
-
         [[nodiscard]] int getHeartbeatFrequency() const
             { return this->_heartbeatFrequency; }
+
+        void setState(cluster::State state) { this->_state = state; }
         void setHeartbeatFrequency(const int heartbeatFrequency)
             { this->_heartbeatFrequency = heartbeatFrequency; }
         void addFinishedTile() { ++this->_finishedTiles; }

@@ -13,7 +13,7 @@ namespace raytracer::app
         const Attributes& attributes
     )
         : App(attributes),
-          _config(attributes.sceneFilepath),
+          _config(attributes.sceneFilepaths.at(0)), // TODO: Finish this lol
           _renderer(this->_config),
           _window(
               sf::VideoMode(WIN_WIDTH, WIN_HEIGHT, WIN_BPP),

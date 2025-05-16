@@ -93,6 +93,17 @@ namespace raytracer::network::server
         this->_slaves.erase(session.getId());
     }
 
+    void Cluster::setupImageOutput
+    (
+        const yml::Node &dimensionsNode
+    )
+    {
+        const uint32_t width = dimensionsNode["width"].as<int>();
+        const uint32_t height = dimensionsNode["height"].as<int>();
+
+        this->setupImageOutput(width, height);
+    }
+
     void
     Cluster::setupImageOutput
     (
@@ -107,6 +118,8 @@ namespace raytracer::network::server
     Cluster::startRender()
     {
         this->_state = cluster::State::RENDERING;
+        this->_finishedTiles = 0;
+        this->_nextTile = 0;
 
         auto dim = this->_result->getDimensions();
 
@@ -169,8 +182,6 @@ namespace raytracer::network::server
 
         LOG_INFO("Done.");
         this->_state = cluster::State::FINISHED;
-
-        this->_server.stop(); // TODO: Hmm
     }
 
     void

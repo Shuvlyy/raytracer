@@ -13,7 +13,7 @@ namespace raytracer::app
           _server({
               attributes.port,
               attributes.serverConfigFilepath,
-              attributes.sceneFilepath
+              attributes.sceneFilepaths
           }),
           _previewWindow(
               sf::VideoMode(WIN_WIDTH, WIN_HEIGHT, WIN_BPP),

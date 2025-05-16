@@ -23,7 +23,7 @@ namespace raytracer::network
         {
             uint16_t port;
             std::string configurationFilePath {};
-            std::string sceneFilepath {};
+            std::vector<std::string> sceneFilepaths;
             int heartbeatFrequency = DEFAULT_HEARTBEAT_FREQUENCY;
         };
 
@@ -68,6 +68,7 @@ namespace raytracer::network
         packet::server::Manager _packetManager;
         server::session::Manager _sessionManager;
         server::Cluster _cluster;
+        size_t _currentlyProcessingScene;
 
         void handleNewConnection();
         void handleClientRequest(Socket &clientSocket);
