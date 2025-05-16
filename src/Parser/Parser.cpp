@@ -2,8 +2,10 @@
 
 #include "Exception/Exceptions/InvalidUsage.hpp"
 #include "Exception/Exceptions/UnknownFlag.hpp"
+#include "Exception/Exceptions/ValueOverflow.hpp"
 
 #include <iostream>
+#include <thread>
 #include <unordered_map>
 
 namespace raytracer
@@ -63,7 +65,12 @@ namespace raytracer
 
                 if (value != "auto") {
                     try {
-                        _attributes.threadsAmount = static_cast<uint16_t>(std::stoi(value));
+                        const int threads = std::stoi(value);
+
+                        if (threads <= 0 || threads > std::numeric_limits<uint16_t>::max()) {
+                            throw exception::ValueOverflow(threads);
+                        }
+                        _attributes.threadsAmount = threads;
                     } catch (...) {
                         throw exception::InvalidUsage("Invalid thread count: " + value);
                     }
@@ -79,14 +86,24 @@ namespace raytracer
                 if (++i >= _tokens.size())
                     throw exception::InvalidUsage("Expected host after -h");
 
-                _attributes.host = _tokens[i];
+                std::string host = _tokens[i];
+
+                if (host == "localhost") {
+                    host = "127.0.0.1";
+                }
+                _attributes.host = host;
             }
             else if (token == "-p") {
                 if (++i >= _tokens.size())
                     throw exception::InvalidUsage("Expected port after -p");
 
                 try {
-                    _attributes.port = static_cast<uint16_t>(std::stoi(_tokens[i]));
+                    const int port = std::stoi(_tokens[i]);
+
+                    if (port <= 0 || port > std::numeric_limits<uint16_t>::max()) {
+                        throw exception::ValueOverflow(port);
+                    }
+                    _attributes.port = port;
                 } catch (...) {
                     throw exception::InvalidUsage("Invalid port number: " + _tokens[i]);
                 }
