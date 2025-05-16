@@ -2,6 +2,8 @@
 
 #include "Vec.hpp"
 
+#define ALMOST_ZERO 1e-6
+
 namespace raytracer::math
 {
 

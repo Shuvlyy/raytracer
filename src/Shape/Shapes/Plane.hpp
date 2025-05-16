@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math/Mat.hpp"
 #include "Shape/Shape.hpp"
 #define PLANE "\"PLANE\""
 #define X_AXIS "\"X\""
@@ -24,7 +25,7 @@ namespace raytracer::shape
         {
             const double d = dot(this->_axis, ray.direction);
 
-            if (std::abs(d) < 1e-6) {
+            if (std::abs(d) < ALMOST_ZERO) {
                 return false;
             }
 

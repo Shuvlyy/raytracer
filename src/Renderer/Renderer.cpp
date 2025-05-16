@@ -5,6 +5,8 @@
 
 #include <format>
 
+#include "Math/Mat.hpp"
+
 namespace raytracer
 {
 
@@ -152,7 +154,7 @@ namespace raytracer
                 continue;
             }
 
-            math::Ray shadowRay(res.p + 1e-4 * directionToLight, directionToLight);
+            math::Ray shadowRay(res.p + ALMOST_ZERO * directionToLight, directionToLight);
             HitResult shadowHit;
 
             if (this->_scene.hits(shadowRay, shadowHit)) {
