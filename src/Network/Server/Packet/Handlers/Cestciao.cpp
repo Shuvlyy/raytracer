@@ -20,6 +20,8 @@ namespace raytracer::network::packet::server::handler
 
         const auto& p = reinterpret_cast<const packet::Cestciao&>(packet);
 
+        session.setState(network::server::session::State::DEADASS);
+
         // TODO: Finish this.
     }
 

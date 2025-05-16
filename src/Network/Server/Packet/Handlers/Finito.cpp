@@ -32,6 +32,10 @@ namespace raytracer::network::packet::server::handler
 
         *server.getCluster().getResult() += pixelBuffer;
 
+        renderer::Tile& tile = session.getData().currentTile;
+        server.getCluster().addFinishedTile();
+        LOG_DEBUG("Render done. Tile: x=" + std::to_string(tile.x) + " y= " + std::to_string(tile.y) + " w=" + std::to_string(tile.width) + " h=" + std::to_string(tile.height));
+
         LOG_DEBUG("Client (SFD: " + std::to_string(session.getId()) + ") finished rendering.");
     }
 

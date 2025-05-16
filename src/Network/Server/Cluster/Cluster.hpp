@@ -44,6 +44,7 @@ namespace raytracer::network::server
             { return this->_heartbeatFrequency; }
         void setHeartbeatFrequency(const int heartbeatFrequency)
             { this->_heartbeatFrequency = heartbeatFrequency; }
+        void addFinishedTile() { ++this->_finishedTiles; }
 
     private:
         Server& _server;
@@ -53,6 +54,7 @@ namespace raytracer::network::server
         std::unique_ptr<Image> _result;
         std::vector<renderer::Tile> _tiles;
         size_t _nextTile;
+        size_t _finishedTiles;
 
         void updateState();
         void updateSlavesData();

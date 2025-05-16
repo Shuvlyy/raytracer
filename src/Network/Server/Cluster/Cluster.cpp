@@ -16,7 +16,8 @@ namespace raytracer::network::server
         : _server(server),
           _state(cluster::State::WAITING),
           _heartbeatFrequency(0),
-          _nextTile(0)
+          _nextTile(0),
+          _finishedTiles(0)
     {}
 
     void
@@ -115,8 +116,9 @@ namespace raytracer::network::server
     void
     Cluster::checkRenderStatus()
     {
-        if (this->_nextTile != this->_tiles.size()) {
-            LOG_DEBUG("Not everyone has finished yet");
+        LOG_DEBUG("Checking render status: finishedTiles= " + std::to_string(this->_finishedTiles) + " tilesSize=" + std::to_string(this->_tiles.size()));
+        if (this->_finishedTiles != this->_tiles.size()) {
+            LOG_DEBUG("Not everything is finished yet");
 
             for (auto& [_, s] : this->_slaves) {
                 Session& slave = s.get();
@@ -153,7 +155,7 @@ namespace raytracer::network::server
             return;
         }
 
-        LOG_DEBUG("Everyone has finished.");
+        LOG_DEBUG("Everything is finished.");
 
         namespace fs = std::filesystem;
 
@@ -168,7 +170,7 @@ namespace raytracer::network::server
         LOG_INFO("Done.");
         this->_state = cluster::State::FINISHED;
 
-        this->_server.stop();
+        this->_server.stop(); // TODO: Hmm
     }
 
     void
@@ -194,6 +196,14 @@ namespace raytracer::network::server
                     std::min(tileWidth, width - x * tileWidth),
                     std::min(tileHeight, height - y * tileHeight)
                 );
+
+                LOG_INFO(
+                    "Generated tile: x=" + std::to_string(x * tileWidth) +
+                    ", y=" + std::to_string(y * tileHeight) +
+                    ", w=" + std::to_string(std::min(tileWidth, width - x *
+                        tileWidth)) +
+                    ", h=" + std::to_string(std::min(tileHeight, height - y *
+                        tileHeight)));
             }
         }
     }
