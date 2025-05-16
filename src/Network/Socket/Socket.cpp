@@ -94,15 +94,15 @@ namespace raytracer::network
             LOG_DEBUG("Sent a packet of size " + std::to_string(data.size()) + " (SFD: " + std::to_string(this->_fd) + ")");
 
             const std::string type = Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0]));
-            std::string content;
-            for (uint16_t i = 0; i < data.size(); ++i) {
-                content += std::format("{:02X}{}", data[i], i == data.size() - 1 ? "" : " ");
-            }
+            // std::string content;
+            // for (uint16_t i = 0; i < data.size(); ++i) {
+                // content += std::format("{:02X}{}", data[i], i == data.size() - 1 ? "" : " ");
+            // }
 
             LOG_DEBUG(
                 "Packet details:\n"
                 "\tType: " + type + "\n"
-                "\tContent: [" + content + "]"
+                // "\tContent: [" + content + "]"
             );
         }
         catch (exception::IException &exception) {
