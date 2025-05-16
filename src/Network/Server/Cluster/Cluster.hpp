@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Network/Server/Session/Session.hpp"
+#include "Image/Image.hpp"
 
 #include <unordered_map>
 
