@@ -14,17 +14,37 @@ namespace yml
     Yml::Yml
     (
         std::string filepath,
-        bool isRawContent,
+        const bool isRawContent,
         const uint8_t nestingLevel
     )
         : _filepath(std::move(filepath))
     {
-        this->_rawContent = this->_filepath;
-
-        if (!isRawContent) {
-            this->_rawContent = getFileContent(this->_filepath);
+        if (isRawContent) {
+            this->loadFromRawContent(this->_filepath, nestingLevel);
+        } else {
+            this->loadFromFilepath(this->_filepath, nestingLevel);
         }
+    }
 
+    void
+    Yml::loadFromFilepath
+    (
+        const std::string& filepath,
+        const uint8_t nestingLevel
+    )
+    {
+        this->_rawContent = getFileContent(filepath);
+        Parser parser(*this, this->_rawContent, this->_tree, nestingLevel);
+    }
+
+    void
+    Yml::loadFromRawContent
+    (
+        const std::string &rawContent,
+        const uint8_t nestingLevel
+    )
+    {
+        this->_rawContent = rawContent;
         Parser parser(*this, this->_rawContent, this->_tree, nestingLevel);
     }
 

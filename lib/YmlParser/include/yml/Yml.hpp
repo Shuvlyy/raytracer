@@ -41,6 +41,18 @@ namespace yml
             uint8_t nestingLevel = YML_NESTING_SPACES
         );
 
+        Yml() = default;
+
+        void loadFromFilepath(
+            const std::string& filepath,
+            uint8_t nestingLevel = YML_NESTING_SPACES
+        );
+
+        void loadFromRawContent(
+            const std::string &rawContent,
+            uint8_t nestingLevel = YML_NESTING_SPACES
+        );
+
         /**
          * @brief   Retrieves a node from the parsed tree by its search key.
          *
