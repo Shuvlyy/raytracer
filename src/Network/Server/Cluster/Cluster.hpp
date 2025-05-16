@@ -56,8 +56,8 @@ namespace raytracer::network::server
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
         std::unique_ptr<Image> _result;
         std::vector<renderer::Tile> _tiles;
-        size_t _nextTile;
-        size_t _finishedTiles;
+        int _nextTile;
+        int _finishedTiles;
 
         void updateState();
         void updateSlavesData();

@@ -119,7 +119,7 @@ namespace raytracer::network::server
     {
         this->_state = cluster::State::RENDERING;
         this->_finishedTiles = 0;
-        this->_nextTile = 0;
+        this->_nextTile = -1;
 
         auto dim = this->_result->getDimensions();
 
@@ -133,6 +133,11 @@ namespace raytracer::network::server
         if (this->_finishedTiles != this->_tiles.size()) {
             LOG_DEBUG("Not everything is finished yet");
 
+            if (this->_nextTile == this->_tiles.size() - 1) {
+                LOG_DEBUG("Pas temriné haha");
+                return;
+            }
+
             for (auto& [_, s] : this->_slaves) {
                 Session& slave = s.get();
 
@@ -141,7 +146,13 @@ namespace raytracer::network::server
 
                     this->_nextTile++;
 
-                    const renderer::Tile& tileToRender = this->_tiles[this->_nextTile - 1];
+                    // if (this->_tiles.size() <= this->_finishedTiles) {
+                    //     LOG_DEBUG("All tiles have been rendered, finishing...");
+                    //     this->_state = cluster::State::FINISHED;
+                    //     return;
+                    // }
+
+                    const renderer::Tile& tileToRender = this->_tiles[this->_nextTile];
 
                     slave.setState(session::State::RENDERING);
                     slave.getData().currentTile = tileToRender;
