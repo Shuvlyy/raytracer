@@ -16,7 +16,7 @@ namespace raytracer
         uint16_t port;
         std::string host;
         bool debugMode = false;
-        std::string sceneFilepath;
+        std::vector<std::string> sceneFilepaths;
         std::string serverConfigFilepath;
     };
 

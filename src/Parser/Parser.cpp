@@ -116,10 +116,7 @@ namespace raytracer
                 continue;
             }
             else {
-                if (!_attributes.sceneFilepath.empty()) {
-                    throw exception::InvalidUsage("Only one scene file path can be provided");
-                }
-                _attributes.sceneFilepath = token;
+                _attributes.sceneFilepaths.push_back(token);
             }
         }
 
@@ -203,7 +200,7 @@ namespace raytracer
                     throw exception::InvalidUsage("Client mode requires a host (-h <host>)");
                 if (!attrs.port)
                     throw exception::InvalidUsage("Client mode requires a port (-p <port>)");
-                if (!attrs.sceneFilepath.empty())
+                if (!attrs.sceneFilepaths.empty())
                     throw exception::InvalidUsage("Client mode must not include a scene file path");
                 break;
 
@@ -212,14 +209,14 @@ namespace raytracer
                     throw exception::InvalidUsage("Server mode requires a port (-p <port>)");
                 if (attrs.serverConfigFilepath.empty())
                     throw exception::InvalidUsage("Server mode requires a configuration file (--config <file>)");
-                if (attrs.sceneFilepath.empty())
+                if (attrs.sceneFilepaths.empty())
                     throw exception::InvalidUsage("Server mode requires a scene file path");
                 if (!attrs.host.empty())
                     throw exception::InvalidUsage("Server mode must not include a host");
                 break;
 
             case Mode::SELF:
-                if (attrs.sceneFilepath.empty())
+                if (attrs.sceneFilepaths.empty())
                     throw exception::InvalidUsage("Self mode requires a scene file path");
                 if (!attrs.host.empty())
                     throw exception::InvalidUsage("Self mode must not include a host");

@@ -30,8 +30,6 @@ main
 
         const Attributes& attributes = parser.getAttributes();
 
-        const std::string sceneFilepath = attributes.sceneFilepath;
-
         Logger::init(
             PROJECT_NAME,
             argc, const_cast<const char **>(argv),
