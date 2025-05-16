@@ -372,6 +372,27 @@ namespace raytracer::math
     }
 
     /**
+     * @brief Compute the cross product of two Vec<3>
+     *
+     * @tparam T Type off the elements
+     * @param lhs First vector
+     * @param rhs Second vector
+     * @return the cross product
+     */
+    template<typename T>
+    Vec<3, T> cross (
+        const Vec<3, T>& lhs,
+        const Vec<3, T>& rhs
+    )
+        {
+            return Vec<3, T>(
+                lhs[1] * rhs[2] - lhs[2] * rhs[1],
+                lhs[2] * rhs[0] - lhs[0] * rhs[2],
+                lhs[0] * rhs[1] - lhs[1] * rhs[0]
+            );
+        }
+
+    /**
      * @brief   Computes the reflection of the vector `lhs` across the vector
      *          `rhs`.
      *

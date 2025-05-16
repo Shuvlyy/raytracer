@@ -23,6 +23,7 @@ SRC += Camera/Camera.cpp
 SRC += Multithreading/Multithreading.cpp
 
 SRC += Scene/Scene.cpp \
+	Factory/FromObj.cpp \
 	Factory/ShapeFactory.cpp \
 	Factory/LightFactory.cpp \
 	Factory/GetColor.cpp \

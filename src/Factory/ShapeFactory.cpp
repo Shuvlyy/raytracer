@@ -1,3 +1,4 @@
+#include "Factory.hpp"
 #include "logger/Logger.hpp"
 #include "Math/Color.hpp"
 #include "yml/Yml.hpp"
@@ -6,6 +7,7 @@
 #include "Shape/Shapes/Plane.hpp"
 #include "Shape/Shapes/Cone.hpp"
 #include "Shape/Shapes/Cylinder.hpp"
+#include "Shape/Shapes/Triangle.hpp"
 #include "Shape/Material/Materials/Metal.hpp"
 #include "Shape/Material/Materials/Lambertian.hpp"
 
@@ -50,17 +52,33 @@ namespace raytracer::factory
     std::unique_ptr<Shape>
     getShapeFromYml
     (
-        const yml::Tree &shape
+        const yml::Tree &shape,
+        std::vector<std::unique_ptr<Shape>> &shapes
     )
     {
         const auto shapeType = shape["type"].as<std::string>();
 
+        if (shapeType == OBJ) {
+            FromObj(shape["filepath"].as<std::string>(),
+                shape::material::getMaterial(shape),
+                shapes);
+            LOG_DEBUG("Added " + shape["filepath"].as<std::string>() + " to the shapes");
+            return nullptr;
+        }
         if (shapeType == SPHERE) {
             return std::make_unique<shape::Sphere>(
                 math::Point(math::getVector3(shape)),
                 shape["radius"].as<double>(),
                 shape::material::getMaterial(shape)
             );
+        }
+        if (shapeType == TRIANGLE) {
+            return std::make_unique<shape::Triangle>(
+                math::Point(math::getVector3(shape["p1"].children)),
+                math::Point(math::getVector3(shape["p2"].children)),
+                math::Point(math::getVector3(shape["p3"].children)),
+                math::getVector3(shape["axis"].children),
+                shape::material::getMaterial(shape));
         }
         if (shapeType == PLANE) {
             const auto axis = shape["axis"].as<std::string>();
@@ -77,7 +95,7 @@ namespace raytracer::factory
             if (axis == Y_AXIS) {
                 return std::make_unique<shape::Plane>(
                     math::Point<3>(0, pos, 0),
-                    math::Vec<3>(0, axisPos, 0), // TODO: Use a function to get the Vec<3>
+                    math::Vec<3>(0, axisPos, 0),
                     shape::material::getMaterial(shape)
                 );
             }
@@ -102,8 +120,8 @@ namespace raytracer::factory
                 shape["axis_z"].as<double>()
             );
 
-            const double radius = shape["radius"].as<double>();
-            const double height = shape["height"].as<double>();
+            const auto radius = shape["radius"].as<double>();
+            const auto height = shape["height"].as<double>();
 
             return std::make_unique<shape::Cone>(
                 apex,
@@ -126,8 +144,8 @@ namespace raytracer::factory
                 shape["axis_z"].as<double>()
             );
         
-            const double radius = shape["radius"].as<double>();
-            const double height = shape["height"].as<double>();
+            const auto radius = shape["radius"].as<double>();
+            const auto height = shape["height"].as<double>();
         
             return std::make_unique<shape::Cylinder>(
                 baseCenter,

@@ -1,15 +1,9 @@
 #include "Scene.hpp"
 
-#include <iostream>
-
 #include "Factory/Factory.hpp"
 
 #include "logger/Logger.hpp"
 #include "Light/Lights/Point.hpp"
-
-#include "Shape/Material/Materials/Lambertian.hpp"
-#include "Shape/Material/Materials/Metal.hpp"
-#include "Shape/Shapes/Sphere.hpp"
 
 namespace raytracer
 {
@@ -36,7 +30,7 @@ namespace raytracer
 
         for (size_t i = 0; i < size; i++) {
             const auto shapeConfig = config["shapes"][i].children;
-            auto shape = factory::getShapeFromYml(shapeConfig);
+            auto shape = factory::getShapeFromYml(shapeConfig, this->_shapes);
 
             if (shape == nullptr) {
                 continue;
