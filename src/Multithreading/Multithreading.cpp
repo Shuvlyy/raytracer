@@ -9,8 +9,8 @@
 namespace raytracer::multithreading
 {
 
-        void
-        render
+    void
+    render
     (
         Renderer &renderer,
         const int nbProcs,
@@ -40,12 +40,15 @@ namespace raytracer::multithreading
 
         for (uint32_t y = 0; y < tilesY; y++) {
             for (uint32_t x = 0; x < tilesX; x++) {
-                tiles.emplace_back(
-                    x * tileWidth,
-                    y * tileHeight,
-                    std::min(tileWidth, tileToRender.width - x * tileWidth),
-                    std::min(tileHeight, tileToRender.height - y * tileHeight)
-                );
+                const uint32_t tileStartX = tileToRender.x + x * tileWidth;
+                const uint32_t tileStartY = tileToRender.y + y * tileHeight;
+
+                const uint32_t w = std::min(tileWidth, tileToRender.x + tileToRender.width - tileStartX);
+                const uint32_t h = std::min(tileHeight, tileToRender.y + tileToRender.height - tileStartY);
+
+                if (w > 0 && h > 0) {
+                    tiles.emplace_back(tileStartX, tileStartY, w, h);
+                }
             }
         }
 
