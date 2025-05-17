@@ -8,9 +8,9 @@ namespace yml
 {
 
     /**
-     * @brief   Responsible for parsing YAML content into a tree structure.
+     * @brief   Responsible for parsing YML content into a tree structure.
      *
-     * This class processes raw YAML strings, interprets their structure,
+     * This class processes raw YML strings, interprets their structure,
      * and organizes the data into a hierarchical Tree of Node objects.
      */
     class Parser final
@@ -21,7 +21,7 @@ namespace yml
          *          content.
          *
          * @param   yml         Reference to the associated Yml instance
-         * @param   rawContent  The raw YAML file content as a string
+         * @param   rawContent  The raw YML file content as a string
          * @param   tree        Reference to the tree structure to populate
          */
         explicit Parser
@@ -58,16 +58,16 @@ namespace yml
         uint8_t _nestingLevel;
 
         /**
-         * @brief   Parses the entire raw YAML content.
+         * @brief   Parses the entire raw YML content.
          *
          * Reads the content line-by-line, while skipping irrelevant lines.
          *
-         * @param   rawContent  The raw YAML content to parse
+         * @param   rawContent  The raw YML content to parse
          */
         void parse(const std::string& rawContent);
 
         /**
-         * @brief   Parses a single line of YAML content.
+         * @brief   Parses a single line of YML content.
          *
          * Splits the line into key-value tokens and creates a Node.
          *
@@ -96,7 +96,7 @@ namespace yml
         /**
          * @brief   Counts the number of leading spaces in a string.
          *
-         * Used to determine the nesting level in YAML.
+         * Used to determine the nesting level in YML.
          *
          * @param   str The string to analyze
          * @returns The number of leading spaces

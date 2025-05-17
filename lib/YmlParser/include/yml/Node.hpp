@@ -119,7 +119,7 @@ namespace yml
     }
 
     /**
-     * @brief   Represents a node in the YAML tree.
+     * @brief   Represents a node in the YML tree.
      *
      * A Node can hold a name, an optional value, and its own subtree
      * (children).

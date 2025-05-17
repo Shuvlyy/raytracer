@@ -13,10 +13,10 @@ namespace yml
 {
 
     /**
-     * @brief   Represents a YAML-like parser and manager.
+     * @brief   Represents a YML-like parser and manager.
      *
      * The Yml class provides functionality to load, parse, and search
-     * for nodes within a YAML-style structured file. It internally builds
+     * for nodes within a YML-style structured file. It internally builds
      * a tree structure from the file's contents.
      */
     class Yml final

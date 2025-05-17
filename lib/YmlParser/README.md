@@ -19,6 +19,27 @@ catch (const yml::exception::IException& exception) {
 }
 ```
 
+You can also load a YML directly in an already-existing YML instance:
+```
+std::string rawContent =
+    "name: Lysandre\n"
+    "age: 18\n"
+    "birth:\n"
+    "  year: 2006\n"
+    "  month:\n"
+    "    index: 7\n"
+    "    name: July"
+    "  day: 3\n"
+    "gpa: 3.18\n"
+    "hasCramptes: false\n";
+
+Yml yml;
+
+yml.loadFromFilepath("file.yml");
+yml.loadFromRawContent(rawContent); // You can also load a YML instance
+                                       directly from a string.
+```
+
 For the rest of this README, this sample YML configuration file will be used:
 ```yml
 name: "Lysandre"
@@ -66,7 +87,7 @@ But setters and configuration saving will be soon added!
 
 ## Time spent
 
-Around 38 hours.\
+Around 39 hours.\
 My wakatime statistics aren't representative of my real time
 spent, as it also counted my time spent on the MyRPG and Raytracer project in
 general.
