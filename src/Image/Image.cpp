@@ -1,5 +1,7 @@
 #include "Image.hpp"
 
+#include "Exception/Exceptions/OutOfBounds.hpp"
+
 namespace raytracer
 {
 
@@ -20,8 +22,8 @@ namespace raytracer
     {
         const uint64_t rawCoordinates = y * this->_width + x;
 
-        if (rawCoordinates > this->_data.size()) {
-            throw; // TODO: Throw exception
+        if (rawCoordinates >= this->_data.size()) {
+            throw exception::OutOfBounds(rawCoordinates);
         }
         return this->_data[rawCoordinates];
     }
@@ -35,8 +37,8 @@ namespace raytracer
     {
         const uint64_t rawCoordinates = y * this->_width + x;
 
-        if (rawCoordinates > this->_data.size()) {
-            throw; // TODO: Throw exception
+        if (rawCoordinates >= this->_data.size()) {
+            throw exception::OutOfBounds(rawCoordinates);
         }
         this->_data[rawCoordinates] = color;
     }
