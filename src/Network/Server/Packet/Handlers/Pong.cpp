@@ -28,10 +28,10 @@ namespace raytracer::network::packet::server::handler
 
         if (t > t1) {
             // ... gros souci mdr
-            return;
+            throw;
         }
 
-        session.setLatency(t1 - t - server.getProperties().heartbeatFrequency * 1000);
+        session.setLatency(t1 - t);
     }
 
 }
