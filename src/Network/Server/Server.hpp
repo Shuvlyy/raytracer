@@ -57,6 +57,7 @@ namespace raytracer::network
         [[nodiscard]] packet::server::Manager& getPacketManager() { return this->_packetManager; }
         [[nodiscard]] server::session::Manager& getSessionManager() { return this->_sessionManager; }
         [[nodiscard]] server::Cluster& getCluster() { return this->_cluster; }
+        [[nodiscard]] size_t getCurrentlyProcessingScene() const { return this->_currentlyProcessingScene; }
 
     private:
         server::Properties _properties;
@@ -72,6 +73,8 @@ namespace raytracer::network
 
         void handleNewConnection();
         void handleClientRequest(Socket &clientSocket);
+
+        bool checkCurrentScene();
     };
 
 }

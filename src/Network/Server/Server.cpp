@@ -12,6 +12,8 @@
 
 #include <netinet/in.h>
 
+#include "Renderer/Renderer.hpp"
+
 namespace raytracer::network
 {
 
@@ -85,29 +87,49 @@ namespace raytracer::network
             [&] {
                 std::string res;
                 for (const auto& sceneFilepath: this->_properties.sceneFilepaths)
-                    res += "\"" + sceneFilepath + "\"";
+                    res += "\t\t- \"" + sceneFilepath + "\"\n";
                 return res;
             }() +
             "\tHeartbeat frequency: " + std::to_string(this->_properties.heartbeatFrequency) + "s"
         );
 
-        const yml::Node res = this->_sceneConfig["camera"]["resolution"];
-        this->_cluster.setupImageOutput(res);
+        // const yml::Node res = this->_sceneConfig["camera"]["resolution"];
+        // this->_cluster.setupImageOutput(res);
 
         while (true) {
-            this->_cluster.update();
+            const server::cluster::State clusterState = this->_cluster.getState();
 
-            if (this->_cluster.getState() == server::cluster::State::FINISHED) {
-                this->_currentlyProcessingScene++;
+            if (clusterState == server::cluster::State::FINISHED ||
+                clusterState == server::cluster::State::LOADING
+            ) {
+                if (clusterState == server::cluster::State::FINISHED) {
+                    this->_currentlyProcessingScene++;
+                }
+
                 if (this->_properties.sceneFilepaths.size() <= this->_currentlyProcessingScene) {
                     this->stop();
                     return;
                 }
+
+                // this->_sceneConfig = yml::Yml(this->_properties.sceneFilepaths.at(this->_currentlyProcessingScene));
+
                 this->_sceneConfig.loadFromFilepath(this->_properties.sceneFilepaths.at(this->_currentlyProcessingScene));
+
+                if (!this->checkCurrentScene()) {
+                    continue;
+                }
+
                 const yml::Node node = this->_sceneConfig["camera"]["resolution"];
                 this->_cluster.setupImageOutput(node);
-                this->_cluster.setState(server::cluster::State::READY);
+
+                if (clusterState == server::cluster::State::FINISHED) {
+                    this->_cluster.setState(server::cluster::State::READY);
+                } else if (clusterState == server::cluster::State::LOADING) {
+                    this->_cluster.setState(server::cluster::State::WAITING);
+                }
             }
+
+            this->_cluster.update();
 
             const int ret = poll(
                 this->_pollFds.data(),
@@ -247,6 +269,25 @@ namespace raytracer::network
         this->_sessionManager.closeSession(clientSocket);
 
         LOG_INFO("Client (SFD: " + std::to_string(clientSocket.getFd()) + ") disconnected.");
+    }
+
+    bool
+    Server::checkCurrentScene()
+    {
+        try {
+            /*
+             * Instancing a Renderer class with the config, so that if
+             * the config is invalid, an exception will be thrown
+             * automatically by the constructor of the Renderer class.
+             */
+            Renderer r(this->_sceneConfig);
+            return true;
+        }
+        catch (...) {
+            LOG_CRIT("Invalid scene file, skipping... (" + this->_properties.sceneFilepaths.at(this->_currentlyProcessingScene) + ")");
+            // this->_sceneConfig.dump();
+            return false;
+        }
     }
 
 }

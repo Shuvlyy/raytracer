@@ -35,6 +35,7 @@ namespace raytracer::app
         sf::RenderWindow _previewWindow;
         server::Preview _preview;
         bool _hasLoadedPreview;
+        size_t _currentScene;
 
         void runWindow();
     };

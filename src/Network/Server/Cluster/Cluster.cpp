@@ -14,7 +14,7 @@ namespace raytracer::network::server
         Server& server
     )
         : _server(server),
-          _state(cluster::State::WAITING),
+          _state(cluster::State::LOADING),
           _heartbeatFrequency(0),
           _nextTile(0),
           _finishedTiles(0)
@@ -204,8 +204,8 @@ namespace raytracer::network::server
     {
         this->_tiles.clear();
 
-        constexpr uint32_t tileWidth = 128;
-        constexpr uint32_t tileHeight = 128;
+        constexpr uint32_t tileWidth = 1024;
+        constexpr uint32_t tileHeight = 1024;
 
         const uint32_t tilesX = (width + tileWidth - 1) / tileWidth;
         const uint32_t tilesY = (height + tileHeight - 1) / tileHeight;

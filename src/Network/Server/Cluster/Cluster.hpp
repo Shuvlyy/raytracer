@@ -18,6 +18,7 @@ namespace raytracer::network::server
 
         enum class State
         {
+            LOADING,
             WAITING,
             READY,
             RENDERING,
@@ -44,7 +45,7 @@ namespace raytracer::network::server
         [[nodiscard]] int getHeartbeatFrequency() const
             { return this->_heartbeatFrequency; }
 
-        void setState(cluster::State state) { this->_state = state; }
+        void setState(const cluster::State state) { this->_state = state; }
         void setHeartbeatFrequency(const int heartbeatFrequency)
             { this->_heartbeatFrequency = heartbeatFrequency; }
         void addFinishedTile() { ++this->_finishedTiles; }
