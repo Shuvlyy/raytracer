@@ -38,6 +38,11 @@ namespace raytracer::app
         size_t _currentScene;
 
         void runWindow();
+        void updatePreview(
+            const std::unique_ptr<Image>& img,
+            uint32_t width,
+            uint32_t height
+        );
     };
 
 }

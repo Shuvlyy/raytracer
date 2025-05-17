@@ -2,6 +2,8 @@
 
 #include <thread>
 
+#include "Exception/IException.hpp"
+
 namespace raytracer::app
 {
 
@@ -23,7 +25,9 @@ namespace raytracer::app
           ),
           _hasLoadedPreview(false),
           _currentScene(0)
-    {}
+    {
+        this->_previewWindow.setFramerateLimit(WIN_FPS);
+    }
 
     void
     Server::run()
@@ -61,6 +65,10 @@ namespace raytracer::app
                 }
             }
 
+            if (this->_currentScene == this->_attributes.sceneFilepaths.size()) {
+                continue; // No need to recalculate the image.
+            }
+
             if (img == nullptr) {
                 continue;
             }
@@ -75,31 +83,14 @@ namespace raytracer::app
             const auto& dim = img->getDimensions();
 
             if (!this->_hasLoadedPreview) {
-                this->_preview._previewImage.create(dim[0], dim[1], sf::Color::Black);
+                this->_previewWindow.clear();
+                this->_preview._previewImage.create(dim[0], dim[1]);
                 this->_preview._previewTexture.loadFromImage(this->_preview._previewImage);
-                this->_preview._previewSprite.setTexture(this->_preview._previewTexture);
+                this->_preview._previewSprite.setTexture(this->_preview._previewTexture, true);
                 this->_hasLoadedPreview = true;
             }
 
-            try {
-                for (uint32_t y = 0; y < dim[1]; y++) {
-                    for (uint32_t x = 0; x < dim[0]; x++) {
-                        math::Color pixel = img->at(x, y);
-                        sf::Color color = {
-                            static_cast<sf::Uint8>(pixel[0] * 255),
-                            static_cast<sf::Uint8>(pixel[1] * 255),
-                            static_cast<sf::Uint8>(pixel[2] * 255)
-                        };
-
-                        this->_preview._previewImage.setPixel(x, y, color);
-                    }
-                }
-
-                this->_preview._previewTexture.update(this->_preview._previewImage);
-            }
-            catch (...) {
-                // ...
-            }
+            this->updatePreview(img, dim[0], dim[1]);
 
             this->_previewWindow.clear();
             this->_previewWindow.draw(this->_preview._previewSprite);
@@ -107,4 +98,32 @@ namespace raytracer::app
         }
     }
 
+    void
+    Server::updatePreview
+    (
+        const std::unique_ptr<Image>& img,
+        uint32_t width,
+        uint32_t height
+    )
+    {
+        try {
+            for (uint32_t y = 0; y < height - 1; y++) {
+                for (uint32_t x = 0; x < width; x++) {
+                    math::Color pixel = img->at(x, y);
+                    sf::Color color = {
+                        static_cast<sf::Uint8>(pixel[0] * 255),
+                        static_cast<sf::Uint8>(pixel[1] * 255),
+                        static_cast<sf::Uint8>(pixel[2] * 255)
+                    };
+
+                    this->_preview._previewImage.setPixel(x, y, color);
+                }
+            }
+
+            this->_preview._previewTexture.update(this->_preview._previewImage);
+        }
+        catch (const exception::IException& e) {
+            // LALALA J4ENTEND PAS
+        }
+    }
 }
