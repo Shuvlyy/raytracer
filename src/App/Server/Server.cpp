@@ -122,7 +122,7 @@ namespace raytracer::app
 
             this->_preview._previewTexture.update(this->_preview._previewImage);
         }
-        catch (const exception::IException& e) {
+        catch (const exception::IException&) {
             // LALALA J4ENTEND PAS
         }
     }

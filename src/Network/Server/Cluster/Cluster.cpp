@@ -130,10 +130,10 @@ namespace raytracer::network::server
     Cluster::checkRenderStatus()
     {
         LOG_DEBUG("Checking render status: finishedTiles= " + std::to_string(this->_finishedTiles) + " tilesSize=" + std::to_string(this->_tiles.size()));
-        if (this->_finishedTiles != this->_tiles.size()) {
+        if (this->_finishedTiles != static_cast<int>(this->_tiles.size())) {
             LOG_DEBUG("Not everything is finished yet");
 
-            if (this->_nextTile == this->_tiles.size() - 1) {
+            if (this->_nextTile == static_cast<int>(this->_tiles.size()) - 1) {
                 LOG_DEBUG("Pas temriné haha");
                 return;
             }

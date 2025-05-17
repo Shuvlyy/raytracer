@@ -4,6 +4,7 @@
 #include "App/Self/Self.hpp"
 #include "App/Server/Server.hpp"
 #include "App/Client/Client.hpp"
+#include "Exception/Exceptions/Huh.hpp"
 
 #include <memory>
 
@@ -25,7 +26,7 @@ namespace raytracer::app
         if (attributes.programMode == Mode::CLIENT) {
             return std::make_unique<Client>(attributes);
         }
-        throw; // TODO: Throw exception
+        throw exception::Huh();
     }
 
 }

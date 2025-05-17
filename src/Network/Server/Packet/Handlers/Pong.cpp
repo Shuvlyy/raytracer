@@ -7,6 +7,8 @@
 
 #include "Network/Server/Server.hpp"
 
+#include "Exception/Exceptions/Huh.hpp"
+
 namespace raytracer::network::packet::server::handler
 {
 
@@ -14,7 +16,7 @@ namespace raytracer::network::packet::server::handler
     Pong::handle
     (
         const Packet& packet,
-        Server& server,
+        Server&,
         network::server::Session& session
     )
         const
@@ -28,7 +30,7 @@ namespace raytracer::network::packet::server::handler
 
         if (t > t1) {
             // ... gros souci mdr
-            throw;
+            throw exception::Huh();
         }
 
         session.setLatency(t1 - t);
