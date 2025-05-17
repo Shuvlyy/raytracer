@@ -2,6 +2,18 @@
 
 Basic leveled Logger written in C++.
 
+## 📩 Installation
+
+1. Download the project
+
+2. Build the project
+```shell
+make -s
+```
+
+3. And use it anywhere! Include the headers located in the `include/` folder
+   and link the library to your project.
+
 ## Usage
 
 ### Initialization
@@ -47,7 +59,7 @@ Currently supported log levels are (in ascending order):
 
 You can access them in the enum `logger::Level`.
 
-## Logging
+## ✏️ Logging
 
 To log something, simply call `Logger::log()` function.
 ```cpp
@@ -72,14 +84,14 @@ Here is an example log line:
 File name and line number are automatically managed, no need to worry about
 that ;)
 
-## Log file
+## 📰 Log file
 
 Every log file is stored in the `logs/` folder. If the folder doesn't exist, it
 will automatically be created.
 
 Log file name format is the project name followed by the current date and time.
 \
-Example: `Love Me Not-2025-04-02_12-57-44.log`
+__Example:__ `Love Me Not-2025-04-02_12-57-44.log`
 
 Latest log file will also be saved in the file `latest.log`.
 
@@ -92,7 +104,7 @@ Every log file has a header which contains:
 - Minimum log level
 - *And a small random music lyric :P*
 
-Example:
+__Example:__
 ```plaintext
 ╔══════════════════━━━━━━━━╍╍╍╍╍
 ║ LOG FILE - Raytracer
