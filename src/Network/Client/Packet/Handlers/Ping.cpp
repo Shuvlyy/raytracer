@@ -19,8 +19,8 @@ namespace raytracer::network::packet::client::handler
 
         const auto &p = reinterpret_cast<const packet::Ping &>(packet);
 
-        uint8_t progress = renderer::totalComputedPixels.load() / cli.getTotal() * 100;
-        cli.push(std::make_unique<Pong>(p.getTimestamp(), progress));
+        // uint8_t progress = renderer::totalComputedPixels.load() / cli.getTotal() * 100;
+        cli.push(std::make_unique<Pong>(p.getTimestamp(), 0));
     }
 
 }
