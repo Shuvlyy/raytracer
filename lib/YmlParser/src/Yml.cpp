@@ -33,6 +33,7 @@ namespace yml
         const uint8_t nestingLevel
     )
     {
+        this->_tree.nuke();
         this->_rawContent = getFileContent(filepath);
         Parser parser(*this, this->_rawContent, this->_tree, nestingLevel);
     }
@@ -44,6 +45,7 @@ namespace yml
         const uint8_t nestingLevel
     )
     {
+        this->_tree.nuke();
         this->_rawContent = rawContent;
         Parser parser(*this, this->_rawContent, this->_tree, nestingLevel);
     }

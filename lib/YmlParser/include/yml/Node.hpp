@@ -40,6 +40,12 @@ namespace yml
             getNodes() const { return this->_children; }
 
         /**
+         * @brief   Clears all child nodes in the tree. Used to reset the Yml
+         *          instance.
+         */
+        void nuke() { this->_children.clear(); }
+
+        /**
          * @brief   Accesses a child node by its name.
          *
          * This operator allows access to a specific Node in the tree by
