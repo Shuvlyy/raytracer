@@ -30,6 +30,7 @@ namespace raytracer
         math::Point<3> origin;
         math::Rect<3> screen;
         double lensRadius;
+        uint32_t width, height;
 
         explicit Camera(const camera::Settings& settings);
         explicit Camera() :

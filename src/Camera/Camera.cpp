@@ -15,6 +15,9 @@ namespace raytracer
         const camera::Settings& settings
     )
     {
+        this->width = settings.width;
+        this->height = settings.height;
+
         this->origin = settings.position;
         this->lensRadius = settings.aperture / 2;
 

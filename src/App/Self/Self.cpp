@@ -114,6 +114,11 @@ namespace raytracer::app
         uint32_t height
     )
     {
+        if (width > this->_preview._previewImage.getSize().x ||
+            height > this->_preview._previewImage.getSize().y) {
+            return;
+        }
+
         for (uint32_t y = 0; y < height; y++) {
             for (uint32_t x = 0; x < width; x++) {
                 math::Color pixel = img->at(x, y);

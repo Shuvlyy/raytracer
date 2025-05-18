@@ -2,6 +2,7 @@
 
 #include <thread>
 
+#include "Camera/Camera.hpp"
 #include "Exception/IException.hpp"
 
 namespace raytracer::app
@@ -83,14 +84,21 @@ namespace raytracer::app
             const auto& dim = img->getDimensions();
 
             if (!this->_hasLoadedPreview) {
+                LOG_INFO("Updating preview with {" + std::to_string(dim[0]) + "," + std::to_string(dim[1]) + "}");
+                yml::Yml yml(this->_attributes.sceneFilepaths.at(this->_currentScene));
+                Camera cam = Camera::fromConfig(yml);
+
+                const uint32_t width = cam.width;
+                const uint32_t height = cam.height;
+
                 this->_previewWindow.clear();
-                this->_preview._previewImage.create(dim[0], dim[1]);
+                this->_preview._previewImage.create(width, height);
                 this->_preview._previewTexture.loadFromImage(this->_preview._previewImage);
                 this->_preview._previewSprite.setTexture(this->_preview._previewTexture, true);
 
                 const auto winSize = this->_previewWindow.getSize();
-                const float scaleX = static_cast<float>(winSize.x) / static_cast<float>(dim[0]);
-                const float scaleY = static_cast<float>(winSize.y) / static_cast<float>(dim[1]);
+                const float scaleX = static_cast<float>(winSize.x) / static_cast<float>(width);
+                const float scaleY = static_cast<float>(winSize.y) / static_cast<float>(height);
                 const float uniformScale = std::min(scaleX, scaleY);
 
                 this->_preview._previewSprite.setScale(uniformScale, uniformScale);
@@ -114,6 +122,11 @@ namespace raytracer::app
         uint32_t height
     )
     {
+        if (width > this->_preview._previewImage.getSize().x ||
+            height > this->_preview._previewImage.getSize().y) {
+            return;
+        }
+
         try {
             for (uint32_t y = 0; y < height; y++) {
                 for (uint32_t x = 0; x < width; x++) {
