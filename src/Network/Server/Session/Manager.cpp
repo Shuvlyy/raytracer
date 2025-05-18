@@ -1,5 +1,7 @@
 #include "Manager.hpp"
 
+#include "Network/Packet/Packets/Kiss.hpp"
+
 namespace raytracer::network::server::session
 {
 
@@ -54,6 +56,8 @@ namespace raytracer::network::server::session
     ()
     {
         for (auto& [fd, session] : this->_sessions) {
+            packet::Kiss k;
+            session.getControlSocket().sendPacket(k.serialize());
             session.getControlSocket().closeSocket();
         }
         this->_sessions.clear();
