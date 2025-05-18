@@ -3,11 +3,11 @@
 
 ---
 
+## Project
+
 Ray tracing is a technique used to generate realistic digital images by
 simulating the inverse path of light. Your goal is to create a program able to
 generate an image from a file describing the scene.
-
----
 
 ## 📩 Installation
 
@@ -25,7 +25,65 @@ make -s
 3. Launch the project using `./raytracer`
    If you need any help, `--help` flag is for you!
 
----
+## Features
+
+Here is the marking scheme of the project:
+
+- Primitives
+  - [x] Sphere
+  - [x] Plane
+  - [x] Cylinder
+  - [x] Cone
+  - [x] Limited cylinder (0.5)
+  - [x] Limited cone (0.5)
+  - [ ] Torus (1)
+  - [ ] Tanglecube (1)
+  - [x] Triangle (1)
+  - [x] `.obj` file (1)
+  - [ ] Fractal (2)
+  - [ ] Möbius strip (2)
+- Transformations
+  - [x] Translation
+  - [x] Rotation
+  - [ ] Scale (0.5)
+  - [ ] Shear (0.5)
+  - [ ] Transformation matrix (2)
+  - [ ] Scene graph (2)
+- Lights
+  - [x] Directional light
+  - [x] Ambient light
+  - [x] Drop shadows
+  - [x] Multiple directional lights (0.5)
+  - [x] Multiple point lights (1)
+  - [x] Colored light (0.5)
+  - [ ] Phong reflection model (2)
+  - [ ] Ambient occlusion (2)
+- Materials
+  - [x] Flat color (lambertian)
+  - [ ] Transparency (0.5)
+  - [ ] Refraction (1)
+  - [x] Reflection (0.5)
+  - [ ] Texturing from file (1)
+  - [ ] Texturing from procedural generation of chessboard (1)
+  - [ ] Texturing from procedural generation of Perlin noise (1)
+  - [ ] Normal mapping (2)
+- Scene configuration
+  - [x] Add primitives to scene
+  - [x] Set up lighting
+  - [x] Set up camera
+  - [ ] Import a scene in a scene (2)
+  - [x] Set up antialiasing through supersampling (0.5)
+  - [ ] Set up antialiasing through adaptative supersampling (1)
+- Interface
+  - [x] No GUI, output to a PPM file
+  - [x] Display the image during and after generation (1)
+  - [x] Exit during or after generation (0.5)
+  - [ ] Scene preview using a basic and fast renderer (2)
+  - [ ] Automatic reload of the scene at file change (1)
+- Optimizations
+  - [ ] Space partitionning (2)
+  - [x] Multithreading (1)
+  - [x] Clustering (3)
 
 ## 👷🏻 Team
 
