@@ -239,7 +239,7 @@ namespace raytracer::network::server
                 this->_pendingTiles.push(tile);
                 this->_totalTiles++;
 
-                LOG_INFO(
+                LOG_DEBUG(
                     "Generated tile: x=" + std::to_string(x * tileWidth) +
                     ", y=" + std::to_string(y * tileHeight) +
                     ", w=" + std::to_string(std::min(tileWidth, width - x *

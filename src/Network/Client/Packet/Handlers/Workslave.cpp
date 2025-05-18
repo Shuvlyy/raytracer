@@ -21,7 +21,7 @@ namespace raytracer::network::packet::client::handler
         try {
             renderer::Tile tile(p.getX(), p.getY(), p.getWidth(), p.getHeight() - 1);
 
-            LOG_INFO(
+            LOG_DEBUG(
                 "Received new work!!\n"
                 "Tile: x=" + std::to_string(tile.x) + " y=" + std::to_string(tile.y) + " w=" + std::to_string(tile.width) + " h=" + std::to_string(tile.height)
             );

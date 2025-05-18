@@ -81,7 +81,7 @@ namespace raytracer::app
             }
 
             if (this->_currentScene != this->_server.getCurrentlyProcessingScene()) {
-                LOG_INFO("Scene changed, updating preview...");
+                LOG_DEBUG("Scene changed, updating preview...");
                 this->_currentScene = this->_server.getCurrentlyProcessingScene();
                 this->_hasLoadedPreview = false;
                 continue;
@@ -90,9 +90,6 @@ namespace raytracer::app
             const auto& dim = img->getDimensions();
 
             if (!this->_hasLoadedPreview) {
-                LOG_INFO("Updating preview with {" + std::to_string(dim[0]) + "," + std::to_string(dim[1]) + "}");
-                LOG_INFO("Current scene: " + std::to_string(this->_currentScene));
-                LOG_INFO("Path: " + this->_attributes.sceneFilepaths.at(this->_currentScene));
                 yml::Yml yml(this->_attributes.sceneFilepaths.at(this->_currentScene));
                 Camera cam = Camera::fromConfig(yml);
 
