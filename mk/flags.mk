@@ -10,7 +10,7 @@ CXXFLAGS	+= -std=c++20
 CXXFLAGS	+= -iquote src/
 CXXFLAGS	+= -iquote lib/Logger/include/
 CXXFLAGS	+= -iquote lib/YmlParser/include/
-CXXFLAGS	+= -g -O0 # Only for debug.
+# CXXFLAGS	+= -g -O0 # Only for debug.
 
 LDFLAGS		+= -L lib/.output/
 LDFLAGS		+= -l logger
