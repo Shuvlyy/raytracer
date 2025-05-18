@@ -10,6 +10,7 @@ namespace raytracer::multithreading
         Renderer &renderer,
         int nbProcs,
         const renderer::Tile &tileToRender,
-        const std::atomic<bool>& shouldStop
+        const std::atomic<bool>& shouldStop,
+        uint32_t tileWidth, uint32_t tileHeight
     );
 }

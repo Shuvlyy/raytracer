@@ -76,6 +76,25 @@ namespace raytracer
                     }
                 }
             }
+            else if (token == "--tile-size") {
+                if (++i >= _tokens.size())
+                    throw exception::InvalidUsage("Expected value after --tile-size");
+
+                const std::string value = _tokens[i];
+
+                if (value != "auto") {
+                    try {
+                        const int tileSize = std::stoi(value);
+
+                        if (tileSize <= 0) {
+                            throw exception::ValueOverflow(tileSize);
+                        }
+                        _attributes.tileSize = tileSize;
+                    } catch (...) {
+                        throw exception::InvalidUsage("Invalid tile size: " + value);
+                    }
+                }
+            }
             else if (token == "--config") {
                 if (++i >= _tokens.size())
                     throw exception::InvalidUsage("Expected value after --config");
@@ -141,12 +160,13 @@ namespace raytracer
 
         if (this->hasFlag("--help") || this->hasFlag("-h")) {
             std::cout
-                << "USAGE: ./raytracer [--mode program_mode] [--threads threads_amount] [--config config_filepath] [-h host] [-p port] [-d] scene_filepath" << std::endl
+                << "USAGE: ./raytracer [--mode program_mode] [--threads threads_amount] [--config config_filepath] [-h host] [-p port] [-d] [--tile-size tile_size] [--no-preview] scene_filepath" << std::endl
                 << "\tprogram_mode\tProgram mode (`self`, `server`, `client`). Defaults to `self`." << std::endl
                 << "\tthreads_amount\tNumber of threads that will be used to render the image. Defaults to `auto` (maximum threads available)." << std::endl
                 << "\tconfig_filepath\tFile path of the server configuration. If mode is not set to `server`, an exception will be thrown." << std::endl
                 << "\thost\t\tHost to connect to. Only works if mode is set to `client`." << std::endl
                 << "\tport\t\tPort to connect to / host from. Only works if clustering is used (mode is set to either `client` or `server`)." << std::endl
+                << "\ttile_size\tTile size (square). For multi-threading or cluster mode. Defaults to `auto`: 64 (for multi-threading) or 1024 (for clustering)." << std::endl
                 << "\tscene_filepath\tFile path of the scene to render. If mode is set to `client`, an exception will be thrown." << std::endl
                 << std::endl;
             return true;

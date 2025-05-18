@@ -1,5 +1,7 @@
 #pragma once
 
+#define DEFAULT_SELF_TILE_SIZE  64
+
 #include "App/App.hpp"
 #include "Renderer/Renderer.hpp"
 #include "Parser/Parser.hpp"

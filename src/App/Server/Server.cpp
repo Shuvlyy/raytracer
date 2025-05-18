@@ -16,7 +16,8 @@ namespace raytracer::app
           _server({
               attributes.port,
               attributes.serverConfigFilepath,
-              attributes.sceneFilepaths
+              attributes.sceneFilepaths,
+              attributes.tileSize
           }),
           _hasLoadedPreview(false),
           _currentScene(0)

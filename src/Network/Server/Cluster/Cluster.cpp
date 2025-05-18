@@ -221,8 +221,8 @@ namespace raytracer::network::server
         this->_assignedTiles.clear();
         this->_totalTiles = 0;
 
-        constexpr uint32_t tileWidth = 1024;
-        constexpr uint32_t tileHeight = 1024;
+        const uint32_t tileWidth = this->_server.getProperties().tileSize;
+        const uint32_t tileHeight = tileWidth;
 
         const uint32_t tilesX = (width + tileWidth - 1) / tileWidth;
         const uint32_t tilesY = (height + tileHeight - 1) / tileHeight;

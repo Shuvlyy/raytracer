@@ -44,6 +44,10 @@ namespace raytracer::network
         this->_properties.heartbeatFrequency = serverConfig["heartbeatFrequency"].as<int>();
         this->_cluster.setHeartbeatFrequency(this->_properties.heartbeatFrequency);
 
+        if (this->_properties.tileSize == -1) {
+            this->_properties.tileSize = DEFAULT_CLUSTER_TILE_SIZE;
+        }
+
         this->_serverSocket.startListening(this->_settings.maxClients);
 
         this->_pollFds.push_back({

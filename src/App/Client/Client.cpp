@@ -1,5 +1,4 @@
 #include "Network/Client/Packet/IHandler.hpp"
-#include "Exception/Exceptions/ServerDisconnected.hpp"
 
 #include "Client.hpp"
 
@@ -16,7 +15,9 @@ namespace raytracer::app
         const Attributes& attributes
     )
         : App(attributes),
-          _client(attributes.host, attributes.port)
+          _client(attributes.host, attributes.port),
+          _tileWidth(attributes.tileSize == -1 ? DEFAULT_CLIENT_TILE_SIZE : attributes.tileSize),
+          _tileHeight(this->_tileWidth)
     {}
 
     void

@@ -19,6 +19,7 @@ namespace raytracer
         std::vector<std::string> sceneFilepaths;
         std::string serverConfigFilepath;
         bool noPreview = false;
+        int tileSize = -1; // Auto, managed in Cluster or Self
     };
 
     /**

@@ -1,6 +1,7 @@
 #pragma once
 
 #define DEFAULT_HEARTBEAT_FREQUENCY 1
+#define DEFAULT_CLUSTER_TILE_SIZE   1024
 
 #include "Packet/Manager.hpp"
 #include "Session/Manager.hpp"
@@ -24,6 +25,7 @@ namespace raytracer::network
             uint16_t port;
             std::string configurationFilePath {};
             std::vector<std::string> sceneFilepaths;
+            int tileSize = DEFAULT_CLUSTER_TILE_SIZE;
             int heartbeatFrequency = DEFAULT_HEARTBEAT_FREQUENCY;
         };
 

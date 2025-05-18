@@ -33,6 +33,9 @@ namespace raytracer::app
     {
         namespace fs = std::filesystem;
 
+        uint32_t tileWidth = this->_attributes.tileSize == -1 ? DEFAULT_SELF_TILE_SIZE : this->_attributes.tileSize;
+        uint32_t tileHeight = tileWidth;
+
         renderer::Tile tile(0, 0, this->_renderer.getWidth(), this->_renderer.getHeight() - 1);
 
         std::thread renderThread(
@@ -40,7 +43,8 @@ namespace raytracer::app
             std::ref(this->_renderer),
             this->_attributes.threadsAmount,
             std::ref(tile),
-            std::ref(this->_shouldStop)
+            std::ref(this->_shouldStop),
+            tileWidth, tileHeight
         );
 
         if (!this->_attributes.noPreview) {

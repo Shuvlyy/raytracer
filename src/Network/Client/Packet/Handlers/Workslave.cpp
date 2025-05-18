@@ -21,14 +21,24 @@ namespace raytracer::network::packet::client::handler
         try {
             renderer::Tile tile(p.getX(), p.getY(), p.getWidth(), p.getHeight() - 1);
 
+            LOG_INFO(
+                "Received new work!!\n"
+                "Tile: x=" + std::to_string(tile.x) + " y=" + std::to_string(tile.y) + " w=" + std::to_string(tile.width) + " h=" + std::to_string(tile.height)
+            );
+
+            cli.shouldStop().store(false);
+
             renderer::totalComputedPixels.store(0);
             cli.setTotal(p.getWidth() * p.getHeight());
+
             multithreading::render(
                 cli.getRenderer(),
                 cli.nbThread(),
                 std::ref(tile),
-                std::ref(cli.shouldStop())
+                std::ref(cli.shouldStop()),
+                cli.getTileWidth(), cli.getTileHeight()
             );
+
             if (cli.shouldStop().load() != true) {
                 PixelBuffer& buf = cli.getRenderer().getRender()->getData();
                 std::ranges::transform(

@@ -1,5 +1,7 @@
 #pragma once
 
+#define DEFAULT_CLIENT_TILE_SIZE    64
+
 #include <atomic>
 #include <future>
 
@@ -44,6 +46,9 @@ namespace raytracer::app
 
         void setTotal(const size_t tile) { this->_totalPixel.store(tile); }
 
+        [[nodiscard]] uint32_t getTileWidth() const { return this->_tileWidth; }
+        [[nodiscard]] uint32_t getTileHeight() const { return this->_tileHeight; }
+
     private:
         network::Client _client;
         network::packet::client::Manager _manager;
@@ -52,6 +57,7 @@ namespace raytracer::app
         std::atomic<bool> _shouldStop{false};
         std::atomic<size_t> _totalPixel{0};
         Renderer _renderer;
+        uint32_t _tileWidth, _tileHeight;
     };
 
 }

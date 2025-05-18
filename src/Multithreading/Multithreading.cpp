@@ -15,7 +15,8 @@ namespace raytracer::multithreading
         Renderer &renderer,
         const int nbProcs,
         const renderer::Tile &tileToRender,
-        const std::atomic<bool>& shouldStop
+        const std::atomic<bool>& shouldStop,
+        const uint32_t tileWidth, const uint32_t tileHeight
     )
     {
         LOG_INFO("Starting render with " + std::to_string(nbProcs) + " threads.");
@@ -29,9 +30,6 @@ namespace raytracer::multithreading
             LOG_INFO("Render finished.");
             return;
         }
-
-        const uint32_t tileWidth = 64;
-        const uint32_t tileHeight = 64;
 
         const uint32_t tilesX = (tileToRender.width + tileWidth - 1) / tileWidth;
         const uint32_t tilesY = (tileToRender.height + tileHeight - 1) / tileHeight;
