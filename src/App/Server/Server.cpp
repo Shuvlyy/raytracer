@@ -87,6 +87,14 @@ namespace raytracer::app
                 this->_preview._previewImage.create(dim[0], dim[1]);
                 this->_preview._previewTexture.loadFromImage(this->_preview._previewImage);
                 this->_preview._previewSprite.setTexture(this->_preview._previewTexture, true);
+
+                const auto winSize = this->_previewWindow.getSize();
+                const float scaleX = static_cast<float>(winSize.x) / static_cast<float>(dim[0]);
+                const float scaleY = static_cast<float>(winSize.y) / static_cast<float>(dim[1]);
+                const float uniformScale = std::min(scaleX, scaleY);
+
+                this->_preview._previewSprite.setScale(uniformScale, uniformScale);
+
                 this->_hasLoadedPreview = true;
             }
 
