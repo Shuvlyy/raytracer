@@ -1,5 +1,7 @@
 #pragma once
 
+#include <queue>
+
 #include "Network/Server/Session/Session.hpp"
 #include "Image/Image.hpp"
 
@@ -40,6 +42,8 @@ namespace raytracer::network::server
         void setupImageOutput(const yml::Node& dimensionsNode);
         void setupImageOutput(uint32_t width, uint32_t height);
 
+        void onTileFinished(Session& session);
+
         [[nodiscard]] cluster::State getState() const { return this->_state; }
         [[nodiscard]] std::unique_ptr<Image>& getResult() { return this->_result; }
         [[nodiscard]] int getHeartbeatFrequency() const
@@ -48,7 +52,6 @@ namespace raytracer::network::server
         void setState(const cluster::State state) { this->_state = state; }
         void setHeartbeatFrequency(const int heartbeatFrequency)
             { this->_heartbeatFrequency = heartbeatFrequency; }
-        void addFinishedTile() { ++this->_finishedTiles; }
 
     private:
         Server& _server;
@@ -56,9 +59,9 @@ namespace raytracer::network::server
         int _heartbeatFrequency;
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
         std::unique_ptr<Image> _result;
-        std::vector<renderer::Tile> _tiles;
-        int _nextTile;
-        int _finishedTiles;
+
+        std::queue<renderer::Tile> _pendingTiles;
+        std::unordered_map<uint32_t, renderer::Tile> _assignedTiles;
 
         void updateState();
         void updateSlavesData();

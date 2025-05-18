@@ -15,9 +15,7 @@ namespace raytracer::network::server
     )
         : _server(server),
           _state(cluster::State::LOADING),
-          _heartbeatFrequency(0),
-          _nextTile(0),
-          _finishedTiles(0)
+          _heartbeatFrequency(0)
     {}
 
     void
@@ -87,10 +85,22 @@ namespace raytracer::network::server
         const Session& session
     )
     {
-        if (!this->_slaves.contains(session.getId())) {
+        const auto sessionId = session.getId();
+
+        if (!this->_slaves.contains(sessionId)) {
             return;
         }
-        this->_slaves.erase(session.getId());
+
+        /**
+         * If slave was working on something, then reassign the tile to someone
+         * else.
+         */
+        if (this->_assignedTiles.contains(sessionId)) {
+            this->_pendingTiles.push(this->_assignedTiles.at(sessionId));
+            this->_assignedTiles.erase(sessionId);
+        }
+
+        this->_slaves.erase(sessionId);
     }
 
     void Cluster::setupImageOutput
@@ -115,11 +125,22 @@ namespace raytracer::network::server
     }
 
     void
+    Cluster::onTileFinished
+    (
+        Session &session
+    )
+    {
+        const uint32_t id = session.getId();
+
+        if (_assignedTiles.contains(id)) {
+            _assignedTiles.erase(id);
+        }
+    }
+
+    void
     Cluster::startRender()
     {
         this->_state = cluster::State::RENDERING;
-        this->_finishedTiles = 0;
-        this->_nextTile = -1;
 
         auto dim = this->_result->getDimensions();
 
@@ -129,70 +150,64 @@ namespace raytracer::network::server
     void
     Cluster::checkRenderStatus()
     {
-        LOG_DEBUG("Checking render status: finishedTiles= " + std::to_string(this->_finishedTiles) + " tilesSize=" + std::to_string(this->_tiles.size()));
-        if (this->_finishedTiles != static_cast<int>(this->_tiles.size())) {
-            LOG_DEBUG("Not everything is finished yet");
+        if (this->_pendingTiles.empty() && this->_assignedTiles.empty()) {
+            LOG_DEBUG("Everything is finished.");
 
-            if (this->_nextTile == static_cast<int>(this->_tiles.size()) - 1) {
-                LOG_DEBUG("Pas temriné haha");
-                return;
+            namespace fs = std::filesystem;
+
+            const auto outputDirectory =
+                this->_server.getSceneConfig()["outputDirectory"].as<std::string>();
+
+            if (!fs::exists(outputDirectory)) {
+                fs::create_directory(outputDirectory);
             }
+            this->_result->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp());
 
-            for (auto& [_, s] : this->_slaves) {
-                Session& slave = s.get();
+            LOG_INFO("Done.");
+            this->_state = cluster::State::FINISHED;
 
-                if (slave.getState() == session::State::READY) {
-                    LOG_DEBUG("Slave ready for new work, giving...");
-
-                    this->_nextTile++;
-
-                    // if (this->_tiles.size() <= this->_finishedTiles) {
-                    //     LOG_DEBUG("All tiles have been rendered, finishing...");
-                    //     this->_state = cluster::State::FINISHED;
-                    //     return;
-                    // }
-
-                    const renderer::Tile& tileToRender = this->_tiles[this->_nextTile];
-
-                    slave.setState(session::State::RENDERING);
-                    slave.getData().currentTile = tileToRender;
-
-                    packet::Workslave p(
-                        this->_server.getSceneConfig().getRawContent(),
-                        tileToRender.x, tileToRender.y,
-                        tileToRender.width, tileToRender.height
-                    );
-
-                    LOG_DEBUG(
-                        "Giving tile\n"
-                        "\tx: " + std::to_string(tileToRender.x) + "\n"
-                        "\ty: " + std::to_string(tileToRender.y) + "\n"
-                        "\tw: " + std::to_string(tileToRender.width) + "\n"
-                        "\th: " + std::to_string(tileToRender.height)
-                    );
-
-                    slave.getControlSocket().sendPacket(p.serialize());
-                } else if (slave.getState() == session::State::RENDERING) {
-                    LOG_DEBUG("Slave is still rendering, let it work...");
-                }
-            }
             return;
         }
 
-        LOG_DEBUG("Everything is finished.");
-
-        namespace fs = std::filesystem;
-
-        const auto outputDirectory =
-            this->_server.getSceneConfig()["outputDirectory"].as<std::string>();
-
-        if (!fs::exists(outputDirectory)) {
-            fs::create_directory(outputDirectory);
+        if (this->_pendingTiles.empty()) {
+            LOG_DEBUG("Nothing to give, just not done yet.");
+            return;
         }
-        this->_result->save(outputDirectory + "/" + Logger::getFormattedCurrentTimestamp());
 
-        LOG_INFO("Done.");
-        this->_state = cluster::State::FINISHED;
+        LOG_DEBUG("Some to give");
+
+        for (auto& [_, s] : this->_slaves) {
+            Session& slave = s.get();
+
+            if (slave.getState() == session::State::READY) {
+                LOG_DEBUG("Slave ready for new work, giving...");
+
+                auto& tileToRender = this->_pendingTiles.front();
+                this->_pendingTiles.pop();
+
+                slave.setState(session::State::RENDERING);
+                this->_assignedTiles[slave.getId()] = tileToRender;
+                slave.getData().currentTile = tileToRender;
+
+                packet::Workslave p(
+                    this->_server.getSceneConfig().getRawContent(),
+                    tileToRender.x, tileToRender.y,
+                    tileToRender.width, tileToRender.height
+                );
+
+                LOG_DEBUG(
+                    "Giving tile\n"
+                    "\tx: " + std::to_string(tileToRender.x) + "\n"
+                    "\ty: " + std::to_string(tileToRender.y) + "\n"
+                    "\tw: " + std::to_string(tileToRender.width) + "\n"
+                    "\th: " + std::to_string(tileToRender.height)
+                );
+
+                slave.getControlSocket().sendPacket(p.serialize());
+            } else if (slave.getState() == session::State::RENDERING) {
+                LOG_DEBUG("Slave is still rendering, let it work...");
+            }
+        }
     }
 
     void
@@ -202,7 +217,8 @@ namespace raytracer::network::server
         const uint32_t height
     )
     {
-        this->_tiles.clear();
+        this->_pendingTiles = {};
+        this->_assignedTiles.clear();
 
         constexpr uint32_t tileWidth = 1024;
         constexpr uint32_t tileHeight = 1024;
@@ -212,12 +228,14 @@ namespace raytracer::network::server
 
         for (uint32_t y = 0; y < tilesY; y++) {
             for (uint32_t x = 0; x < tilesX; x++) {
-                this->_tiles.emplace_back(
+                renderer::Tile tile = {
                     x * tileWidth,
                     y * tileHeight,
                     std::min(tileWidth, width - x * tileWidth),
                     std::min(tileHeight, height - y * tileHeight)
-                );
+                };
+
+                this->_pendingTiles.push(tile);
 
                 LOG_INFO(
                     "Generated tile: x=" + std::to_string(x * tileWidth) +

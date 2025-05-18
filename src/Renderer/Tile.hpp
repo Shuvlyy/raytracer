@@ -19,6 +19,10 @@ namespace raytracer::renderer
 
         Tile() : x(0), y(0), width(0), height(0), threadNumber(-1) {}
 
+        Tile(const Tile& other)
+            : x(other.x), y(other.y), width(other.width), height(other.height),
+              threadNumber(other.threadNumber.load()) {}
+
         Tile(Tile&& other) noexcept
             : x(other.x), y(other.y), width(other.width), height(other.height),
               threadNumber(other.threadNumber.load()) {}

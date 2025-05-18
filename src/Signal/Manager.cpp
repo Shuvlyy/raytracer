@@ -3,6 +3,7 @@
 
 #include "Handlers/Term.hpp"
 #include "Handlers/Int.hpp"
+#include "Handlers/Pipe.hpp"
 
 #include "logger/Logger.hpp"
 
@@ -30,6 +31,7 @@ namespace raytracer::signal
     {
         this->registerHandler(std::make_unique<handler::Term>());
         this->registerHandler(std::make_unique<handler::Int>());
+        this->registerHandler(std::make_unique<handler::Pipe>());
     }
 
     void
@@ -67,8 +69,10 @@ namespace raytracer::signal
         if (it != instance->_handlers.end()) {
             const std::unique_ptr<IHandler> &handler = it->second;
 
-            LOG_DEBUG("Caught signal " + handler->getSignalName());
-            handler->handle(instance->_app);
+            if (handler->getSignalNumber() != SIGPIPE) { // LALALA J4ENTEND PAS
+                LOG_DEBUG("Caught signal " + handler->getSignalName());
+                handler->handle(instance->_app);
+            }
         }
     }
 

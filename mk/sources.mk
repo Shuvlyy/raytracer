@@ -35,7 +35,8 @@ SRC += App/Self/Self.cpp \
 
 SRC += Signal/Manager.cpp \
 	Signal/Handlers/Int.cpp \
-	Signal/Handlers/Term.cpp
+	Signal/Handlers/Term.cpp \
+	Signal/Handlers/Pipe.cpp
 
 SRC += Network/Client/Client.cpp \
 	Network/Client/Channel/Channel.cpp \
