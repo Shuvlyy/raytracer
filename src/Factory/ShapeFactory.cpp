@@ -108,50 +108,20 @@ namespace raytracer::factory
             }
         }
         if (shapeType == CONE) {
-            const auto apex = math::Point<3>(
-                shape["x"].as<double>(),
-                shape["y"].as<double>(),
-                shape["z"].as<double>()
-            );
-
-            const auto axis = math::Vec<3>(
-                shape["axis_x"].as<double>(),
-                shape["axis_y"].as<double>(),
-                shape["axis_z"].as<double>()
-            );
-
-            const auto radius = shape["radius"].as<double>();
-            const auto height = shape["height"].as<double>();
-
             return std::make_unique<shape::Cone>(
-                apex,
-                axis,
-                radius,
-                height,
+                math::Point(math::getVector3(shape)),
+                math::getVector3(shape["axis"].children),
+                shape["radius"].as<double>(),
+                shape["height"].as<double>(),
                 shape::material::getMaterial(shape)
             );
         }
         if (shapeType == CYLINDER) {
-            const auto baseCenter = math::Point<3>(
-                shape["x"].as<double>(),
-                shape["y"].as<double>(),
-                shape["z"].as<double>()
-            );
-        
-            const auto axis = math::Vec<3>(
-                shape["axis_x"].as<double>(),
-                shape["axis_y"].as<double>(),
-                shape["axis_z"].as<double>()
-            );
-        
-            const auto radius = shape["radius"].as<double>();
-            const auto height = shape["height"].as<double>();
-        
             return std::make_unique<shape::Cylinder>(
-                baseCenter,
-                axis,
-                radius,
-                height,
+                math::Point(math::getVector3(shape)),
+                math::getVector3(shape["axis"].children),
+                shape["radius"].as<double>(),
+                shape["height"].as<double>(),
                 shape::material::getMaterial(shape)
             );
         }

@@ -1,0 +1,13 @@
+# Vertices
+
+v 0.7071 0.0 -0.7071    # Vertex 1 (base rotated)
+v 0.7071 0.0 0.7071     # Vertex 2 (base rotated)
+v 0.7071 1.0 0.7071     # Vertex 3 (base rotated)
+v 0.0 1.0 0.0        # Vertex 4 (base rotated)
+v -0.3535 0.5 1.0607    # Vertex 5 (tip rotated)
+
+# Faces (triangles)
+f 1 2 5   # Side 1
+f 2 3 5   # Side 2
+f 3 4 5   # Side 3
+f 4 1 5   # Side 4

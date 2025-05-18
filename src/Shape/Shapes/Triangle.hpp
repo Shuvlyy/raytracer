@@ -31,7 +31,7 @@ namespace raytracer::shape
             const math::Vec<3> h = cross(ray.direction, edge2);
             const double a = dot(edge1, h);
 
-            if (std::abs(a) < ALMOST_ZERO)
+            if (std::fabs(a) < ALMOST_ZERO)
                 return false;
 
             const double f = 1.0 / a;
@@ -47,7 +47,7 @@ namespace raytracer::shape
             if (v < 0.0 || (u + v) > 1.0)
                 return false;
 
-            const double t = f * dot(edge2, q);
+            const double t = dot(edge2, q);
 
             if (t < RAY_T_MIN || t > ray.t_max)
                 return false;
