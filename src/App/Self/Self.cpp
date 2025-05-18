@@ -76,14 +76,17 @@ namespace raytracer::app
         const auto& dim = img->getDimensions();
 
         sf::Event event{};
-        sf::Image image;
-        sf::Sprite sprite;
-        sf::Texture texture;
 
-        image.create(dim[0], dim[1]);
+        this->_preview._previewImage.create(dim[0], dim[1]);
+        this->_preview._previewTexture.loadFromImage(this->_preview._previewImage);
+        this->_preview._previewSprite.setTexture(this->_preview._previewTexture, true);
 
-        texture.loadFromImage(image);
-        sprite.setTexture(texture);
+        const auto winSize = this->_window.getSize();
+        const float scaleX = static_cast<float>(winSize.x) / static_cast<float>(dim[0]);
+        const float scaleY = static_cast<float>(winSize.y) / static_cast<float>(dim[1]);
+        const float uniformScale = std::min(scaleX, scaleY);
+
+        this->_preview._previewSprite.setScale(uniformScale, uniformScale);
 
         while (!this->_shouldStop.load()) {
             while (this->_window.pollEvent(event)) {
@@ -93,24 +96,35 @@ namespace raytracer::app
                 }
             }
 
-            for (uint32_t y = 0; y < dim[1]; y++) {
-                for (uint32_t x = 0; x < dim[0]; x++) {
-                    math::Color pixel = img->at(x, y);
-                    sf::Color color = {
-                        static_cast<sf::Uint8>(pixel[0] * 255),
-                        static_cast<sf::Uint8>(pixel[1] * 255),
-                        static_cast<sf::Uint8>(pixel[2] * 255)
-                    };
+            this->updatePreview(img, dim[0], dim[1]);
 
-                    image.setPixel(x, y, color);
-                }
-            }
-
-            texture.update(image);
+            this->_preview._previewTexture.update(this->_preview._previewImage);
 
             this->_window.clear();
-            this->_window.draw(sprite);
+            this->_window.draw(this->_preview._previewSprite);
             this->_window.display();
+        }
+    }
+
+    void
+    Self::updatePreview
+    (
+        const std::unique_ptr<Image>& img,
+        uint32_t width,
+        uint32_t height
+    )
+    {
+        for (uint32_t y = 0; y < height - 1; y++) {
+            for (uint32_t x = 0; x < width; x++) {
+                math::Color pixel = img->at(x, y);
+                sf::Color color = {
+                    static_cast<sf::Uint8>(pixel[0] * 255),
+                    static_cast<sf::Uint8>(pixel[1] * 255),
+                    static_cast<sf::Uint8>(pixel[2] * 255)
+                };
+
+                this->_preview._previewImage.setPixel(x, y, color);
+            }
         }
     }
 

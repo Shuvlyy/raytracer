@@ -8,9 +8,22 @@
 
 #include "Parser/Parser.hpp"
 #include "Signal/Manager.hpp"
+#include "SFML/Graphics.hpp"
 
 namespace raytracer
 {
+
+    namespace app
+    {
+
+        struct Preview
+        {
+            sf::Image _previewImage;
+            sf::Sprite _previewSprite;
+            sf::Texture _previewTexture;
+        };
+
+    }
 
     class App
     {

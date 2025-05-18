@@ -9,17 +9,6 @@
 namespace raytracer::app
 {
 
-    namespace server
-    {
-
-        struct Preview
-        {
-            sf::Image _previewImage;
-            sf::Sprite _previewSprite;
-            sf::Texture _previewTexture;
-        };
-
-    }
 
     class Server final
         : public App
@@ -33,7 +22,7 @@ namespace raytracer::app
     private:
         network::Server _server;
         sf::RenderWindow _previewWindow;
-        server::Preview _preview;
+        Preview _preview;
         bool _hasLoadedPreview;
         size_t _currentScene;
 
