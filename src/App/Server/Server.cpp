@@ -85,6 +85,8 @@ namespace raytracer::app
 
             if (!this->_hasLoadedPreview) {
                 LOG_INFO("Updating preview with {" + std::to_string(dim[0]) + "," + std::to_string(dim[1]) + "}");
+                LOG_INFO("Current scene: " + std::to_string(this->_currentScene));
+                LOG_INFO("Path: " + this->_attributes.sceneFilepaths.at(this->_currentScene));
                 yml::Yml yml(this->_attributes.sceneFilepaths.at(this->_currentScene));
                 Camera cam = Camera::fromConfig(yml);
 
@@ -107,9 +109,11 @@ namespace raytracer::app
             }
 
             this->updatePreview(img, dim[0], dim[1]);
+            this->updateUi();
 
             this->_previewWindow.clear();
             this->_previewWindow.draw(this->_preview._previewSprite);
+            this->_ui.draw(this->_previewWindow);
             this->_previewWindow.display();
         }
     }
@@ -147,4 +151,39 @@ namespace raytracer::app
             // LALALA J4ENTEND PAS
         }
     }
+
+    void
+    Server::updateUi()
+    {
+        network::Server& server = this->_server;
+        network::server::Cluster& cluster = server.getCluster();
+        const std::vector<std::string>& sceneFilepaths = this->_attributes.sceneFilepaths;
+
+        double progress = 0;
+        if (cluster.getTotalTilesN() > 0) {
+            progress = static_cast<double>(cluster.getDoneTilesN()) / static_cast<double>(cluster.getTotalTilesN()) * 100;
+        }
+
+        std::string text = std::format(
+            "Cluster status: {}\n"
+            "Current scene: {} ({}/{})\n"
+            "Clients connected: {}/{}\n"
+            "Total tiles: {}\n"
+            "Tiles left: {}\n"
+            "Tiles in progress: {}\n"
+            "Tiles done: {}\n"
+            "[{:.2f}%]",
+            network::server::cluster::stateToString(cluster.getState()),
+            sceneFilepaths.at(this->_currentScene), this->_currentScene + 1, sceneFilepaths.size(),
+            server.getSessionManager().getSessions().size(), server.getSettings().maxClients,
+            cluster.getTotalTilesN(),
+            cluster.getPendingTilesN(),
+            cluster.getAssignedTilesN(),
+            cluster.getDoneTilesN(),
+            progress
+        );
+
+        this->_ui._status.setString(text);
+    }
+
 }

@@ -27,6 +27,24 @@ namespace raytracer::network::server
             FINISHED
         };
 
+        inline std::string stateToString(const State state)
+        {
+            switch (state) {
+                case State::LOADING:
+                    return "LOADING";
+                case State::WAITING:
+                    return "WAITING";
+                case State::READY:
+                    return "READY";
+                case State::RENDERING:
+                    return "RENDERING";
+                case State::FINISHED:
+                    return "FINISHED";
+                default:
+                    return "UNKNOWN";
+            }
+        }
+
     }
 
     class Cluster final
@@ -49,6 +67,11 @@ namespace raytracer::network::server
         [[nodiscard]] int getHeartbeatFrequency() const
             { return this->_heartbeatFrequency; }
 
+        [[nodiscard]] size_t getPendingTilesN() { return this->_pendingTiles.size(); }
+        [[nodiscard]] size_t getAssignedTilesN() { return this->_assignedTiles.size(); }
+        [[nodiscard]] size_t getDoneTilesN() { return this->_totalTiles - this->_pendingTiles.size() - this->_assignedTiles.size(); }
+        [[nodiscard]] size_t getTotalTilesN() { return this->_totalTiles; }
+
         void setState(const cluster::State state) { this->_state = state; }
         void setHeartbeatFrequency(const int heartbeatFrequency)
             { this->_heartbeatFrequency = heartbeatFrequency; }
@@ -60,6 +83,7 @@ namespace raytracer::network::server
         std::unordered_map<uint32_t, std::reference_wrapper<Session>> _slaves;
         std::unique_ptr<Image> _result;
 
+        size_t _totalTiles;
         std::queue<renderer::Tile> _pendingTiles;
         std::unordered_map<uint32_t, renderer::Tile> _assignedTiles;
 

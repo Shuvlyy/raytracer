@@ -219,6 +219,7 @@ namespace raytracer::network::server
     {
         this->_pendingTiles = {};
         this->_assignedTiles.clear();
+        this->_totalTiles = 0;
 
         constexpr uint32_t tileWidth = 1024;
         constexpr uint32_t tileHeight = 1024;
@@ -236,6 +237,7 @@ namespace raytracer::network::server
                 };
 
                 this->_pendingTiles.push(tile);
+                this->_totalTiles++;
 
                 LOG_INFO(
                     "Generated tile: x=" + std::to_string(x * tileWidth) +
