@@ -18,6 +18,7 @@ namespace raytracer
         bool debugMode = false;
         std::vector<std::string> sceneFilepaths;
         std::string serverConfigFilepath;
+        bool noPreview = false;
     };
 
     /**

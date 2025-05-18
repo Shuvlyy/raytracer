@@ -18,16 +18,18 @@ namespace raytracer::app
               attributes.serverConfigFilepath,
               attributes.sceneFilepaths
           }),
-          _previewWindow(
-              sf::VideoMode(WIN_WIDTH, WIN_HEIGHT, WIN_BPP),
-              WIN_TITLE " server",
-              sf::Style::Close,
-              sf::ContextSettings(0, 0, 8)
-          ),
           _hasLoadedPreview(false),
           _currentScene(0)
     {
-        this->_previewWindow.setFramerateLimit(WIN_FPS);
+        if (!this->_attributes.noPreview) {
+            this->_previewWindow = std::make_unique<sf::RenderWindow>(
+                sf::VideoMode(WIN_WIDTH, WIN_HEIGHT, WIN_BPP),
+                WIN_TITLE " server",
+                sf::Style::Close,
+                sf::ContextSettings(0, 0, 8)
+            );
+            this->_previewWindow->setFramerateLimit(WIN_FPS);
+        }
     }
 
     void
@@ -38,17 +40,20 @@ namespace raytracer::app
             std::ref(this->_server)
         );
 
-        this->runWindow();
+        if (!this->_attributes.noPreview) {
+            this->runWindow();
+        }
 
         serverThread.join();
     }
 
     void
-    Server::stop()
-    {
+    Server::stop() {
         this->_server.stop();
 
-        this->_previewWindow.close();
+        if (!this->_attributes.noPreview) {
+            this->_previewWindow->close();
+        }
     }
 
     void
@@ -58,8 +63,8 @@ namespace raytracer::app
 
         sf::Event event{};
 
-        while (this->_previewWindow.isOpen()) {
-            while (this->_previewWindow.pollEvent(event)) {
+        while (this->_previewWindow->isOpen()) {
+            while (this->_previewWindow->pollEvent(event)) {
                 if (event.type == sf::Event::Closed) {
                     this->stop();
                     return;
@@ -93,12 +98,12 @@ namespace raytracer::app
                 const uint32_t width = cam.width;
                 const uint32_t height = cam.height;
 
-                this->_previewWindow.clear();
+                this->_previewWindow->clear();
                 this->_preview._previewImage.create(width, height);
                 this->_preview._previewTexture.loadFromImage(this->_preview._previewImage);
                 this->_preview._previewSprite.setTexture(this->_preview._previewTexture, true);
 
-                const auto winSize = this->_previewWindow.getSize();
+                const auto winSize = this->_previewWindow->getSize();
                 const float scaleX = static_cast<float>(winSize.x) / static_cast<float>(width);
                 const float scaleY = static_cast<float>(winSize.y) / static_cast<float>(height);
                 const float uniformScale = std::min(scaleX, scaleY);
@@ -111,10 +116,10 @@ namespace raytracer::app
             this->updatePreview(img, dim[0], dim[1]);
             this->updateUi();
 
-            this->_previewWindow.clear();
-            this->_previewWindow.draw(this->_preview._previewSprite);
-            this->_ui.draw(this->_previewWindow);
-            this->_previewWindow.display();
+            this->_previewWindow->clear();
+            this->_previewWindow->draw(this->_preview._previewSprite);
+            this->_ui.draw(*this->_previewWindow);
+            this->_previewWindow->display();
         }
     }
 
@@ -122,8 +127,8 @@ namespace raytracer::app
     Server::updatePreview
     (
         const std::unique_ptr<Image>& img,
-        uint32_t width,
-        uint32_t height
+        const uint32_t width,
+        const uint32_t height
     )
     {
         if (width > this->_preview._previewImage.getSize().x ||

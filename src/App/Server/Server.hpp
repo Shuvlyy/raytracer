@@ -46,7 +46,7 @@ namespace raytracer::app
 
     private:
         network::Server _server;
-        sf::RenderWindow _previewWindow;
+        std::unique_ptr<sf::RenderWindow> _previewWindow;
         Preview _preview;
         bool _hasLoadedPreview;
         size_t _currentScene;

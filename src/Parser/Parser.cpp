@@ -111,6 +111,9 @@ namespace raytracer
             else if (token == "-d") {
                 _attributes.debugMode = true;
             }
+            else if (token == "--no-preview") {
+                _attributes.noPreview = true;
+            }
             else if (token.starts_with("-")) {
                 // Leave for processFlags to handle unknown flags like --help
                 continue;
@@ -202,6 +205,8 @@ namespace raytracer
                     throw exception::InvalidUsage("Client mode requires a port (-p <port>)");
                 if (!attrs.sceneFilepaths.empty())
                     throw exception::InvalidUsage("Client mode must not include a scene file path");
+                if (attrs.noPreview)
+                    std::cout << "Client mode does not support --no-preview. Ignoring." << std::endl;
                 break;
 
             case Mode::SERVER:

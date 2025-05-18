@@ -22,7 +22,7 @@ namespace raytracer::app
         yml::Yml _config;
         Renderer _renderer;
         Preview _preview;
-        sf::RenderWindow _window;
+        std::unique_ptr<sf::RenderWindow> _window;
         std::atomic<bool> _shouldStop;
 
         void runWindow();
