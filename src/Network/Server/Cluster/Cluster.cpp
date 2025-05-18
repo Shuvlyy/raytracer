@@ -169,11 +169,6 @@ namespace raytracer::network::server
             return;
         }
 
-        if (this->_pendingTiles.empty()) {
-            LOG_DEBUG("Nothing to give, just not done yet.");
-            return;
-        }
-
         LOG_DEBUG("Some to give");
 
         for (auto& [_, s] : this->_slaves) {
@@ -181,6 +176,11 @@ namespace raytracer::network::server
 
             if (slave.getState() == session::State::READY) {
                 LOG_DEBUG("Slave ready for new work, giving...");
+
+                if (this->_pendingTiles.empty()) {
+                    LOG_DEBUG("Nothing to give, just not done yet.");
+                    return;
+                }
 
                 auto& tileToRender = this->_pendingTiles.front();
                 this->_pendingTiles.pop();
