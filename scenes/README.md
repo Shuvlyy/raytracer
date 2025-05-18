@@ -48,7 +48,7 @@ In order to create shapes, you need to create a `yml` list:
 ```yml
 shapes:  
   - shape_name:
-	  type: "TYPENAME" 
+    type: "TYPENAME" 
 ```
 
 For each shape, i different syntax:
@@ -171,7 +171,7 @@ lights:
       y: 3.0
       z: 1.0
       intensity: 0.8        # Intensity of the point light
-		- name_2:
+    - name_2:
       x: 0.8
       y: 0.5
       z: 0
