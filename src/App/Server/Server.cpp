@@ -115,7 +115,7 @@ namespace raytracer::app
     )
     {
         try {
-            for (uint32_t y = 0; y < height - 1; y++) {
+            for (uint32_t y = 0; y < height; y++) {
                 for (uint32_t x = 0; x < width; x++) {
                     math::Color pixel = img->at(x, y);
                     sf::Color color = {
