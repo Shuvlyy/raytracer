@@ -2,6 +2,8 @@
 
 #include "Exception/AException.hpp"
 
+#include <format>
+
 namespace raytracer::exception
 {
 
@@ -10,7 +12,7 @@ namespace raytracer::exception
     {
     public:
         explicit ClientDisconnected(const int fd)
-            : AException(fd + ": Client disconnected.")
+            : AException(std::format("{}: Client disconnected.", fd))
         {}
     };
 

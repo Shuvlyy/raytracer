@@ -5,6 +5,8 @@
 #define DEFAULT_MAX_CLIENTS 192
 #define CHUNK_SIZE          (size_t) 32768
 #define HEADER_SIZE         (size_t) 2
+#define POLL_TO             1000
+#define MAX_SEND_RETRIES    100
 
 #include "../Packet/Packet.hpp"
 
@@ -37,7 +39,7 @@ namespace raytracer::network
         /**
          * @param   data        Data to write
          */
-        void sendPacket(const ByteBuffer& data) const;
+        void sendPacket(const ByteBuffer& data);
 
         /**
          * Reads from the file descriptor and returns its content.

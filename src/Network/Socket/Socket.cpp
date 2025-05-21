@@ -21,7 +21,7 @@ namespace raytracer::network
         : _address{}
     {
         this->_fd = socket(AF_INET, SOCK_STREAM, PROTOCOL_ANY);
-        int opt = 0;
+        int opt = 1;
 
         if (this->_fd < 0) {
             throw exception::StandardFunctionFail("socket");
@@ -48,7 +48,6 @@ namespace raytracer::network
     (
         const ByteBuffer& data
     )
-        const
     {
         if (this->_fd == -1 || data.empty()) {
             LOG_WARN("Skipping send: invalid fd or empty data");
@@ -56,54 +55,53 @@ namespace raytracer::network
         }
 
         try {
-            auto& self = const_cast<Socket&>(*this);
             size_t offset = 0;
 
             while (offset < data.size()) {
                 const size_t chunkSize = std::min(CHUNK_SIZE, data.size() - offset);
-                const uint8_t header[HEADER_SIZE] = {
+                std::array<uint8_t, HEADER_SIZE> header = {
                     static_cast<uint8_t>((chunkSize >> 8) & 0xFF),
                     static_cast<uint8_t>(chunkSize & 0xFF)
                 };
 
-                self._writeBuffer.insert(
-                    self._writeBuffer.end(),
-                    header,
-                    header + HEADER_SIZE
+                this->_writeBuffer.insert(
+                    this->_writeBuffer.end(),
+                    header.data(),
+                    header.data() + HEADER_SIZE
                 );
 
-                self._writeBuffer.insert(
-                    self._writeBuffer.end(),
+                this->_writeBuffer.insert(
+                    this->_writeBuffer.end(),
                     data.begin() + offset,
                     data.begin() + offset + chunkSize
                 );
 
-                self.flushWriteBuffer();
-
                 offset += chunkSize;
             }
 
-            self._writeBuffer.insert(
-                self._writeBuffer.end(),
+            this->_writeBuffer.insert(
+                this->_writeBuffer.end(),
                 END_HEADER.begin(),
                 END_HEADER.end()
             );
 
-            self.flushWriteBuffer();
+            this->flushWriteBuffer();
 
             LOG_DEBUG("Sent a packet of size " + std::to_string(data.size()) + " (SFD: " + std::to_string(this->_fd) + ")");
 
-            const std::string type = Packet::fromTypeToString(network::Packet::fromRawTypeToType(data[0]));
-            // std::string content;
-            // for (uint16_t i = 0; i < data.size(); ++i) {
+            if (!data.empty()) {
+                const std::string type = Packet::fromTypeToString(Packet::fromRawTypeToType(data[0]));
+                // std::string content;
+                // for (uint16_t i = 0; i < data.size(); ++i) {
                 // content += std::format("{:02X}{}", data[i], i == data.size() - 1 ? "" : " ");
-            // }
+                // }
 
-            LOG_DEBUG(
-                "Packet details:\n"
-                "\tType: " + type + "\n"
-                // "\tContent: [" + content + "]"
-            );
+                LOG_DEBUG(
+                    "Packet details:\n"
+                    "\tType: " + type + "\n"
+                    // "\tContent: [" + content + "]"
+                );
+            }
         }
         catch (exception::IException &exception) {
             LOG_ERR("Error while sending packet (SFD: " + std::to_string(this->_fd) + "): " + exception.what());
@@ -111,8 +109,7 @@ namespace raytracer::network
     }
 
     ByteBuffer
-    Socket::receivePacket
-    ()
+    Socket::receivePacket()
     {
         ByteBuffer packet;
 
@@ -127,12 +124,21 @@ namespace raytracer::network
                 .revents = 0
             };
 
-            int res = poll(&pfd, 1, 1000);
+            int res = poll(&pfd, 1, POLL_TO);
 
             if (res < 0) {
                 throw exception::StandardFunctionFail("poll (read)");
             }
+            if (pfd.revents & POLLHUP) {
+                LOG_WARN("POLLHUP");
+                throw exception::ClientDisconnected(this->_fd);
+            }
+            if (pfd.revents & (POLLERR | POLLNVAL)) {
+                LOG_WARN("POLLERR OR NVAL");
+                return {};
+            }
             if (res == 0 || !(pfd.revents & POLLIN)) {
+                LOG_WARN(std::format("Continuing, res={} and revents={}", res, pfd.revents));
                 continue;
             }
 
@@ -243,17 +249,27 @@ namespace raytracer::network
     void
     Socket::flushWriteBuffer()
     {
+        size_t retries = 0;
+
         while (!this->_writeBuffer.empty()) {
+            if (++retries > MAX_SEND_RETRIES) {
+                LOG_WARN("Max retries reached while sending data (SFD: " + std::to_string(this->_fd) + ")");
+                break;
+            }
+
             pollfd pfd = {
                 .fd = this->_fd,
                 .events = POLLOUT,
                 .revents = 0
             };
 
-            const int res = poll(&pfd, 1, 1000);
+            const int res = poll(&pfd, 1, POLL_TO);
 
             if (res < 0) {
                 throw exception::StandardFunctionFail("poll (write)");
+            }
+            if (pfd.revents & POLLHUP) {
+                throw exception::ClientDisconnected(this->_fd);
             }
             if (res == 0 || !(pfd.revents & POLLOUT)) {
                 continue;
@@ -271,11 +287,6 @@ namespace raytracer::network
 
             if (bytesWritten < 0) {
                 throw exception::StandardFunctionFail("write");
-            }
-
-            if (static_cast<size_t>(bytesWritten) > this->_writeBuffer.size()) {
-                LOG_ERR("Wrote more bytes than in buffer — possible logic bug or buffer corruption!");
-                break;
             }
 
             this->_writeBuffer.erase(
